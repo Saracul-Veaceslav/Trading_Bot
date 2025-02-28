@@ -1,5 +1,20 @@
-ccxt==3.0.74
-pandas==2.0.3
-numpy==1.24.3
-python-dotenv==1.0.0
-matplotlib==3.7.2 
+python-binance>=1.0.16
+pandas>=1.3.5
+numpy>=1.22.0
+python-dotenv>=0.21.0
+pytest>=7.0.0
+pytest-mock>=3.8.2
+pytest-cov>=3.0.0
+
+# TA-Lib requires the C library to be installed first:
+# macOS: brew install ta-lib
+# Ubuntu/Debian: apt-get install build-essential ta-lib
+# Windows: Download and install from http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-msvc.zip
+# Then: pip install TA-Lib
+# If you encounter issues, you can use the pure Python implementation below instead.
+
+# Alternative to TA-Lib (pure Python implementation, slower but easier to install)
+# pandas-ta>=0.3.14b0
+
+# Optional dependencies for visualization
+# matplotlib>=3.5.1  # Uncomment if visualization is needed 
