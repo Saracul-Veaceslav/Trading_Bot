@@ -2,67 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2025-02-28
-
-### Added
-- TradingView strategy adapter for popular strategies (RSI, MACD, Bollinger Bands)
-- Improved command-line interface with more options
-- Better error handling and logging
-- Support for test mode (paper trading)
-- Detailed README with usage examples
-- Script for converting unittest tests to pytest format
-- Made TA-Lib optional with fallback implementations for strategies
-- Added instructions for making run_tests.sh executable
-- Sample pytest test file for SMA crossover strategy
-- Warning log for insufficient data points in SMA crossover strategy
-
-### Fixed
-- Method signatures in DataManager to match test expectations
-- Parameter handling in SMAcrossover strategy for mock objects
-- Path and directory structure issues
-- Error handling in all components
-- Logger integration across components
-- TA-Lib dependency issues by providing fallback implementations
-- Script permissions with clear instructions
-- Warning log for insufficient data in SMA crossover strategy
-- Pandas warnings in pytest tests by using .loc instead of chained assignment
-
-### Changed
-- Refactored BinanceTestnet class for better mock handling
-- Updated StrategyExecutor to support error_logger parameter
-- Improved main script with better signal handling
-- Enhanced settings with correct path configuration
-- Made TA-Lib an optional dependency with clear installation instructions
-
-## [0.1.0] - 2023-07-10
-
-### Added
-- Initial project structure and architecture
-- Binance Testnet integration using ccxt
-- SMA Crossover strategy implementation
-- Data storage for OHLCV data and trades
-- Stop-Loss and Take-Profit risk management
-- Comprehensive logging system
-- Unit tests with Gherkin-style docstrings
-- Command-line interface for bot configuration
-
 ## [Unreleased]
 
 ### Added
-- Implementation of the `DataManager`, `BinanceTestnet`, `StrategyExecutor`, and `SMAcrossover` classes
-- Proper project structure with symbolic links to resolve import issues
-- Package initialization files (`__init__.py`) added to relevant directories
-- Test runner scripts for better debugging of test failures
-- Simple test script to check imports are working correctly
+- Created a new modular structure for the Trading Bot
+- Implemented core bot infrastructure with command-line interface
+- Added configuration management with support for different data sources
+- Developed exchange abstraction layer with Binance integration
+- Created data management system for historical and real-time data
+- Implemented risk management module with position sizing and stop loss functionality
+- Added strategy registry for dynamic loading of trading strategies
+- Set up framework for machine learning integration
+- Created utility functions for backtesting and optimization
+- Added pytest-based test framework for SMA Crossover strategy and configuration module
+- Implemented comprehensive backtesting functionality in the SMA Crossover strategy
+
+### Changed
+- Refactored project to follow clean architecture principles
+- Reorganized codebase into domain-specific modules
+- Enhanced logging system for better debugging and monitoring
+- Updated dependency management
+- Implemented enhanced error handling throughout the application
+- Migrated from unittest to pytest for better test organization and fixtures
+- Fixed import issues in tests to work with the new project structure
 
 ### Fixed
-- Method names in classes were corrected to match expected names in tests
-- Missing methods were added to the `BinanceTestnet` and `SMAcrossover` classes
-- The `_load_strategy` method was added to the `StrategyExecutor` class
-- The `settings.py` file was updated with required configuration values
-- Matplotlib was made an optional dependency to avoid build issues
-- Updated `DataManager` class to accept logger parameters as expected by tests
-- Fixed the test runner to properly handle Python 3.13 compatibility issues
-- Updated `BinanceTestnet` class to handle mock objects in tests
-- Added handling for mock objects in `StrategyExecutor` class
-- Enhanced `SMAcrossover` class with additional methods needed by tests 
+- Fixed issues with data handling and pandas warnings
+- Added graceful handling of missing dependencies
+- Improved error communication during initialization
+- Fixed compatibility issues between tests and implementation (signal return types, column names)
+- Resolved abstract method implementation issues in strategy classes
+
+## [0.1.0] - 2023-09-15
+
+### Added
+- Initial release of the Trading Bot
+- Basic SMA crossover strategy implementation
+- Connectivity to Binance exchange
+- Simple backtesting capabilities
+- Basic command-line interface
+- Unit tests with pytest 

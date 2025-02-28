@@ -1,0 +1,164 @@
+# Trading Bot Configuration Example
+# Copy this file to config.yaml and modify as needed
+
+# General settings
+general:
+  log_level: INFO
+  log_file: logs/trading_bot.log
+  data_dir: data
+  results_dir: results
+  timezone: UTC
+
+# Trading settings
+trading:
+  mode: paper  # live, paper, backtest
+  update_interval: 60  # seconds between updates
+  max_open_trades: 5
+  daily_target_profit: 0.03  # 3% daily target (optional)
+  exit_on_target: true  # Exit all positions when daily target is reached
+
+# Exchange settings
+exchange:
+  name: binance  # binance, ftx, kraken, etc.
+  testnet: true  # Use testnet for paper trading
+
+  # API credentials (required for live and paper trading)
+  # Warning: Never commit your actual API keys to version control
+  credentials:
+    binance:
+      api_key: YOUR_API_KEY_HERE
+      api_secret: YOUR_API_SECRET_HERE
+    ftx:
+      api_key: YOUR_API_KEY_HERE
+      api_secret: YOUR_API_SECRET_HERE
+      subaccount: YOUR_SUBACCOUNT  # Optional
+
+  # Rate limiting (adjust based on your exchange tier)
+  rate_limit: 
+    requests_per_minute: 1200
+    order_rate_limit: 50
+
+# Trading pairs configuration
+symbols:
+  - symbol: BTC/USDT
+    timeframe: 1h
+    strategy: sma_crossover
+    quantity: 0.001  # Fixed quantity (optional)
+    max_allocation: 0.2  # Max 20% of capital (optional)
+    
+  - symbol: ETH/USDT
+    timeframe: 1h
+    strategy: rsi_strategy
+    quantity: 0.01
+    max_allocation: 0.2
+    
+  - symbol: ADA/USDT
+    timeframe: 15m
+    strategy: bollinger_bands_strategy
+    quantity: 100
+    max_allocation: 0.1
+
+# Risk management settings
+risk:
+  max_risk_per_trade: 0.01  # 1% max risk per trade
+  max_risk_total: 0.05  # 5% max total risk
+  default_stop_loss_pct: 0.03  # 3% default stop loss
+  use_trailing_stop: true
+  trailing_stop_activation_pct: 0.02  # 2% profit to activate trailing stop
+  trailing_stop_distance_pct: 0.015  # 1.5% trailing stop distance
+  target_profit_pct: 0.05  # 5% take profit
+  use_atr_for_stops: false  # Use ATR for stop loss calculation
+  atr_multiplier: 2.0
+  atr_period: 14
+
+# Strategy-specific settings
+strategies:
+  sma_crossover:
+    short_window: 10
+    long_window: 50
+    
+  rsi_strategy:
+    rsi_period: 14
+    oversold_threshold: 30
+    overbought_threshold: 70
+    
+  macd_strategy:
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+    
+  bollinger_bands_strategy:
+    period: 20
+    std_dev: 2
+    
+  ml_prediction:
+    model_type: xgboost
+    features:
+      - close
+      - volume
+      - rsi
+      - macd
+      - bollinger_width
+    prediction_horizon: 3  # Predict price movement 3 candles ahead
+    retrain_interval: 168  # Retrain model every 168 candles (7 days for 1h)
+
+# Backtesting settings
+backtest:
+  start_date: 2022-01-01
+  end_date: 2022-12-31
+  initial_capital: 10000
+  commission: 0.001  # 0.1% commission per trade
+  slippage: 0.0005  # 0.05% slippage
+
+# Optimization settings
+optimize:
+  algorithm: grid  # grid, random, bayesian
+  iterations: 100
+  parallel_jobs: 4
+  parameters:
+    sma_crossover:
+      short_window: [5, 10, 15, 20]
+      long_window: [30, 40, 50, 60]
+    rsi_strategy:
+      rsi_period: [7, 14, 21]
+      oversold_threshold: [20, 25, 30, 35]
+      overbought_threshold: [65, 70, 75, 80]
+
+# Web interface settings
+web:
+  enabled: false
+  host: 0.0.0.0
+  port: 8080
+  secret_key: GENERATE_A_SECURE_RANDOM_KEY
+  require_auth: true
+  username: admin
+  # Generate secure password hash using:
+  # python -c "import bcrypt; print(bcrypt.hashpw('your_password'.encode(), bcrypt.gensalt()).decode())"
+  password_hash: $2b$12$EXAMPLE_HASH_REPLACE_THIS
+  
+# Notification settings
+notifications:
+  enabled: false
+  methods:
+    telegram:
+      enabled: false
+      bot_token: YOUR_BOT_TOKEN
+      chat_id: YOUR_CHAT_ID
+    email:
+      enabled: false
+      smtp_server: smtp.gmail.com
+      smtp_port: 587
+      username: your.email@gmail.com
+      password: YOUR_APP_PASSWORD
+      recipient: your.email@gmail.com
+    discord:
+      enabled: false
+      webhook_url: YOUR_DISCORD_WEBHOOK_URL
+  
+  events:
+    trade_opened: true
+    trade_closed: true
+    stop_loss_hit: true
+    take_profit_hit: true
+    daily_summary: true
+    error: true 

@@ -1,337 +1,348 @@
 """
-Simple Moving Average Crossover strategy implementation.
+SMA Crossover Strategy
+
+This module implements a Simple Moving Average (SMA) crossover strategy.
+Buy signals are generated when the short SMA crosses above the long SMA.
+Sell signals are generated when the short SMA crosses below the long SMA.
 """
+import logging
 import pandas as pd
 import numpy as np
-import logging
+from typing import Dict, Any, Optional, Tuple, Union
 
-class SMAcrossover:
+from Trading_Bot.strategies.base import Strategy
+
+logger = logging.getLogger('trading_bot.strategies.sma_crossover')
+
+class SMAcrossover(Strategy):
     """
-    SMA Crossover strategy that generates trading signals based on the crossing of two moving averages.
+    Simple Moving Average (SMA) crossover trading strategy.
     """
     
-    def __init__(self, short_window=20, long_window=50, name="SMA Crossover"):
+    def __init__(self, short_window: int = 10, long_window: int = 50, **kwargs):
         """
-        Initialize the SMA Crossover strategy.
+        Initialize the SMA crossover strategy.
         
         Args:
-            short_window (int): Period for the short moving average
-            long_window (int): Period for the long moving average
-            name (str): Strategy name
+            short_window: Period for the short SMA
+            long_window: Period for the long SMA
+            **kwargs: Additional arguments for the base Strategy class
         """
-        # Handle potential mock objects in tests
-        try:
-            self.short_window = int(short_window) if short_window is not None else 20
-            self.long_window = int(long_window) if long_window is not None else 50
-        except (TypeError, ValueError):
-            # Fall back to defaults for mocked objects
-            self.short_window = 20
-            self.long_window = 50
-            
-        self.name = name
-        self.logger = logging.getLogger(__name__)
-        self.error_logger = self.logger  # Default to same logger if not provided
+        # Call the parent constructor with strategy name
+        super().__init__(name="SMA Crossover", **kwargs)
         
-    def set_loggers(self, trading_logger, error_logger=None):
-        """
-        Set the loggers for the strategy.
+        # Store strategy parameters
+        self.short_window = short_window
+        self.long_window = long_window
         
-        Args:
-            trading_logger: Logger for trading activity
-            error_logger: Logger for errors (optional)
-        """
-        self.logger = trading_logger if trading_logger else self.logger
-        self.error_logger = error_logger if error_logger else self.logger
+        # Validate parameters
+        if self.short_window >= self.long_window:
+            raise ValueError(f"Short window ({short_window}) must be less than long window ({long_window})")
+        
+        # Set required data length for this strategy
+        self.min_required_candles = self.long_window + 1
+        
+        logger.info(f"Initialized SMA Crossover strategy with short_window={short_window}, long_window={long_window}")
     
-    def calculate_indicators(self, df):
+    def calculate_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Calculate strategy indicators (short and long SMAs).
+        Calculate the required indicators for the strategy.
         
         Args:
-            df (pandas.DataFrame): DataFrame with historical price data
+            df: DataFrame with OHLCV data
             
         Returns:
-            pandas.DataFrame: DataFrame with added indicators
+            DataFrame with added indicators
         """
-        if df is None or df.empty:
-            self.logger.warning("Empty DataFrame provided for indicator calculation")
-            return None
+        # Make a copy to avoid modifying original data
+        df = df.copy()
+        
+        # Check if we have enough data
+        if len(df) < self.min_required_candles:
+            self.logger.warning(f"Not enough data for SMA calculation. Need at least {self.min_required_candles} candles.")
+            return df
         
         try:
-            # Make sure we have a copy to avoid modifying the original
-            df_copy = df.copy()
+            # Calculate short and long SMAs
+            df['short_sma'] = df['close'].rolling(window=self.short_window).mean()
+            df['long_sma'] = df['close'].rolling(window=self.long_window).mean()
             
-            # Ensure correct column names
-            if 'close' not in df_copy.columns and df_copy.shape[1] >= 4:
-                # Rename columns if they are in standard OHLCV format
-                df_copy.columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume'] if df_copy.shape[1] >= 6 else ['open', 'high', 'low', 'close']
+            # Calculate additional data points for visualization
+            df['sma_diff'] = df['short_sma'] - df['long_sma']
             
-            # Handle potential mock objects
-            short_window = 20
-            long_window = 50
-            
-            try:
-                short_window = int(self.short_window)
-                long_window = int(self.long_window)
-            except (TypeError, ValueError):
-                # Use defaults if conversion fails
-                self.logger.warning("Using default window values due to type conversion error")
-            
-            # Calculate short and long moving averages
-            df_copy['sma_short'] = df_copy['close'].rolling(window=short_window).mean()
-            df_copy['sma_long'] = df_copy['close'].rolling(window=long_window).mean()
-            
-            return df_copy
+            self.log_info(f"Calculated SMAs: short({self.short_window}), long({self.long_window})")
             
         except Exception as e:
-            self.error_logger.error(f"Error calculating indicators: {e}")
-            return None
+            self.log_error(f"Error calculating SMAs: {str(e)}")
+        
+        return df
     
-    def generate_signal(self, df):
+    def generate_signal(self, df: pd.DataFrame) -> int:
         """
-        Generate trading signals based on SMA crossover.
+        Generate trading signal based on SMA crossover.
         
         Args:
-            df (pandas.DataFrame): DataFrame with price data
+            df: DataFrame with OHLCV data and indicators
             
         Returns:
-            int: Trading signal (1 for buy, -1 for sell, 0 for hold)
+            Signal (1 for buy, -1 for sell, 0 for hold/None)
         """
-        if df is None or df.empty:
-            self.logger.warning("Empty DataFrame provided for signal generation")
-            return 0  # hold signal as integer
+        # Check for empty dataframe
+        if df.empty:
+            self.log_warning("Empty dataframe provided to generate_signal")
+            return 0
         
-        try:
-            # Calculate indicators
+        # Check if we have enough data points
+        if len(df) < self.long_window + 1:
+            self.log_warning(f"Not enough data for signal generation. Need at least {self.long_window + 1} data points.")
+            return 0
+        
+        # Make sure the indicators have been calculated
+        if 'short_sma' not in df.columns or 'long_sma' not in df.columns:
             df = self.calculate_indicators(df)
             
-            if df is None:
-                return 0  # hold signal as integer
+            # Check again after calculating
+            if 'short_sma' not in df.columns or 'long_sma' not in df.columns:
+                self.log_error("Failed to calculate indicators")
+                return 0
+        
+        try:
+            # Get the most recent complete row and the previous row
+            # We use .iloc to be safe with indexing
+            current = df.iloc[-1]
+            previous = df.iloc[-2]
             
-            # Get the most recent values
-            short_sma = df['sma_short'].iloc[-1]
-            long_sma = df['sma_long'].iloc[-1]
+            # Check for crossover events
+            # Buy when short SMA crosses above long SMA
+            if previous['short_sma'] <= previous['long_sma'] and current['short_sma'] > current['long_sma']:
+                self.log_info(f"BUY signal: Short SMA ({current['short_sma']:.2f}) crossed above Long SMA ({current['long_sma']:.2f})")
+                return 1
             
-            # Get the previous values (for crossing detection)
-            prev_short_sma = df['sma_short'].iloc[-2] if len(df) > 1 else None
-            prev_long_sma = df['sma_long'].iloc[-2] if len(df) > 1 else None
+            # Sell when short SMA crosses below long SMA
+            elif previous['short_sma'] >= previous['long_sma'] and current['short_sma'] < current['long_sma']:
+                self.log_info(f"SELL signal: Short SMA ({current['short_sma']:.2f}) crossed below Long SMA ({current['long_sma']:.2f})")
+                return -1
             
-            # Check for SMA crossover
-            if np.isnan(short_sma) or np.isnan(long_sma) or prev_short_sma is None or prev_long_sma is None or np.isnan(prev_short_sma) or np.isnan(prev_long_sma):
-                # Not enough data to generate a signal
-                self.logger.warning(f"Not enough data for SMA calculation. Need at least {self.long_window + 1} data points.")
-                return 0  # hold signal as integer
-            
-            # Bullish crossover: short SMA crosses above long SMA
-            if prev_short_sma <= prev_long_sma and short_sma > long_sma:
-                return 1  # buy signal as integer
-            
-            # Bearish crossover: short SMA crosses below long SMA
-            elif prev_short_sma >= prev_long_sma and short_sma < long_sma:
-                return -1  # sell signal as integer
-            
-            # No crossover
-            return 0  # hold signal as integer
-            
+            # No signal
+            else:
+                return 0
+                
         except Exception as e:
-            self.error_logger.exception(f"Error generating signal: {e}")
-            return 0  # hold signal as integer
+            self.log_error(f"Error generating signal: {str(e)}")
+            return 0
     
-    # Method expected by the tests
-    def calculate_signal(self, df):
+    def calculate_signal(self, df: pd.DataFrame) -> int:
         """
-        Calculate trading signal based on SMA crossover (alias for generate_signal).
+        Alias for generate_signal to maintain compatibility with older code.
         
         Args:
-            df (pandas.DataFrame): DataFrame with price data
+            df: DataFrame with OHLCV data
             
         Returns:
-            int: Trading signal (1 for buy, -1 for sell, 0 for hold)
+            Signal (1 for buy, -1 for sell, 0 for hold/None)
         """
         return self.generate_signal(df)
     
-    def get_signal_meaning(self, signal_value):
+    def calculate_signals_for_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Get the meaning of a signal value.
+        Calculate signals for the entire DataFrame, useful for backtesting.
         
         Args:
-            signal_value (int): Signal value (1, -1, 0)
+            df: DataFrame with OHLCV data
             
         Returns:
-            str: Signal meaning ('buy', 'sell', 'hold')
+            DataFrame with added signal column
         """
-        if signal_value == 1:
-            return 'buy'
-        elif signal_value == -1:
-            return 'sell'
-        else:
-            return 'hold'
-    
-    def calculate_signals_for_dataframe(self, df):
-        """
-        Calculate signals for an entire DataFrame.
+        # Make a copy to avoid modifying original data
+        df = df.copy()
         
-        Args:
-            df (pandas.DataFrame): DataFrame with price data
-            
-        Returns:
-            pandas.DataFrame: DataFrame with signals column added
-        """
-        if df is None or df.empty:
-            self.logger.warning("Empty DataFrame provided for signal calculation")
-            return None
+        # Calculate indicators first
+        df = self.calculate_indicators(df)
+        
+        # Initialize signal column
+        df['signal'] = np.nan
+        
+        # We need at least two rows with both SMAs calculated (non-NaN)
+        if len(df) < self.long_window + 2:
+            self.logger.warning(f"Not enough data for calculating signals. Need at least {self.long_window + 2} rows.")
+            return df
+        
+        # Start from the first row where both SMAs are available
+        start_idx = self.long_window + 1
         
         try:
-            # Calculate indicators
-            result_df = self.calculate_indicators(df)
-            
-            if result_df is None:
-                return None
-            
-            # Initialize signal column
-            result_df['signal'] = 0  # hold as integer
-            
-            # Find buy signals: short SMA crosses above long SMA
-            buy_signals = (result_df['sma_short'].shift(1) <= result_df['sma_long'].shift(1)) & \
-                          (result_df['sma_short'] > result_df['sma_long'])
-            
-            # Find sell signals: short SMA crosses below long SMA
-            sell_signals = (result_df['sma_short'].shift(1) >= result_df['sma_long'].shift(1)) & \
-                           (result_df['sma_short'] < result_df['sma_long'])
-            
-            # Apply signals
-            result_df.loc[buy_signals, 'signal'] = 1  # buy as integer
-            result_df.loc[sell_signals, 'signal'] = -1  # sell as integer
-            
-            return result_df
+            # Process each row where we have the previous row available
+            for i in range(start_idx, len(df)):
+                current = df.iloc[i]
+                previous = df.iloc[i-1]
+                
+                # Buy when short SMA crosses above long SMA
+                if previous['short_sma'] <= previous['long_sma'] and current['short_sma'] > current['long_sma']:
+                    df.loc[df.index[i], 'signal'] = 1  # 1 for buy
+                
+                # Sell when short SMA crosses below long SMA
+                elif previous['short_sma'] >= previous['long_sma'] and current['short_sma'] < current['long_sma']:
+                    df.loc[df.index[i], 'signal'] = -1  # -1 for sell
+                    
+            self.log_info(f"Calculated signals for entire dataframe of length {len(df)}")
             
         except Exception as e:
-            self.error_logger.exception(f"Error calculating signals for DataFrame: {e}")
-            return None
+            self.log_error(f"Error calculating signals for dataframe: {str(e)}")
+        
+        return df
     
-    def get_parameters(self):
+    def backtest(self, data: pd.DataFrame, initial_capital: float = 10000.0) -> Dict[str, Any]:
         """
-        Get strategy parameters.
+        Perform backtesting of the strategy on historical data.
+        
+        Args:
+            data: DataFrame with OHLCV data
+            initial_capital: Initial capital for backtesting
+            
+        Returns:
+            Dictionary with backtesting results
+        """
+        # Make a copy to avoid modifying original data
+        df = data.copy()
+        
+        # Calculate signals
+        df = self.calculate_signals_for_dataframe(df)
+        
+        # Initialize portfolio and holdings
+        portfolio = pd.DataFrame(index=df.index)
+        portfolio['holdings'] = 0.0
+        portfolio['cash'] = initial_capital
+        portfolio['total'] = initial_capital
+        portfolio['returns'] = 0.0
+        
+        # Track positions
+        position = 0
+        entry_price = 0.0
+        
+        # Process each signal
+        for i in range(len(df)):
+            if pd.isna(df.iloc[i]['signal']):
+                # No signal, portfolio remains the same
+                portfolio.iloc[i] = portfolio.iloc[i-1] if i > 0 else portfolio.iloc[i]
+                continue
+                
+            signal = df.iloc[i]['signal']
+            price = df.iloc[i]['close']
+            
+            if signal == 1 and position == 0:  # Buy signal and no position
+                # Calculate position size (simplified, using all available cash)
+                shares = portfolio.iloc[i-1]['cash'] / price if i > 0 else initial_capital / price
+                position = shares
+                entry_price = price
+                
+                # Update portfolio
+                portfolio.loc[df.index[i], 'holdings'] = position * price
+                portfolio.loc[df.index[i], 'cash'] = portfolio.iloc[i-1]['cash'] - position * price if i > 0 else initial_capital - position * price
+                
+            elif signal == -1 and position > 0:  # Sell signal and has position
+                # Calculate profit/loss
+                pnl = position * (price - entry_price)
+                
+                # Update portfolio
+                portfolio.loc[df.index[i], 'holdings'] = 0
+                portfolio.loc[df.index[i], 'cash'] = portfolio.iloc[i-1]['cash'] + position * price if i > 0 else initial_capital + position * price
+                
+                # Reset position
+                position = 0
+                entry_price = 0
+            
+            else:
+                # No trade, update holdings value
+                portfolio.loc[df.index[i], 'holdings'] = position * price
+                portfolio.loc[df.index[i], 'cash'] = portfolio.iloc[i-1]['cash'] if i > 0 else initial_capital
+            
+            # Calculate total value and returns
+            portfolio.loc[df.index[i], 'total'] = portfolio.loc[df.index[i], 'holdings'] + portfolio.loc[df.index[i], 'cash']
+            portfolio.loc[df.index[i], 'returns'] = (portfolio.loc[df.index[i], 'total'] / initial_capital) - 1
+        
+        # Calculate performance metrics
+        total_return = portfolio['returns'].iloc[-1]
+        max_drawdown = (portfolio['total'] / portfolio['total'].cummax() - 1).min()
+        
+        # Count trades
+        buy_signals = (df['signal'] == 1).sum()
+        sell_signals = (df['signal'] == -1).sum()
+        
+        # Return results
+        results = {
+            'total_return': total_return,
+            'max_drawdown': max_drawdown,
+            'buy_signals': buy_signals,
+            'sell_signals': sell_signals,
+            'final_balance': portfolio['total'].iloc[-1],
+            'portfolio': portfolio
+        }
+        
+        self.log_info(f"Backtest completed: Return: {total_return:.2%}, Max Drawdown: {max_drawdown:.2%}, Trades: {buy_signals + sell_signals}")
+        
+        return results
+    
+    def get_parameters(self) -> Dict[str, Any]:
+        """
+        Get the strategy parameters.
         
         Returns:
-            dict: Strategy parameters
+            Dictionary of strategy parameters
         """
         return {
-            'name': self.name,
             'short_window': self.short_window,
             'long_window': self.long_window
         }
     
-    def set_parameters(self, parameters):
+    def set_parameters(self, parameters: Dict[str, Any]) -> bool:
         """
         Set strategy parameters.
         
         Args:
-            parameters (dict): Strategy parameters
+            parameters: Dictionary of parameters to set
             
         Returns:
             bool: True if parameters were set successfully, False otherwise
         """
         try:
             if 'short_window' in parameters:
-                self.short_window = int(parameters['short_window'])
+                self.short_window = parameters['short_window']
+            
             if 'long_window' in parameters:
-                self.long_window = int(parameters['long_window'])
-            if 'name' in parameters:
-                self.name = parameters['name']
+                self.long_window = parameters['long_window']
+            
+            # Update min required candles
+            self.min_required_candles = self.long_window + 1
+            
+            # Validate parameters
+            if self.short_window >= self.long_window:
+                raise ValueError(f"Short window ({self.short_window}) must be less than long window ({self.long_window})")
+            
+            self.log_info(f"Updated parameters: short_window={self.short_window}, long_window={self.long_window}")
             return True
         except Exception as e:
-            self.error_logger.error(f"Error setting parameters: {e}")
+            self.log_error(f"Failed to set parameters: {str(e)}")
             return False
     
-    def backtest(self, df, initial_capital=10000.0):
+    def get_plot_config(self) -> Dict[str, Any]:
         """
-        Backtest the strategy on historical data.
+        Get configuration for plotting strategy indicators.
         
-        Args:
-            df (pandas.DataFrame): DataFrame with historical price data
-            initial_capital (float): Initial capital for the backtest
-            
         Returns:
-            dict: Backtest results including returns, drawdown, etc.
+            Dictionary with plotting configuration
         """
-        if df is None or df.empty:
-            self.logger.warning("Empty DataFrame provided for backtesting")
-            return {"error": "No data for backtesting"}
-        
-        try:
-            # Calculate indicators
-            df = self.calculate_indicators(df)
-            
-            if df is None:
-                return {"error": "Failed to calculate indicators"}
-            
-            # Create a copy for results
-            backtest_df = df.copy()
-            
-            # Initialize signal column with hold (0)
-            backtest_df['signal'] = 0
-            
-            # Generate signals: 1 for buy, -1 for sell
-            # Bullish crossover: short SMA crosses above long SMA
-            bullish = (backtest_df['sma_short'].shift(1) <= backtest_df['sma_long'].shift(1)) & \
-                      (backtest_df['sma_short'] > backtest_df['sma_long'])
-            
-            # Bearish crossover: short SMA crosses below long SMA
-            bearish = (backtest_df['sma_short'].shift(1) >= backtest_df['sma_long'].shift(1)) & \
-                      (backtest_df['sma_short'] < backtest_df['sma_long'])
-            
-            backtest_df.loc[bullish, 'signal'] = 1
-            backtest_df.loc[bearish, 'signal'] = -1
-            
-            # Calculate position: 1 for long, -1 for short, 0 for no position
-            backtest_df['position'] = backtest_df['signal'].cumsum()
-            
-            # Calculate returns
-            backtest_df['returns'] = backtest_df['close'].pct_change()
-            backtest_df['strategy_returns'] = backtest_df['position'].shift(1) * backtest_df['returns']
-            
-            # Calculate cumulative returns
-            backtest_df['cum_returns'] = (1 + backtest_df['returns']).cumprod()
-            backtest_df['cum_strategy_returns'] = (1 + backtest_df['strategy_returns']).cumprod()
-            
-            # Calculate drawdown
-            backtest_df['peak'] = backtest_df['cum_strategy_returns'].cummax()
-            backtest_df['drawdown'] = (backtest_df['cum_strategy_returns'] - backtest_df['peak']) / backtest_df['peak']
-            
-            # Calculate metrics
-            total_return = backtest_df['cum_strategy_returns'].iloc[-1] - 1
-            max_drawdown = backtest_df['drawdown'].min()
-            
-            # Number of trades
-            trades = backtest_df[backtest_df['signal'] != 0]
-            num_trades = len(trades)
-            
-            results = {
-                "total_return": total_return,
-                "max_drawdown": max_drawdown,
-                "num_trades": num_trades,
-                "sharpe_ratio": self._calculate_sharpe_ratio(backtest_df['strategy_returns']),
-                "data": backtest_df
+        return {
+            'main_plot': {
+                'short_sma': {'color': 'blue', 'width': 1.5, 'label': f'Short SMA ({self.short_window})'},
+                'long_sma': {'color': 'red', 'width': 1.5, 'label': f'Long SMA ({self.long_window})'}
+            },
+            'sub_plots': {
+                'sma_diff': {'color': 'green', 'type': 'line', 'panel': 1, 'label': 'SMA Difference'}
+            },
+            'buy_markers': {
+                'marker': '^', 'color': 'green', 'size': 10, 'label': 'Buy Signal'
+            },
+            'sell_markers': {
+                'marker': 'v', 'color': 'red', 'size': 10, 'label': 'Sell Signal'
             }
-            
-            return results
-            
-        except Exception as e:
-            self.error_logger.exception(f"Error during backtesting: {e}")
-            return {"error": str(e)}
-    
-    def _calculate_sharpe_ratio(self, returns, risk_free_rate=0.01, periods_per_year=252):
-        """
-        Calculate the Sharpe ratio of a returns series.
-        
-        Args:
-            returns (pandas.Series): Series of returns
-            risk_free_rate (float): Risk-free rate
-            periods_per_year (int): Number of periods in a year
-            
-        Returns:
-            float: Sharpe ratio
-        """
-        excess_returns = returns - risk_free_rate / periods_per_year
-        return np.sqrt(periods_per_year) * excess_returns.mean() / returns.std()
+        }
