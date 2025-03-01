@@ -22,7 +22,7 @@ def mock_loggers():
 def sma_strategy(mock_loggers):
     """Create a SMAcrossover strategy instance for testing."""
     trading_logger, error_logger = mock_loggers
-    strategy = SMAcrossover(short_window=5, long_window=10)
+    strategy = SMAcrossover(10, 50, trading_logger=mock_trading_logger, error_logger=mock_error_logger)
     strategy.set_loggers(trading_logger, error_logger)
     return strategy
 

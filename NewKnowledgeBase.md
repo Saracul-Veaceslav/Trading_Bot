@@ -30,6 +30,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Always handle potential errors when making API calls to external services
 - Rate limiting mechanisms prevent API usage limits from being exceeded
 - Column naming conventions should be consistent across the codebase (e.g., 'short_sma' vs 'sma_short')
+- Method names should be consistent across the codebase (e.g., 'execute_once' vs 'run_iteration')
 
 ## Machine Learning Integration
 
@@ -47,6 +48,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Always test exchange integrations in testnet/sandbox environments first
 - Order validation before submission prevents rejected orders
 - Understanding of exchange-specific behaviors (fees, minimum orders, precision) is essential
+- Multiple patchers for the same object in tests can cause "Patch is already started" errors
 
 ## Data Management
 
@@ -55,6 +57,8 @@ This file documents knowledge gained during the development and refactoring of t
 - Supporting multiple data formats (CSV, JSON, Parquet) provides flexibility
 - Having both file-based and in-memory storage options handles different needs
 - Clear separation between historical and real-time data handling simplifies the code
+- When appending data, ensure timestamps are properly handled to avoid duplicates
+- NaN values in trade exit updates need special handling to avoid comparison errors
 
 ## Development Workflow
 
@@ -64,6 +68,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Comprehensive changelog helps users understand what's changed between versions
 - Documentation of design decisions and architecture helps onboard new developers
 - When fixing tests, focus on making the implementation match the test expectations rather than changing tests
+- Systematic approach to fixing tests (read implementation, understand test, fix mismatch) is more efficient than trial and error
 
 ## Technical Insights
 
@@ -74,25 +79,29 @@ This file documents knowledge gained during the development and refactoring of t
 - TA-Lib requires the C/C++ library to be installed separately before the Python package can be installed, which can be a barrier for some users.
 - Having pure Python fallback implementations for critical dependencies ensures your application works in more environments.
 - Python's import system is case-sensitive, so 'trading_bot' and 'Trading_Bot' are treated as different packages
+- Method names in implementation and tests must match exactly (e.g., 'execute_once' vs 'run_iteration')
 
 ## Testing Insights
 
-- Pytest offers a more modern and flexible approach to testing compared to unittest:
-  - Less boilerplate with fixtures instead of setUp/tearDown
-  - Cleaner assertion syntax (assert x == y instead of self.assertEqual(x, y))
-  - Better parameterization of tests
-  - The assert_called_once method for mocks simplifies verification of method calls
-- Mock objects in tests may not have expected string conversion behaviors.
-- Test fixtures should be designed to provide all the necessary context for tests.
-- Tests often expect specific method signatures and return types that must be carefully maintained.
-- Shell scripts used for testing need appropriate execute permissions (chmod +x).
-- In pytest, using the .warning.assert_called_once() method allows verifying that warning logs are properly emitted.
-- Combining Gherkin-style documentation with pytest gives the readability of BDD with the power of a modern test framework
-- When testing financial algorithms, using realistic market data patterns is crucial for proper validation
-- Temporary files and directories (via tempfile module) are ideal for testing configuration loading/saving
-- Using pytest's monkeypatch for environment variables ensures test isolation
-- Parametrized tests in pytest reduce code duplication when testing similar behaviors with different inputs
-- When fixing import issues in tests, consider using symbolic links or modifying PYTHONPATH rather than changing all import statements
+- Pytest fixtures provide a clean way to set up test dependencies and mock objects
+- Parametrized tests allow for testing multiple cases with minimal code duplication
+- Mocking external dependencies is crucial for unit tests to isolate functionality
+- Boundary Value Analysis (BVA) and Equivalence Partitioning (EP) provide systematic approaches to test coverage
+- Tests should be flexible enough to accept multiple valid behaviors rather than enforcing a specific implementation
+- Don't create rigid expectations about how errors are handled; allow for different valid approaches
+- For strategy tests, use realistic market data patterns to validate behavior
+- Separate test data generation from test logic for cleaner, more maintainable tests
+- Tests should verify both success and failure scenarios
+- Organize test files in a way that mirrors the structure of the application
+- Use Gherkin-style comments (Feature/Scenario/Given/When/Then) to make test intentions clear
+- When implementations change, consider modifying tests for flexibility rather than forcing a specific implementation
+- Mock objects need proper configuration to return expected values for method calls
+- In tests, use temporary directories for file operations to avoid interference between tests
+- Be mindful of import paths which may vary between development and testing environments
+- Proper test setup and teardown ensures test isolation and prevents side effects
+- Multiple patchers for the same object can cause conflicts and "Patch is already started" errors
+- Reset mocks before each test to avoid interference between tests
+- When testing DataFrame operations, ensure the test data matches the expected structure in the implementation
 
 ## Trading Strategy Insights
 
@@ -103,6 +112,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Technical indicators can often be implemented in multiple ways (using specialized libraries like TA-Lib or with pandas/numpy).
 - Signal values should be consistent throughout the codebase (e.g., using integers 1/-1/0 instead of strings 'buy'/'sell'/'hold')
 - Backtesting functionality is a critical component of any trading strategy implementation
+- When calculating signals, ensure the indexing is consistent (e.g., using df.iloc[-1] for current and df.iloc[-2] for previous)
 
 ## Project Structure and Python Imports
 
@@ -122,6 +132,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Type conversion of strategy parameters can fail with mock objects, requiring fallback logic.
 - Use feature flags (like `TALIB_AVAILABLE`) to conditionally use functionality based on available dependencies.
 - Abstract methods in base classes must be implemented in derived classes, even if they're not used in tests
+- Method signatures in implementation should match what tests expect, including parameter names and types
 
 ## Python 3.13 Compatibility
 
@@ -151,6 +162,7 @@ This file documents knowledge gained during the development and refactoring of t
 - When working with pandas, use .loc[index, column] instead of chained indexing to avoid warnings and future compatibility issues.
 - Use proper error logging and checks for edge cases, such as insufficient data for calculations.
 - Maintain consistent naming conventions for variables and methods across the codebase
+- Ensure method names in implementation match what tests expect (e.g., 'execute_once' vs 'run_iteration')
 
 ## Testing Challenges
 
@@ -161,6 +173,8 @@ This file documents knowledge gained during the development and refactoring of t
 - Shell scripts need execute permissions to be run directly.
 - Import issues can be challenging to debug, especially with case sensitivity and symbolic links
 - Abstract method requirements can cause unexpected errors when instantiating classes in tests
+- Multiple patchers for the same object can cause conflicts and "Patch is already started" errors
+- Indexing in DataFrame operations must match between implementation and tests (e.g., df.iloc[-1] vs df.iloc[0])
 
 ## Project Organization
 - Symbolic links can resolve import issues without restructuring the entire project
@@ -180,6 +194,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Tests often use mock objects for dependencies like loggers and API clients. These mock objects might not be compatible with methods expecting specific types (like `str` or `bytes`). It's important to handle type conversion in class constructors and methods.
 - The test cases expect specific method signatures. For example, `DataManager.__init__` is expected to accept `trading_logger` and `error_logger` parameters, even if they're optional.
 - Signal values in the SMA crossover strategy need to be integers (1, -1, 0) rather than strings ('buy', 'sell', 'hold') for compatibility with tests.
+- When testing DataFrame operations, ensure the test data has the correct structure and column names to match the implementation
 
 ## Python 3.13 Compatibility
 
@@ -195,6 +210,9 @@ This file documents knowledge gained during the development and refactoring of t
 5. Use a proper test runner compatible with Python 3.13 
 6. Implement all abstract methods in derived classes, even if they're not used in tests
 7. Ensure consistent naming conventions for variables and methods
+8. Avoid multiple patchers for the same object to prevent conflicts
+9. Reset mocks before each test to avoid interference
+10. Ensure DataFrame operations use consistent indexing between implementation and tests
 
 ## Pandas Best Practices
 
@@ -203,6 +221,8 @@ This file documents knowledge gained during the development and refactoring of t
 - Always create a copy of a DataFrame before modifying it for testing, especially when manipulating values.
 - When updating values in a DataFrame, use proper indexing techniques to ensure changes are applied to the original DataFrame and not a temporary copy.
 - Warnings in pandas can be helpful indicators of potential issues that might cause bugs in future versions. 
+- When working with time series data, ensure timestamps are properly handled to avoid duplicates or missing data
+- NaN values require special handling in comparisons and calculations
 
 ## Test Conversion Lessons
 
@@ -211,3 +231,5 @@ This file documents knowledge gained during the development and refactoring of t
 - Test factories (functions that create test objects) are often more flexible than fixed fixtures
 - Using pytest's parametrize decorator can dramatically reduce test code duplication
 - Separating test data generation from test logic makes tests more maintainable 
+- Systematic approach to fixing tests (understand implementation, understand test, fix mismatch) is more efficient than trial and error
+- When fixing tests, focus on making the implementation match the test expectations rather than changing tests 

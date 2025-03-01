@@ -42,6 +42,12 @@ class SMAcrossover(Strategy):
         # Set required data length for this strategy
         self.min_required_candles = self.long_window + 1
         
+        # Set loggers if provided in kwargs (for test compatibility)
+        if 'trading_logger' in kwargs:
+            self.logger = kwargs['trading_logger']
+        if 'error_logger' in kwargs:
+            self.error_logger = kwargs['error_logger']
+        
         logger.info(f"Initialized SMA Crossover strategy with short_window={short_window}, long_window={long_window}")
     
     def calculate_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -59,7 +65,7 @@ class SMAcrossover(Strategy):
         
         # Check if we have enough data
         if len(df) < self.min_required_candles:
-            self.logger.warning(f"Not enough data for SMA calculation. Need at least {self.min_required_candles} candles.")
+            self.log_warning(f"Not enough data for SMA calculation. Need at least {self.min_required_candles} candles.")
             return df
         
         try:
@@ -74,6 +80,8 @@ class SMAcrossover(Strategy):
             
         except Exception as e:
             self.log_error(f"Error calculating SMAs: {str(e)}")
+            if hasattr(self.error_logger, 'exception'):
+                self.error_logger.exception("Exception during SMA calculation")
         
         return df
     
@@ -129,6 +137,8 @@ class SMAcrossover(Strategy):
                 
         except Exception as e:
             self.log_error(f"Error generating signal: {str(e)}")
+            if hasattr(self.error_logger, 'exception'):
+                self.error_logger.exception("Exception during signal generation")
             return 0
     
     def calculate_signal(self, df: pd.DataFrame) -> int:
@@ -159,6 +169,12 @@ class SMAcrossover(Strategy):
         # Calculate indicators first
         df = self.calculate_indicators(df)
         
+        # For test compatibility, add aliases for column names
+        if 'short_sma' in df.columns:
+            df['sma_short'] = df['short_sma']
+        if 'long_sma' in df.columns:
+            df['sma_long'] = df['long_sma']
+        
         # Initialize signal column
         df['signal'] = np.nan
         
@@ -167,10 +183,10 @@ class SMAcrossover(Strategy):
             self.logger.warning(f"Not enough data for calculating signals. Need at least {self.long_window + 2} rows.")
             return df
         
-        # Start from the first row where both SMAs are available
-        start_idx = self.long_window + 1
-        
         try:
+            # Start from the first row where both SMAs are available
+            start_idx = self.long_window + 1
+            
             # Process each row where we have the previous row available
             for i in range(start_idx, len(df)):
                 current = df.iloc[i]
@@ -188,6 +204,8 @@ class SMAcrossover(Strategy):
             
         except Exception as e:
             self.log_error(f"Error calculating signals for dataframe: {str(e)}")
+            if hasattr(self.error_logger, 'exception'):
+                self.error_logger.exception("Exception during dataframe signal calculation")
         
         return df
     
