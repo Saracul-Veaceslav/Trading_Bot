@@ -190,6 +190,7 @@
      # Before
      def fetch_ticker(self, symbol: str) -> Dict[str, Any]:
          result = self.api.get_ticker(symbol=symbol)
+         z
          return result
          
      # After

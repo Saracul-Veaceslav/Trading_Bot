@@ -54,6 +54,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added py.typed marker file for better type checking support
 - Created migration scripts for automated code reorganization
 - Added detailed README updates explaining the new package structure
+- Enhanced exception hierarchy with domain-specific exception classes for each module:
+  - Created module-specific exception files for strategies, data, and risk modules
+  - Implemented granular exception types for specific error scenarios
+  - Added proper exception inheritance for better error classification
+- Implemented database storage system using SQLAlchemy:
+  - Created SQLAlchemy models for OHLCV data, trades, and strategy states
+  - Added repository pattern implementation for data access
+  - Implemented database-backed DataManager
+  - Created utilities for data migration from files to database
+  - Added base repository with common CRUD operations
+  - Implemented specialized repositories for OHLCV data, trades, and strategy states
 
 ### Changed
 - Refactored project to follow clean architecture principles
@@ -91,6 +102,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated build configuration to modern standards with pyproject.toml
 - Improved package documentation with clear migration instructions
 - Enhanced module organization following Python best practices
+- Improved SMA Crossover strategy with domain-specific exceptions for better error handling
+- Replaced generic exceptions with specific exception types for clearer error communication
 
 ### Fixed
 - Fixed issues with data handling and pandas warnings
@@ -133,6 +146,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed buy and sell signal tests to properly set up crossover conditions for testing signal generation
 - Fixed error handling tests in SMA Crossover strategy to properly reset mock loggers
 - Fixed variable names in the sma_strategy fixture to correctly use trading_logger and error_logger
+- Fixed circular import issues in database repositories by:
+  - Defining exceptions inline in the base repository
+  - Updating repository imports to use exceptions from base repository
+  - Restructuring import patterns to prevent circular dependencies
+- Fixed SQLAlchemy deprecation warning by updating declarative_base import to use sqlalchemy.orm instead of sqlalchemy.ext.declarative
+- Documented remaining websockets deprecation warnings from the Binance third-party library that can't be directly addressed
+- Suppressed third-party library deprecation warnings in test sessions through pytest configuration
 
 ## [0.2.0] - 2023-08-15
 

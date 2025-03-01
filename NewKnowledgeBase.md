@@ -17,6 +17,11 @@ This document contains insights and knowledge gained during development of the T
 - **Error Detail Preservation**: Designing exceptions to include detailed context helps with debugging and error reporting.
 - **Domain-Specific Error Categories**: Organizing exceptions by domain (exchange errors, data errors, etc.) makes error handling more intuitive and maintainable.
 - **Exception Inheritance Depth**: Keeping the exception inheritance hierarchy shallow (2-3 levels deep) makes it easier to understand and use effectively.
+- **Granular Exception Typing**: Creating specific exception types for different error scenarios improves error handling precision and provides better context for debugging.
+- **Consistent Error Patterns**: Using consistent error handling patterns across modules enhances code readability and maintainability.
+- **Replacing Generic Exceptions**: Replacing general `Exception` catches with specific exception types improves error handling specificity.
+- **Strategic Exception Placement**: Placing exception files alongside the modules they serve makes the codebase more navigable and maintainable.
+- **Descriptive Error Messages**: Including detailed information in error messages helps with troubleshooting and debugging.
 
 ## Python Packaging Best Practices
 
@@ -99,6 +104,11 @@ This document contains insights and knowledge gained during development of the T
 - Adding context information to exceptions helps with troubleshooting
 - Creating a centralized error handling strategy ensures consistent recovery mechanisms
 - Validating input parameters early prevents hard-to-trace errors downstream
+- Converting generic try-except blocks to specific exception handlers improves error recovery options
+- Adding fallback strategies for critical operations enhances system reliability
+- Using exception hierarchies allows for both general and specific error handling as needed
+- Properly documenting exception types in function signatures with typing annotations improves code clarity
+- Implementing custom exception classes with additional context data improves debugging capabilities
 
 ## Performance Optimization
 
@@ -147,3 +157,49 @@ This document contains insights and knowledge gained during development of the T
 - Centralizing logging configuration ensures consistent log formatting and destinations
 - Implementing proper resource cleanup in destructors or context managers prevents resource leaks
 - Using protocols for interface definitions improves static type checking
+
+## Database Implementation Insights
+
+- **Repository Pattern Benefits**: Using the repository pattern creates a clean separation between database operations and business logic, making the codebase more maintainable.
+- **SQLAlchemy ORM Advantages**: Using SQLAlchemy's Object-Relational Mapping simplifies database operations by allowing Python class manipulation instead of raw SQL.
+- **Session Management**: Proper session management (creating, committing, and closing sessions) is critical for database integrity and preventing resource leaks.
+- **Migration Strategy**: Creating utility scripts for migrating from file-based storage to database storage ensures smooth transitions without data loss.
+- **Model Relationships**: Designing appropriate relationships between models (one-to-many, many-to-many) with proper foreign keys improves data integrity and query efficiency.
+- **Database Indices**: Strategic index placement on frequently queried columns significantly improves query performance.
+- **Cascading Operations**: Configuring cascading operations (cascade="all, delete-orphan") simplifies relationship management in SQLAlchemy.
+- **Query Optimization**: Using SQLAlchemy's query capabilities for filtering at the database level is more efficient than filtering in Python after retrieval.
+- **Transaction Management**: Using transactions for related operations ensures data consistency even in case of failures.
+- **Data Validation**: Implementing validation at both the model level and repository level creates multiple layers of data integrity protection.
+- **Connection Pooling**: Leveraging SQLAlchemy's connection pooling improves performance by reusing database connections.
+- **Error Handling**: Creating database-specific exceptions with meaningful error messages improves troubleshooting and error recovery.
+- **Schema Evolution**: Planning for schema evolution with migrations scripts helps manage database changes over time.
+- **Data Manager Abstraction**: Creating a DataManager abstraction that can work with either file-based or database storage allows for flexible storage strategy selection.
+- **Database Backend Flexibility**: SQLAlchemy's database-agnostic approach allows easy switching between different database backends (SQLite, PostgreSQL, MySQL).
+- **Circular Import Resolution**: Defining exceptions inline in base classes that are widely imported helps prevent circular import issues in repository implementations.
+- **Repository Specialization**: Creating specialized repositories for different entity types (OHLCV, trades, strategies) allows for domain-specific data access methods while sharing common CRUD operations.
+- **Factory Functions**: Implementing factory functions in module __init__ files provides a clean API for obtaining repository instances while hiding implementation details.
+- **Lazy Loading**: Using lazy imports or defining exceptions inline can help break circular dependencies in complex module structures.
+- **Import Structure**: Carefully planning the import structure of a package can prevent circular dependencies before they occur.
+- **Exception Hierarchy**: Defining a clear exception hierarchy with base exceptions in commonly imported modules prevents circular imports when handling errors.
+- **Module Organization**: Organizing related functionality into cohesive modules with clear dependencies reduces the likelihood of circular imports.
+- **SQLAlchemy Migration**: Updating SQLAlchemy imports to use modern paths (e.g., `from sqlalchemy.orm import declarative_base` instead of `from sqlalchemy.ext.declarative import declarative_base`) improves compatibility with SQLAlchemy 2.0.
+- **Third-Party Dependency Warnings**: Some warnings, especially those from third-party libraries like Binance's WebSocket implementation, can't be directly fixed but should be documented for future dependency updates.
+- **Deprecation Warning Resolution**: Resolving deprecation warnings early prevents future compatibility issues when libraries update to newer versions.
+- **Incremental Library Upgrades**: Keeping track of deprecation warnings helps plan for incremental library upgrades rather than requiring major rewrites when support is removed.
+
+## Dependency Management Best Practices
+
+- **Deprecation Warning Monitoring**: Regularly running tests with warnings enabled helps identify deprecation notices early, allowing for proactive updates before functionality is removed.
+- **WebSockets Library Evolution**: The websockets library has undergone significant changes, with newer versions requiring different import patterns and API usage compared to legacy versions.
+- **Third-Party Dependencies Isolation**: Creating adapter layers around third-party libraries isolates their API changes from the rest of the application, making future migrations easier.
+- **Binance API Challenges**: The Binance Python library has dependencies on older websockets implementations, creating warnings that can only be addressed by updating the library itself.
+- **Documentation of Known Issues**: For warnings from third-party dependencies that cannot be directly fixed, documenting them in project notes prevents unnecessary investigation time.
+- **Dependency Pinning Strategy**: Using exact version pinning for unstable dependencies and semantic versioning ranges for stable ones provides a balance between stability and keeping current.
+- **Vendoring Consideration**: For critical third-party code with uncertain maintenance, vendoring (copying and maintaining internally) might be appropriate despite the increased maintenance burden.
+- **Compatibility Layer Design**: When migrating away from deprecated APIs, creating temporary compatibility layers can help manage the transition without breaking existing code.
+- **Upgrade Path Planning**: Maintaining a documented upgrade path for dependencies with deprecation warnings ensures smooth transitions during future maintenance.
+- **Requirements Auditing**: Regularly auditing requirements.txt or pyproject.toml dependencies for security issues, deprecations, and newer versions helps maintain a healthy dependency graph.
+- **Warning Suppression Strategy**: When dealing with warnings from third-party libraries that cannot be fixed directly, using pytest's filterwarnings configuration or Python's warnings module to suppress specific warnings improves test output readability.
+- **Dual Configuration Approach**: Combining both pytest.ini warning filters and programmatic warning suppression in conftest.py ensures warnings are consistently suppressed across different test runners and environments.
+- **Selective Warning Management**: Suppressing only specific warnings from particular modules rather than all warnings prevents masking important warnings that should be addressed.
+- **Explicit Warning Documentation**: When suppressing warnings, explicitly documenting them in code comments and project documentation ensures they won't be forgotten during future dependency upgrades.
