@@ -35,6 +35,10 @@ All notable changes to this project will be documented in this file.
 - Position sizing module with Kelly criterion
 - Comprehensive test suite for new components
 - Fixed test versions for configuration tests
+- Created a standardized test directory structure with module-specific subdirectories
+- Added a comprehensive test runner script with support for different test categories
+- Created detailed README files for both the project and test suite
+- Organized tests into unit and integration categories for better maintainability
 
 ### Changed
 - Refactored project to follow clean architecture principles
@@ -60,8 +64,11 @@ All notable changes to this project will be documented in this file.
 - Enhanced strategy base class with better parameter validation
 - Updated documentation for new features
 - Refactored data processing pipeline for better performance
-- Performed codebase cleanup by removing temporary fix scripts and redundant files
+- Performed codebase cleanup by removing temporary fix scripts (fix_*.py and create_fix_*.py files)
 - Streamlined test directory structure for better maintainability
+- Reorganized tests into a structured directory hierarchy based on modules
+- Updated project README with comprehensive documentation on features, usage, and testing
+- Created a dedicated test runner script to simplify running tests
 
 ### Fixed
 - Fixed issues with data handling and pandas warnings
@@ -95,6 +102,7 @@ All notable changes to this project will be documented in this file.
 - Addressed pandas chained assignment warnings
 - Fixed configuration loading and validation to handle different symbol formats
 - Created alternative test implementations for configuration tests with different expectations
+- Resolved test organization issues by creating a structured test directory hierarchy
 
 ## [0.1.0] - 2023-09-15
 

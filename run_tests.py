@@ -1,104 +1,123 @@
+#!/usr/bin/env python3
 """
-Advanced test runner script for debugging test failures.
-Run this script to get more detailed information about failing tests.
-"""
-import unittest
-import sys
-import traceback as tb_module
-from io import StringIO
+Test Runner for Trading Bot
 
-def run_tests():
-    """Run all discovered tests with detailed output."""
-    # Create a proper stream that has the writeln method
-    stream = StringIO()
-    runner = unittest.TextTestRunner(stream, descriptions=True, verbosity=2)
+This script provides a convenient way to run tests for the Trading Bot project.
+It supports running all tests or specific test categories.
+"""
+
+import argparse
+import subprocess
+import sys
+import os
+from pathlib import Path
+
+
+def run_tests(test_path=None, verbose=False, coverage=False, pattern=None):
+    """
+    Run pytest with the specified options.
     
-    # Discover and load all tests
-    test_suite = unittest.defaultTestLoader.discover('tests')
+    Args:
+        test_path (str): Path to the tests to run
+        verbose (bool): Whether to run tests in verbose mode
+        coverage (bool): Whether to generate coverage report
+        pattern (str): Pattern to match test files
+    
+    Returns:
+        int: Exit code from pytest
+    """
+    # Construct the pytest command
+    cmd = ["python", "-m", "pytest"]
+    
+    # Add options
+    if verbose:
+        cmd.append("-v")
+    
+    if coverage:
+        cmd.extend(["--cov=Trading_Bot", "--cov-report=term", "--cov-report=html"])
+    
+    # Add test path if specified
+    if test_path:
+        cmd.append(test_path)
+    
+    # Add pattern if specified
+    if pattern:
+        cmd.append(f"-k={pattern}")
+    
+    # Print the command being run
+    print(f"Running: {' '.join(cmd)}")
+    
+    # Run the command
+    result = subprocess.run(cmd)
+    return result.returncode
+
+
+def main():
+    """Parse arguments and run tests."""
+    parser = argparse.ArgumentParser(description="Run Trading Bot tests")
+    
+    # Add arguments
+    parser.add_argument(
+        "--unit", action="store_true", 
+        help="Run only unit tests"
+    )
+    parser.add_argument(
+        "--integration", action="store_true", 
+        help="Run only integration tests"
+    )
+    parser.add_argument(
+        "--module", type=str, choices=["config", "core", "data", "exchanges", "risk", "strategies", "utils"],
+        help="Run tests for a specific module"
+    )
+    parser.add_argument(
+        "--file", type=str, 
+        help="Run a specific test file"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", 
+        help="Run tests in verbose mode"
+    )
+    parser.add_argument(
+        "--coverage", action="store_true", 
+        help="Generate coverage report"
+    )
+    parser.add_argument(
+        "-k", "--pattern", type=str, 
+        help="Only run tests matching the given pattern"
+    )
+    
+    args = parser.parse_args()
+    
+    # Determine the test path
+    test_path = "Tests/"
+    
+    if args.unit:
+        test_path = "Tests/unit/"
+    elif args.integration:
+        test_path = "Tests/integration/"
+    
+    if args.module:
+        test_path = f"Tests/unit/{args.module}/"
+    
+    if args.file:
+        test_path = args.file
+        if not os.path.exists(test_path):
+            # Try to find the file in the Tests directory
+            potential_paths = list(Path("Tests").glob(f"**/{args.file}"))
+            if potential_paths:
+                test_path = str(potential_paths[0])
+            else:
+                print(f"Error: Test file '{args.file}' not found")
+                return 1
     
     # Run the tests
-    print("\n======= RUNNING ALL TESTS =======\n")
-    result = runner.run(test_suite)
-    
-    # Print detailed output
-    output = stream.getvalue()
-    print(output)
-    
-    # Print summary
-    print("\n======= TEST SUMMARY =======")
-    print(f"Ran {result.testsRun} tests")
-    print(f"✅ Passed: {result.testsRun - len(result.failures) - len(result.errors)}")
-    print(f"❌ Failed: {len(result.failures)}")
-    print(f"⚠️ Errors: {len(result.errors)}")
-    
-    # Print detailed failures
-    if result.failures:
-        print("\n======= TEST FAILURES =======")
-        for i, (test, traceback) in enumerate(result.failures):
-            print(f"\n--- Failure {i+1}: {test} ---")
-            print(traceback)
-    
-    # Print errors
-    if result.errors:
-        print("\n======= TEST ERRORS =======")
-        for i, (test, traceback) in enumerate(result.errors):
-            print(f"\n--- Error {i+1}: {test} ---")
-            print(traceback)
-    
-    return len(result.failures) + len(result.errors) == 0
+    return run_tests(
+        test_path=test_path,
+        verbose=args.verbose,
+        coverage=args.coverage,
+        pattern=args.pattern
+    )
 
-def run_specific_test(test_name):
-    """Run a specific test case or test method."""
-    try:
-        # Create a proper stream that has the writeln method
-        stream = StringIO()
-        runner = unittest.TextTestRunner(stream, descriptions=True, verbosity=2)
-        
-        if '.' in test_name:
-            # If test_name contains a dot, it's specifying a test method
-            # Format: module.TestClass.test_method
-            test_suite = unittest.defaultTestLoader.loadTestsFromName(test_name)
-        else:
-            # Otherwise, it's a test module or class
-            test_suite = unittest.defaultTestLoader.loadTestsFromName(f"tests.{test_name}")
-        
-        # Run the tests
-        result = runner.run(test_suite)
-        
-        # Print detailed output
-        output = stream.getvalue()
-        print(output)
-        
-        # Print summary
-        print("\n======= TEST SUMMARY =======")
-        print(f"Ran {result.testsRun} tests")
-        print(f"✅ Passed: {result.testsRun - len(result.failures) - len(result.errors)}")
-        print(f"❌ Failed: {len(result.failures)}")
-        print(f"⚠️ Errors: {len(result.errors)}")
-        
-        # Print detailed failures and errors
-        if result.failures:
-            print("\n======= TEST FAILURES =======")
-            for test, traceback in result.failures:
-                print(f"\n--- Failure: {test} ---")
-                print(traceback)
-        
-        if result.errors:
-            print("\n======= TEST ERRORS =======")
-            for test, traceback in result.errors:
-                print(f"\n--- Error: {test} ---")
-                print(traceback)
-                
-    except Exception as e:
-        print(f"Error running test '{test_name}': {e}")
-        tb_module.print_exc()
 
 if __name__ == "__main__":
-    # Parse command line arguments
-    if len(sys.argv) > 1:
-        # Run specific test
-        run_specific_test(sys.argv[1])
-    else:
-        # Run all tests
-        success = run_tests()
-        sys.exit(0 if success else 1) 
+    sys.exit(main()) 

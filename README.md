@@ -1,66 +1,37 @@
-# Adaptive Crypto Trading Bot
+# Trading Bot
 
-An advanced, adaptive cryptocurrency trading bot with machine learning capabilities, comprehensive backtesting, and flexible strategy implementation.
+A sophisticated algorithmic trading bot for cryptocurrency markets with support for multiple strategies, exchanges, and risk management techniques.
 
-## Features
+## Overview
 
-- **Multi-Exchange Support**: Trade on Binance and other exchanges (via CCXT)
-- **Multiple Trading Strategies**: From classic technical indicators to machine learning models
-- **Risk Management**: Advanced position sizing, stop-loss and take-profit management
-- **Real-time and Paper Trading**: Test strategies in a risk-free environment
-- **Comprehensive Backtesting**: Test strategies against historical data
-- **Strategy Optimization**: Find optimal parameters for any strategy
-- **Data Collection & Storage**: Efficiently store and manage market data
-- **Machine Learning Integration**: Enhance strategies with predictive models
-- **Web API & Dashboard**: Monitor and control your bot through a web interface
-- **Modular Architecture**: Easily extend with new exchanges, strategies, or features
-- **Detailed Reporting**: Track performance with detailed metrics and visualizations
+This Trading Bot is designed to automate cryptocurrency trading using various technical analysis strategies. It supports multiple exchanges, timeframes, and trading pairs, with a focus on modularity and extensibility.
 
-## Architecture
+Key features include:
+- Multiple built-in trading strategies (SMA Crossover, RSI with Bollinger Bands)
+- Support for multiple exchanges
+- Comprehensive risk management
+- Data collection and storage
+- Backtesting capabilities
+- Customizable configuration
 
-The trading bot follows a clean architecture pattern with domain-driven design:
-
-```
-trading_bot/
-├── api/                 # Web API endpoints
-├── backtesting/         # Backtesting engine
-├── core/                # Core functionality and bot logic
-├── data/                # Data management
-│   ├── models/          # Database models
-│   └── repositories/    # Data access layer
-├── exchanges/           # Exchange adapters
-├── ml/                  # Machine learning models
-│   └── models/          # Trained model storage
-├── risk/                # Risk management
-├── strategies/          # Trading strategies
-│   ├── indicators/      # Technical indicators
-│   └── patterns/        # Chart patterns
-└── utils/               # Utility functions
-```
-
-## Getting Started
+## Installation
 
 ### Prerequisites
-
-- Python 3.8 or later
+- Python 3.8 or higher
 - pip (Python package manager)
-- Optional: TA-Lib (for technical analysis)
 
-### Installation
+### Setup
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/adaptive-crypto-trading-bot.git
-   cd adaptive-crypto-trading-bot
+   git clone https://github.com/yourusername/Trading_Bot.git
+   cd Trading_Bot
    ```
 
 2. Create and activate a virtual environment:
    ```bash
    python -m venv .venv
-   # On Windows
-   .venv\Scripts\activate
-   # On Unix or MacOS
-   source .venv/bin/activate
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
 3. Install dependencies:
@@ -68,120 +39,127 @@ trading_bot/
    pip install -r requirements.txt
    ```
 
-4. (Optional) Install TA-Lib:
-   - Windows: `pip install https://download.lfd.uci.edu/pythonlibs/archived/TA_Lib-0.4.24-cp310-cp310-win_amd64.whl`
-   - macOS: `brew install ta-lib && pip install ta-lib`
-   - Linux: Install via package manager (e.g., `apt-get install ta-lib`) then `pip install ta-lib`
-
-### Configuration
-
-1. Create a configuration file:
+4. Create a configuration file:
    ```bash
    cp config.yaml.example config.yaml
    ```
 
-2. Edit the configuration file with your exchange API keys and preferred settings.
+5. Edit the configuration file with your exchange API keys and strategy parameters.
 
-### Running
+## Configuration
 
-#### Command-line Interface
+The bot is configured using a YAML file located at `config.yaml`. This file contains:
 
-Run the bot with the CLI:
+- Exchange API credentials
+- Strategy parameters
+- Risk management settings
+- Logging configuration
 
-```bash
-python -m trading_bot --mode=paper --config=config.yaml --exchange=binance --symbols=BTC/USDT,ETH/USDT --strategy=sma_crossover
+Example configuration:
+
+```yaml
+exchanges:
+  binance:
+    api_key: "your_api_key"
+    api_secret: "your_api_secret"
+    test_mode: true
+
+strategies:
+  sma_crossover:
+    short_window: 10
+    long_window: 30
+    
+risk_management:
+  max_position_size: 0.1  # 10% of available balance
+  stop_loss_pct: 0.02     # 2% stop loss
+  take_profit_pct: 0.05   # 5% take profit
 ```
 
-Available modes:
-- `live`: Live trading with real funds
-- `paper`: Paper trading (simulated with real market data)
-- `backtest`: Backtesting against historical data
-- `optimize`: Optimize strategy parameters
-- `web`: Start the web dashboard and API
+## Usage
 
-#### Web Dashboard
+### Running the Bot
 
-Start the web dashboard:
+To start the bot with the default configuration:
 
 ```bash
-python -m trading_bot --mode=web --port=8080
+python main.py
 ```
 
-Then open your browser and navigate to `http://localhost:8080`.
-
-## Trading Strategies
-
-### Built-in Strategies
-
-- **SMA Crossover**: Simple Moving Average crossover strategy
-- **RSI**: Relative Strength Index strategy
-- **MACD**: Moving Average Convergence Divergence strategy
-- **Bollinger Bands**: Bollinger Bands strategy
-- **ML Prediction**: Machine learning-based prediction strategy
-
-### Creating Custom Strategies
-
-Create a new strategy by inheriting from the base Strategy class:
-
-```python
-from trading_bot.strategies.base import Strategy
-
-class MyCustomStrategy(Strategy):
-    def __init__(self, **kwargs):
-        super().__init__(name="MyCustomStrategy", **kwargs)
-        # Initialize strategy-specific parameters
-        
-    def calculate_indicators(self, df):
-        # Calculate indicators on the DataFrame
-        return df
-        
-    def generate_signal(self, df):
-        # Generate buy/sell signals
-        return signal
-```
-
-## Backtesting
-
-Backtest a strategy against historical data:
+With specific parameters:
 
 ```bash
-python -m trading_bot --mode=backtest --strategy=sma_crossover --symbols=BTC/USDT --start=2022-01-01 --end=2022-12-31 --timeframe=1h --initial-capital=10000
+python main.py --strategy sma_crossover --symbol BTC/USDT --interval 1h
 ```
 
-The backtesting results will be saved to the `results/` directory.
+### Command Line Arguments
 
-## Optimization
+- `--strategy`: Trading strategy to use (default: sma_crossover)
+- `--symbol`: Trading pair (default: BTC/USDT)
+- `--interval`: Timeframe (default: 1h)
+- `--exchange`: Exchange to use (default: binance)
+- `--config`: Path to configuration file (default: config.yaml)
+- `--test`: Run in test mode without executing real trades (default: True)
 
-Optimize strategy parameters:
+## Available Strategies
+
+### SMA Crossover
+A simple moving average crossover strategy that generates buy signals when the short-term moving average crosses above the long-term moving average, and sell signals when it crosses below.
+
+Parameters:
+- `short_window`: Period for the short-term moving average
+- `long_window`: Period for the long-term moving average
+
+### RSI with Bollinger Bands
+A strategy that uses the Relative Strength Index (RSI) in combination with Bollinger Bands to identify overbought and oversold conditions.
+
+Parameters:
+- `rsi_period`: Period for RSI calculation
+- `rsi_overbought`: RSI level considered overbought
+- `rsi_oversold`: RSI level considered oversold
+- `bb_period`: Period for Bollinger Bands calculation
+- `bb_std_dev`: Standard deviation multiplier for Bollinger Bands
+
+## Testing
+
+The project includes a comprehensive test suite. To run the tests:
 
 ```bash
-python -m trading_bot --mode=optimize --strategy=sma_crossover --symbols=BTC/USDT --start=2022-01-01 --end=2022-12-31 --timeframe=1h
+python run_tests.py
 ```
 
-The optimization results will be saved to the `results/` directory.
-
-## API Reference
-
-### REST API
-
-The bot provides a REST API for monitoring and control when running in web mode:
-
-- `GET /api/status`: Get the bot status
-- `GET /api/strategies`: List available strategies
-- `GET /api/symbols`: List available trading symbols
-- `GET /api/positions`: List open positions
-- `POST /api/start`: Start the bot
-- `POST /api/stop`: Stop the bot
-- `POST /api/trade`: Create a manual trade
-
-### Webhook API
-
-You can trigger trades via webhooks:
+For more specific test runs:
 
 ```bash
-curl -X POST http://localhost:8080/api/webhook \
-  -H "Content-Type: application/json" \
-  -d '{"strategy":"sma_crossover", "symbol":"BTC/USDT", "action":"buy", "price":50000, "amount":0.1}'
+# Run only unit tests
+python run_tests.py --unit
+
+# Run tests for a specific module
+python run_tests.py --module strategies
+
+# Run a specific test file
+python run_tests.py --file test_sma_crossover.py
+
+# Run tests with coverage report
+python run_tests.py --coverage
+```
+
+See the [Tests README](Tests/README.md) for more details on testing.
+
+## Project Structure
+
+```
+Trading_Bot/
+├── Trading_Bot/           # Main package
+│   ├── core/              # Core functionality
+│   ├── strategies/        # Trading strategies
+│   ├── exchanges/         # Exchange integrations
+│   ├── data/              # Data management
+│   ├── risk/              # Risk management
+│   └── utils/             # Utility functions
+├── Tests/                 # Test suite
+├── config/                # Configuration files
+├── data/                  # Data storage
+└── logs/                  # Log files
 ```
 
 ## Contributing
@@ -196,15 +174,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Disclaimer
 
-This software is for educational purposes only. Do not risk money which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING RESULTS.
-
-## Acknowledgements
-
-- [CCXT](https://github.com/ccxt/ccxt) for exchange connectivity
-- [pandas](https://pandas.pydata.org/) for data manipulation
-- [scikit-learn](https://scikit-learn.org/) for machine learning capabilities
-- [TA-Lib](https://ta-lib.org/) for technical analysis indicators 
+This software is for educational purposes only. Do not risk money which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING RESULTS. 

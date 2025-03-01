@@ -12,6 +12,7 @@ This file documents knowledge gained during the development and refactoring of t
 - Abstract base classes require implementation of all abstract methods, even if they're not used in tests
 - Factory pattern provides a clean way to create different implementations of the same interface
 - Centralized configuration management simplifies access to settings across the application
+- Symbolic links (like the 'bot' directory linking to 'Trading_Bot') can maintain backward compatibility without code duplication
 
 ## Trading Best Practices
 
@@ -86,6 +87,9 @@ This file documents knowledge gained during the development and refactoring of t
 - Systematic approach to fixing tests (read implementation, understand test, fix mismatch) is more efficient than trial and error
 - Implementing tests for new components before or alongside implementation ensures better coverage
 - Factory patterns simplify testing by allowing easy creation of different implementations
+- Keeping temporary fix scripts (like fix_*.py) can lead to clutter over time; clean them up once fixes are properly integrated
+- Regular project maintenance should include removing temporary scripts and duplicate files
+- When using symlinks (like bot → Trading_Bot), be aware that they create "duplicate" files in file listings but not on disk
 
 ## Technical Insights
 
@@ -336,4 +340,18 @@ This file documents knowledge gained during the development and refactoring of t
 - Periodically audit the project for redundant files, especially after major refactoring or bug fixing cycles
 - Test files with alternative implementations (like test_config_fixed.py) should eventually be merged back into the main test files
 - Keep a comprehensive changelog that documents cleanup activities to help team members understand what was removed and why
-- Document knowledge gained during cleanup in a knowledge base to prevent future accumulation of similar technical debt 
+- Document knowledge gained during cleanup in a knowledge base to prevent future accumulation of similar technical debt
+
+## Project Maintenance
+
+- Regularly clean up temporary scripts and utilities once they've served their purpose
+- Use tools like `find` to identify potential duplicate or deprecated files
+- Keep project structure clean by removing temporary files immediately after their use
+- Document the purpose of utility scripts to make it clear when they can be safely removed
+- Consider using version control branches for experimental changes rather than creating separate "fix" scripts
+- Run tests after cleanup to ensure no dependencies were accidentally removed
+- Use symbolic links cautiously as they can create apparent duplication in directory listings
+- Monitor test directory structure for potential test file duplication
+- Be consistent in test file naming to help identify related tests (e.g., test_*.py, test_*_bva.py, pytest_*.py)
+- When fixing tests, integrate the fixes directly rather than creating separate fixed versions
+- Maintain a clear distinction between utility scripts (to keep) and temporary fix scripts (to eventually remove) 
