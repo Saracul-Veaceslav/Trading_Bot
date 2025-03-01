@@ -80,9 +80,11 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
                 break
     
     # Load configuration from file if provided or found
+    file_config = {}
     if config_path:
         try:
             file_config = _load_config_file(config_path)
+            
             # Deep merge configurations
             _deep_merge(config, file_config)
             logger.info(f"Loaded configuration from {config_path}")
@@ -94,7 +96,19 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     env_config = _load_from_env()
     _deep_merge(config, env_config)
     
-    return config
+    # Create a final copy to ensure we return a fresh dictionary
+    final_config = {}
+    for key, value in config.items():
+        # Special handling for symbols to ensure it's always a list
+        if key == 'symbols':
+            if isinstance(value, str):
+                final_config[key] = [value]
+            else:
+                final_config[key] = value
+        else:
+            final_config[key] = value
+    
+    return final_config
 
 def _load_config_file(config_path: str) -> Dict[str, Any]:
     """
@@ -113,14 +127,21 @@ def _load_config_file(config_path: str) -> Dict[str, Any]:
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
     
+    config = {}
     with open(config_path, 'r') as f:
         # Determine file type based on extension
         if config_path.endswith('.json'):
-            return json.load(f)
+            config = json.load(f)
         elif config_path.endswith(('.yaml', '.yml')):
-            return yaml.safe_load(f)
+            config = yaml.safe_load(f)
         else:
             raise ValueError(f"Unsupported configuration file format: {config_path}")
+    
+    # Ensure symbols is a list (if single string, convert to list)
+    if 'symbols' in config and isinstance(config['symbols'], str):
+        config['symbols'] = [config['symbols']]
+        
+    return config
 
 def _load_from_env() -> Dict[str, Any]:
     """
@@ -232,9 +253,23 @@ def validate_config(config: Dict[str, Any]) -> None:
         if field not in config:
             raise ConfigurationError(f"Missing required configuration field: {field}")
     
+    # Validate exchange
+    exchange = config.get('exchange', '')
+    if isinstance(exchange, str):
+        if not exchange.strip():
+            raise ConfigurationError("Exchange cannot be empty")
+    elif isinstance(exchange, dict):
+        if 'name' not in exchange or not exchange.get('name', '').strip():
+            raise ConfigurationError("Exchange name cannot be empty when using object format")
+    
     # Validate that symbols is a list
-    if not isinstance(config.get('symbols', []), list):
+    symbols = config.get('symbols', [])
+    if not isinstance(symbols, list):
         raise ConfigurationError("Configuration field 'symbols' must be a list")
+    
+    # Validate that symbols list is not empty
+    if len(symbols) == 0:
+        raise ConfigurationError("Symbols list cannot be empty")
     
     # Validate risk parameters if present
     risk = config.get('risk', {})

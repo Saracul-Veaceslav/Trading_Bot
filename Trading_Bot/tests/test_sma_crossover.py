@@ -381,7 +381,7 @@ def test_calculate_indicators_with_insufficient_data(strategy):
     Scenario: Calculate indicators with insufficient data
         Given a DataFrame with fewer than min_required_candles data points
         When calculate_indicators is called
-        Then it should return the DataFrame without complete SMA calculations
+        Then it should return the DataFrame without adding SMA columns
     """
     # Create data with fewer than min_required_candles data points
     min_candles = strategy.min_required_candles
@@ -401,12 +401,16 @@ def test_calculate_indicators_with_insufficient_data(strategy):
     # Calculate indicators
     result_df = strategy.calculate_indicators(df)
     
-    # Check that required columns were added but the long SMA will be incomplete
-    assert 'short_sma' in result_df.columns
-    assert 'long_sma' in result_df.columns
+    # Check that the SMA columns were not added due to insufficient data
+    assert 'short_sma' not in result_df.columns
+    assert 'long_sma' not in result_df.columns
     
-    # Verify the long SMA for the last row is NaN due to insufficient data
-    assert pd.isna(result_df['long_sma'].iloc[-1])
+    # Verify the original columns are still there
+    assert 'timestamp' in result_df.columns
+    assert 'close' in result_df.columns
+    
+    # Verify the dataframe shape is unchanged
+    assert len(result_df) == insufficient_candles
 
 
 def test_generate_signal_with_nan_values():

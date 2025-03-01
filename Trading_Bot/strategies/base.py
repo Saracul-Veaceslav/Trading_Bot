@@ -6,10 +6,50 @@ All strategy implementations should inherit from the Strategy abstract base clas
 """
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Protocol, Type, Union
 import pandas as pd
 import numpy as np
 from datetime import datetime
+
+from bot.utils.logger import get_strategy_logger
+
+
+class StrategyProtocol(Protocol):
+    """Protocol defining the interface for trading strategies."""
+    
+    def calculate_signal(self, data: pd.DataFrame) -> int:
+        """
+        Calculate trading signal from data.
+        
+        Args:
+            data: DataFrame containing market data
+            
+        Returns:
+            int: Signal value (1=buy, -1=sell, 0=hold)
+        """
+        ...
+    
+    def get_parameters(self) -> Dict[str, Any]:
+        """
+        Get strategy parameters.
+        
+        Returns:
+            Dict[str, Any]: Strategy parameters
+        """
+        ...
+    
+    def set_parameters(self, parameters: Dict[str, Any]) -> bool:
+        """
+        Set strategy parameters.
+        
+        Args:
+            parameters: Dictionary of parameter values
+            
+        Returns:
+            bool: True if parameters were set successfully, False otherwise
+        """
+        ...
+
 
 class Strategy(ABC):
     """
@@ -19,16 +59,22 @@ class Strategy(ABC):
     the required abstract methods.
     """
     
-    def __init__(self, name: str = "BaseStrategy"):
+    # Signal constants
+    BUY = 1
+    SELL = -1
+    HOLD = 0
+    
+    def __init__(self, name: str = "BaseStrategy", **kwargs):
         """
         Initialize the strategy.
         
         Args:
             name: Name of the strategy
+            **kwargs: Additional keyword arguments
         """
         self.name = name
-        self.logger = logging.getLogger(f'trading_bot.strategies.{name.lower().replace(" ", "_")}')
-        self.error_logger = self.logger  # Default to same logger
+        self.logger = kwargs.get('trading_logger') or get_strategy_logger(name)
+        self.error_logger = kwargs.get('error_logger') or self.logger
         self.parameters = {}
         self.metadata = {
             'name': name,
@@ -50,72 +96,86 @@ class Strategy(ABC):
             self.logger = trading_logger
         if error_logger:
             self.error_logger = error_logger
-            
+    
     def log_info(self, message: str) -> None:
         """
         Log an informational message.
         
         Args:
-            message: Message to log
+            message: The message to log
         """
-        self.logger.info(f"[{self.name}] {message}")
+        self.logger.info(message)
     
     def log_warning(self, message: str) -> None:
         """
         Log a warning message.
         
         Args:
-            message: Message to log
+            message: The message to log
         """
-        self.logger.warning(f"[{self.name}] {message}")
+        self.logger.warning(message)
     
     def log_error(self, message: str) -> None:
         """
         Log an error message.
         
         Args:
-            message: Message to log
+            message: The message to log
         """
-        self.error_logger.error(f"[{self.name}] {message}")
+        self.error_logger.error(message)
     
-    @abstractmethod
     def calculate_indicators(self, data: pd.DataFrame) -> pd.DataFrame:
         """
-        Calculate strategy indicators on the input data.
+        Calculate technical indicators needed for the strategy.
+        Default implementation returns the data unchanged.
         
         Args:
-            data: DataFrame with market data
+            data: DataFrame containing market data
             
         Returns:
-            DataFrame with added indicators
+            DataFrame: Data with added indicators
         """
-        pass
+        return data
     
-    @abstractmethod
     def generate_signal(self, data: pd.DataFrame) -> int:
         """
-        Generate trading signal from the input data.
+        Generate trading signal based on indicators.
+        Default implementation returns HOLD (0).
         
         Args:
-            data: DataFrame with market data and indicators
+            data: DataFrame with indicators
             
         Returns:
-            int: Trading signal (1 for buy, -1 for sell, 0 for hold)
+            int: Signal value (1=buy, -1=sell, 0=hold)
         """
-        pass
+        return self.HOLD
     
     def calculate_signal(self, data: pd.DataFrame) -> int:
         """
-        Calculate trading signal (alias for generate_signal).
-        This method is preserved for backward compatibility.
+        Calculate trading signal from data.
         
         Args:
-            data: DataFrame with market data
+            data: DataFrame containing market data
             
         Returns:
-            int: Trading signal (1 for buy, -1 for sell, 0 for hold)
+            int: Signal value (1=buy, -1=sell, 0=hold)
         """
-        return self.generate_signal(data)
+        try:
+            # Check if we have enough data
+            if not self.validate_data(data):
+                self.log_warning(f"Insufficient data for signal calculation. Required: {self.get_min_data_points()}, actual: {len(data)}.")
+                return self.HOLD
+                
+            # Calculate indicators
+            data_with_indicators = self.calculate_indicators(data)
+            
+            # Generate signal
+            signal = self.generate_signal(data_with_indicators)
+            
+            return signal
+        except Exception as e:
+            self.log_error(f"Error calculating signal: {str(e)}")
+            return self.HOLD
     
     def get_parameters(self) -> Dict[str, Any]:
         """
@@ -126,103 +186,188 @@ class Strategy(ABC):
         """
         return self.parameters.copy()
     
-    @abstractmethod
     def set_parameters(self, parameters: Dict[str, Any]) -> bool:
         """
         Set strategy parameters.
+        Default implementation simply updates the parameters dictionary.
         
         Args:
-            parameters: Strategy parameters
+            parameters: Dictionary of parameter values
             
         Returns:
             bool: True if parameters were set successfully, False otherwise
         """
-        pass
+        try:
+            self.parameters.update(parameters)
+            return True
+        except Exception as e:
+            self.log_error(f"Error setting parameters: {str(e)}")
+            return False
     
     def get_signal_meaning(self, signal_value: int) -> str:
         """
         Get the meaning of a signal value.
         
         Args:
-            signal_value: Signal value (1, -1, 0)
+            signal_value: Signal value (1=buy, -1=sell, 0=hold)
             
         Returns:
-            str: Signal meaning ('buy', 'sell', 'hold')
+            str: Signal meaning
         """
-        if signal_value == 1:
+        if signal_value == self.BUY:
             return 'buy'
-        elif signal_value == -1:
+        elif signal_value == self.SELL:
             return 'sell'
-        else:
+        elif signal_value == self.HOLD:
             return 'hold'
+        else:
+            return 'unknown'
     
     def calculate_signals_for_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Calculate signals for an entire DataFrame.
+        Calculate signals for each row in a DataFrame.
         
         Args:
-            df: DataFrame with market data
+            df: DataFrame containing market data
             
         Returns:
-            DataFrame with signals column added
+            DataFrame: Data with added 'signal' column
         """
-        if df is None or df.empty:
-            self.log_warning("Empty DataFrame provided for signal calculation")
-            return None
+        if len(df) == 0:
+            self.log_warning("Empty DataFrame provided to calculate_signals_for_dataframe.")
+            return df
+            
+        # Make a copy to avoid modifying the original
+        result_df = df.copy()
         
         try:
-            # Calculate indicators
-            result_df = self.calculate_indicators(df.copy())
+            # Calculate indicators for the entire dataframe
+            result_df = self.calculate_indicators(result_df)
             
-            if result_df is None:
-                return None
+            # Initialize the signal column
+            result_df['signal'] = self.HOLD
             
-            # Initialize signal column
-            result_df['signal'] = 0  # hold
+            # Check if we have enough data for the minimum window
+            min_points = self.get_min_data_points()
             
-            # Calculate signals row by row
-            for i in range(len(result_df)):
-                # Use rolling window of data up to this point for signal generation
-                window = result_df.iloc[:i+1]
+            if len(result_df) < min_points:
+                self.log_warning(f"Insufficient data for signal calculation in calculate_signals_for_dataframe. Required: {min_points}, actual: {len(result_df)}.")
+                return result_df
+            
+            # Calculate signals only from the point where we have enough data
+            # This is a vectorized implementation for efficiency
+            for i in range(min_points - 1, len(result_df)):
+                # Get the window of data needed for this signal
+                window = result_df.iloc[max(0, i - min_points + 1):i + 1]
                 
-                # Only generate signals after we have enough data
-                if i >= self.get_min_data_points():
-                    try:
-                        # Generate signal for this data point
-                        signal = self.generate_signal(window)
-                        result_df.loc[result_df.index[i], 'signal'] = signal
-                    except Exception as e:
-                        self.log_error(f"Error generating signal at row {i}: {e}")
+                # Generate the signal for this window
+                result_df.loc[result_df.index[i], 'signal'] = self.generate_signal(window)
             
             return result_df
-            
         except Exception as e:
-            self.log_error(f"Error calculating signals for DataFrame: {e}")
-            return None
+            self.log_error(f"Error calculating signals for dataframe: {str(e)}")
+            return df
     
     def get_min_data_points(self) -> int:
         """
-        Get the minimum number of data points required for the strategy.
-        Override this method in subclasses to specify the minimum number.
+        Get the minimum number of data points required for this strategy.
         
         Returns:
             int: Minimum number of data points
         """
-        return 1  # Base implementation requires at least one data point
+        return 1
     
-    @abstractmethod
     def backtest(self, data: pd.DataFrame, initial_capital: float = 10000.0) -> Dict[str, Any]:
         """
-        Run strategy backtest on historical data.
+        Run a backtest of the strategy on historical data.
         
         Args:
-            data: DataFrame with historical market data
+            data: DataFrame containing market data
             initial_capital: Initial capital for the backtest
             
         Returns:
-            Dict[str, Any]: Backtest results including returns, drawdown, etc.
+            Dict[str, Any]: Backtest results
         """
-        pass
+        # Default implementation with simple metrics
+        try:
+            # Calculate signals
+            signals_df = self.calculate_signals_for_dataframe(data)
+            
+            # Initialize backtest variables
+            capital = initial_capital
+            position = 0  # 0=no position, 1=long position
+            entry_price = 0.0
+            trades = []
+            
+            # Run backtest
+            for i in range(1, len(signals_df)):
+                current_price = signals_df.iloc[i]['close']
+                signal = signals_df.iloc[i]['signal']
+                
+                # Check for trade entry
+                if signal == self.BUY and position == 0:
+                    # Enter long position
+                    entry_price = current_price
+                    position = 1
+                    trade = {
+                        'type': 'buy',
+                        'time': signals_df.index[i],
+                        'price': entry_price,
+                        'capital': capital
+                    }
+                    trades.append(trade)
+                
+                # Check for trade exit
+                elif (signal == self.SELL or signal == self.HOLD) and position == 1:
+                    # Exit long position
+                    exit_price = current_price
+                    pnl = (exit_price - entry_price) / entry_price
+                    capital *= (1 + pnl)
+                    position = 0
+                    trade = {
+                        'type': 'sell',
+                        'time': signals_df.index[i],
+                        'price': exit_price,
+                        'pnl': pnl,
+                        'capital': capital
+                    }
+                    trades.append(trade)
+            
+            # Close any open positions at the end
+            if position == 1:
+                exit_price = signals_df.iloc[-1]['close']
+                pnl = (exit_price - entry_price) / entry_price
+                capital *= (1 + pnl)
+                trade = {
+                    'type': 'sell',
+                    'time': signals_df.index[-1],
+                    'price': exit_price,
+                    'pnl': pnl,
+                    'capital': capital
+                }
+                trades.append(trade)
+            
+            # Calculate backtest metrics
+            returns = capital / initial_capital - 1
+            
+            return {
+                'initial_capital': initial_capital,
+                'final_capital': capital,
+                'returns': returns,
+                'trades': trades,
+                'signals': signals_df
+            }
+            
+        except Exception as e:
+            self.log_error(f"Error during backtest: {str(e)}")
+            return {
+                'error': str(e),
+                'initial_capital': initial_capital,
+                'final_capital': initial_capital,
+                'returns': 0.0,
+                'trades': [],
+                'signals': data
+            }
     
     def get_metadata(self) -> Dict[str, Any]:
         """
@@ -238,7 +383,7 @@ class Strategy(ABC):
         Set strategy metadata.
         
         Args:
-            metadata: Strategy metadata
+            metadata: Dictionary of metadata values
         """
         self.metadata.update(metadata)
     
@@ -263,24 +408,21 @@ class Strategy(ABC):
     
     def validate_data(self, data: pd.DataFrame) -> bool:
         """
-        Validate that the input data has the required columns.
+        Validate data for use with this strategy.
         
         Args:
-            data: DataFrame with market data
+            data: DataFrame to validate
             
         Returns:
             bool: True if data is valid, False otherwise
         """
-        if data is None or data.empty:
-            self.log_warning("Empty DataFrame provided for validation")
+        required_columns = ['open', 'high', 'low', 'close', 'volume']
+        
+        if len(data) < self.get_min_data_points():
             return False
-        
-        required_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
-        
-        # Check if all required columns are present
-        for column in required_columns:
-            if column not in data.columns:
-                self.log_warning(f"Missing required column: {column}")
+            
+        for col in required_columns:
+            if col not in data.columns:
                 return False
-        
+                
         return True 

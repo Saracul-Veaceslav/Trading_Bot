@@ -66,6 +66,7 @@ class SMAcrossover(Strategy):
         # Check if we have enough data
         if len(df) < self.min_required_candles:
             self.log_warning(f"Not enough data for SMA calculation. Need at least {self.min_required_candles} candles.")
+            # Don't add columns if there's insufficient data
             return df
         
         try:
@@ -323,18 +324,25 @@ class SMAcrossover(Strategy):
             bool: True if parameters were set successfully, False otherwise
         """
         try:
-            if 'short_window' in parameters:
-                self.short_window = parameters['short_window']
+            # Store original values in case validation fails
+            original_short_window = self.short_window
+            original_long_window = self.long_window
             
-            if 'long_window' in parameters:
-                self.long_window = parameters['long_window']
+            # Extract new parameters
+            new_short_window = parameters.get('short_window', self.short_window)
+            new_long_window = parameters.get('long_window', self.long_window)
+            
+            # Validate parameters before setting them
+            if new_short_window >= new_long_window:
+                self.log_warning(f"Invalid parameters: short_window ({new_short_window}) must be less than long_window ({new_long_window})")
+                return False
+            
+            # If validation passes, set the parameters
+            self.short_window = new_short_window
+            self.long_window = new_long_window
             
             # Update min required candles
             self.min_required_candles = self.long_window + 1
-            
-            # Validate parameters
-            if self.short_window >= self.long_window:
-                raise ValueError(f"Short window ({self.short_window}) must be less than long window ({self.long_window})")
             
             self.log_info(f"Updated parameters: short_window={self.short_window}, long_window={self.long_window}")
             return True

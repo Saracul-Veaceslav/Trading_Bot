@@ -22,6 +22,19 @@ All notable changes to this project will be documented in this file.
 - Added tests for various configuration formats and validation scenarios
 - Added tests for various edge cases in strategy execution
 - Added tests for error handling in configuration loading and validation
+- Implemented enhanced data manager with caching support for improved performance
+- Added RSI Bollinger Bands strategy combining RSI and Bollinger Bands indicators
+- Created comprehensive position sizing module with multiple sizing strategies:
+  - Fixed risk position sizing based on account balance and stop loss
+  - Volatility-based position sizing that adjusts for market conditions
+  - Kelly Criterion position sizing using win probability and win/loss ratio
+- Added factory pattern for position sizer creation and configuration
+- Implemented comprehensive test suites for new components
+- Enhanced data manager with caching mechanisms
+- RSI Bollinger Bands strategy implementation
+- Position sizing module with Kelly criterion
+- Comprehensive test suite for new components
+- Fixed test versions for configuration tests
 
 ### Changed
 - Refactored project to follow clean architecture principles
@@ -39,6 +52,14 @@ All notable changes to this project will be documented in this file.
 - Modified exchange tests to properly set up mocking 
 - Enhanced Data Manager tests with proper temporary directory handling
 - Updated Strategy Executor tests to handle different method implementations
+- Improved configuration management with centralized ConfigManager class
+- Enhanced logging system with specialized loggers for different components
+- Refactored Strategy base class for better interface and fewer abstract methods
+- Updated pandas indexing to use .loc instead of iloc for better compatibility with future pandas versions
+- Improved error handling in exchange integration
+- Enhanced strategy base class with better parameter validation
+- Updated documentation for new features
+- Refactored data processing pipeline for better performance
 
 ### Fixed
 - Fixed issues with data handling and pandas warnings
@@ -56,6 +77,22 @@ All notable changes to this project will be documented in this file.
 - Fixed path handling in test environment
 - Fixed assertion flexibility to accommodate different return patterns
 - Fixed mock setup and teardown in unit tests
+- Improved error handling in data manager with proper exception handling
+- Enhanced data validation in strategy implementations
+- Fixed potential race conditions in directory creation
+- Better error handling in data manager
+- Improved compatibility of tests with implementation changes
+- Enhanced data validation in strategy implementations
+- Fixed RSI Bollinger strategy tests by properly mocking the Strategy base class
+- Fixed position sizer tests by correcting parameter handling and addressing floating-point precision issues
+- Resolved pandas SettingWithCopyWarning by using proper indexing methods
+- Resolved compatibility issues in test suite
+- Fixed SMA Crossover strategy to handle insufficient data gracefully
+- Improved parameter validation in SMA Crossover strategy
+- Added proper handling for floating-point precision in position sizer tests
+- Addressed pandas chained assignment warnings
+- Fixed configuration loading and validation to handle different symbol formats
+- Created alternative test implementations for configuration tests with different expectations
 
 ## [0.1.0] - 2023-09-15
 
