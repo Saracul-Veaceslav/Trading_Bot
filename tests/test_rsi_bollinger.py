@@ -45,8 +45,8 @@ class MockStrategy:
         self.metadata = metadata
 
 # Mock the Strategy base class before importing the RSIBollingerStrategy
-with patch('bot.strategies.base.Strategy', MockStrategy):
-    from bot.strategies.rsi_bollinger import RSIBollingerStrategy
+with patch('trading_bot.strategies.base.Strategy', MockStrategy):
+    from trading_bot.strategies.rsi_bollinger import RSIBollingerStrategy
 
 class TestRSIBollingerStrategy(unittest.TestCase):
     """Test case for the RSI Bollinger Bands strategy."""

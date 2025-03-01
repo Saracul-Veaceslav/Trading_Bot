@@ -12,8 +12,8 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 from datetime import datetime, timedelta
 
-from bot.strategy_executor import StrategyExecutor
-from bot.config.settings import SETTINGS
+from trading_bot.core.strategy_executor import StrategyExecutor
+from trading_bot.config.settings import SETTINGS
 
 
 class TestStrategyExecutor(unittest.TestCase):

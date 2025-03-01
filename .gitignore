@@ -41,3 +41,18 @@ data/
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Project specific
+data/historical/
+config/credentials.yaml
+*.log
+Trading_Bot_backup/
+
+# Migration specific
+import_changes.log

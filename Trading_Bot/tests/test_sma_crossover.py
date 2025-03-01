@@ -10,7 +10,7 @@ import numpy as np
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock
 
-from Trading_Bot.strategies.sma_crossover import SMAcrossover
+from trading_bot.strategies.sma_crossover import SMAcrossover
 
 
 @pytest.fixture

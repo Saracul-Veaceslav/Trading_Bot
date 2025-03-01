@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional, Union, List
 import logging
 from abc import ABC, abstractmethod
 
-from bot.utils.logger import get_logger
+from trading_bot.utils.logger import get_logger
 
 logger = get_logger('trading_bot.risk.position_sizer')
 

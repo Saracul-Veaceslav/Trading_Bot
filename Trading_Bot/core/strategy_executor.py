@@ -5,7 +5,7 @@ import logging
 import time
 import importlib
 from datetime import datetime
-from Trading_Bot.config.settings import SETTINGS, STRATEGY_PARAMS
+from trading_bot.config.settings import SETTINGS, STRATEGY_PARAMS
 
 class StrategyExecutor:
     """

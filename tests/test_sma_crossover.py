@@ -16,8 +16,8 @@ sys.modules['Trading_Bot.strategies.base'] = tests.test_utils.mock_strategy
 sys.modules['bot.strategies.base'] = tests.test_utils.mock_strategy
 
 # Now import SMAcrossover after the monkey patching
-from bot.strategies.sma_crossover import SMAcrossover
-from bot.config.settings import STRATEGY_PARAMS
+from trading_bot.strategies.sma_crossover import SMAcrossover
+from trading_bot.config.settings import STRATEGY_PARAMS
 
 
 class TestSMAcrossover(unittest.TestCase):

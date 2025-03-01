@@ -11,8 +11,8 @@ from unittest.mock import MagicMock, patch, PropertyMock
 import pandas as pd
 from datetime import datetime, timedelta
 
-from bot.exchange import BinanceTestnet
-from bot.config.settings import SETTINGS
+from trading_bot.exchanges.base import BinanceTestnet
+from trading_bot.config.settings import SETTINGS
 
 
 class TestBinanceTestnet(unittest.TestCase):

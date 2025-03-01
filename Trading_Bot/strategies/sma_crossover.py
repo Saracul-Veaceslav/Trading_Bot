@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 from typing import Dict, Any, Optional, Tuple, Union
 
-from Trading_Bot.strategies.base import Strategy
+from trading_bot.strategies.base import Strategy
 
 logger = logging.getLogger('trading_bot.strategies.sma_crossover')
 

@@ -1,4 +1,8 @@
 """
-Strategies package for the Trading Bot.
-Contains all trading strategy implementations.
+Trading strategies for the Trading Bot framework.
+
+This module contains various trading strategies that can be used with the bot,
+including technical analysis indicators, machine learning models, and hybrid approaches.
 """
+
+__all__ = []

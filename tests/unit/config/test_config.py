@@ -13,7 +13,7 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 import logging
 
-from Trading_Bot.core.config import (
+from trading_bot.core.config import (
     load_config, 
     save_config, 
     validate_config, 
@@ -660,7 +660,7 @@ def test_load_from_env_with_complex_nested_structure():
         When _load_from_env is called
         Then it should correctly build the nested structure
     """
-    from Trading_Bot.core.config import _load_from_env
+    from trading_bot.core.config import _load_from_env
     
     # Set up environment variables with deep nesting
     env_vars = {
@@ -693,7 +693,7 @@ def test_deep_merge_with_conflicting_types():
         When _deep_merge is called
         Then it should overwrite the target value with the source value
     """
-    from Trading_Bot.core.config import _deep_merge
+    from trading_bot.core.config import _deep_merge
     
     # Test scenarios where types conflict
     target = {

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
 ### Added
@@ -39,6 +42,18 @@ All notable changes to this project will be documented in this file.
 - Added a comprehensive test runner script with support for different test categories
 - Created detailed README files for both the project and test suite
 - Organized tests into unit and integration categories for better maintainability
+- Created comprehensive refactoring plan with detailed analysis of:
+  - Code organization and structure improvements
+  - Code quality and best practices enhancements
+  - Performance and scalability optimizations
+- Created comprehensive migration guide for standardizing package structure
+- Created scripts for automating import updates during migration
+- Added module-specific exception classes for better error handling
+- Created proper Python package configuration with pyproject.toml
+- Created setup.py for backwards compatibility with older tools
+- Added py.typed marker file for better type checking support
+- Created migration scripts for automated code reorganization
+- Added detailed README updates explaining the new package structure
 
 ### Changed
 - Refactored project to follow clean architecture principles
@@ -69,6 +84,13 @@ All notable changes to this project will be documented in this file.
 - Reorganized tests into a structured directory hierarchy based on modules
 - Updated project README with comprehensive documentation on features, usage, and testing
 - Created a dedicated test runner script to simplify running tests
+- Restructured project to use a standardized package structure
+- Renamed inconsistent mixed-case imports to standard lowercase with underscores
+- Consolidated duplicated code from symlinked directories
+- Standardized error handling with hierarchy of exceptions
+- Updated build configuration to modern standards with pyproject.toml
+- Improved package documentation with clear migration instructions
+- Enhanced module organization following Python best practices
 
 ### Fixed
 - Fixed issues with data handling and pandas warnings
@@ -103,13 +125,35 @@ All notable changes to this project will be documented in this file.
 - Fixed configuration loading and validation to handle different symbol formats
 - Created alternative test implementations for configuration tests with different expectations
 - Resolved test organization issues by creating a structured test directory hierarchy
+- Resolved symbolic link duplication between Trading_Bot and bot directories
+- Fixed inconsistent import patterns that caused test discovery issues
+- Standardized directory structure to improve maintainability
+- Addressed namespace conflicts from duplicate module structures
+- Fixed SMA Crossover strategy tests to correctly match the implementation's column naming ('short_sma' and 'long_sma')
+- Fixed buy and sell signal tests to properly set up crossover conditions for testing signal generation
+- Fixed error handling tests in SMA Crossover strategy to properly reset mock loggers
+- Fixed variable names in the sma_strategy fixture to correctly use trading_logger and error_logger
 
-## [0.1.0] - 2023-09-15
+## [0.2.0] - 2023-08-15
 
 ### Added
-- Initial release of the Trading Bot
-- Basic SMA crossover strategy implementation
-- Connectivity to Binance exchange
-- Simple backtesting capabilities
-- Basic command-line interface
-- Unit tests with pytest 
+- Risk management module with position sizing
+- Support for additional technical indicators
+- Multi-exchange support via adapters
+- Comprehensive test suite with unit and integration tests
+
+### Changed
+- Refactored strategy implementation for better modularity
+- Improved data management with optimized storage
+- Enhanced logging system with structured logs
+
+### Fixed
+- Various bug fixes and performance improvements
+
+## [0.1.0] - 2023-04-10
+
+### Added
+- Initial release with basic trading functionality
+- Support for Binance exchange
+- Implementation of SMA crossover strategy
+- Data fetching and basic backtesting capabilities 

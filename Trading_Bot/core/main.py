@@ -18,14 +18,14 @@ try:
 except ImportError:
     TALIB_AVAILABLE = False
 
-from Trading_Bot.config.settings import SETTINGS, TRADINGVIEW_STRATEGIES
-from Trading_Bot.data_manager import DataManager
-from Trading_Bot.exchange import BinanceTestnet
-from Trading_Bot.strategy_executor import StrategyExecutor
+from trading_bot.config.settings import SETTINGS, TRADINGVIEW_STRATEGIES
+from trading_bot.data_manager import DataManager
+from trading_bot.exchange import BinanceTestnet
+from trading_bot.strategy_executor import StrategyExecutor
 
 # Import get_strategy conditionally to avoid import errors
 try:
-    from Trading_Bot.strategies.tradingview_adapter import get_strategy
+    from trading_bot.strategies.tradingview_adapter import get_strategy
 except ImportError as e:
     def get_strategy(strategy_name, parameters=None):
         logging.getLogger('error').error(f"Could not import strategy adapter: {e}")

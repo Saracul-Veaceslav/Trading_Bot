@@ -10,8 +10,8 @@ import numpy as np
 import logging
 from typing import Dict, Any, Optional, Tuple, List, Union
 
-from bot.strategies.base import Strategy
-from bot.utils.logger import get_logger
+from trading_bot.strategies.base import Strategy
+from trading_bot.utils.logger import get_logger
 
 class RSIBollingerStrategy(Strategy):
     """

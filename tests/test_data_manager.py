@@ -15,8 +15,8 @@ import pandas as pd
 import json
 from datetime import datetime, timedelta
 
-from bot.data_manager import DataManager
-from bot.config.settings import SETTINGS
+from trading_bot.data.manager import DataManager
+from trading_bot.config.settings import SETTINGS
 
 
 # Create a mock version of the DataManager for testing

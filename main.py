@@ -1,108 +1,91 @@
-#!/usr/bin/env python
-"""Trading Bot: Entry point for the Binance Testnet trading application."""
+#!/usr/bin/env python3
+"""
+Main entry point for the Trading Bot application.
+"""
 
 import argparse
 import logging
 import sys
 import time
-from pathlib import Path
+from typing import Dict, Any
 
-# Add project root to Python path
-sys.path.insert(0, str(Path(__file__).parent))
+# Import from the new structure
+from trading_bot.config.settings import SETTINGS
+from trading_bot.data.manager import DataManager
+from trading_bot.exchanges.base import BinanceTestnet
+from trading_bot.core.strategy_executor import StrategyExecutor
+from trading_bot.strategies.registry import get_strategy
 
-from bot.exchange import BinanceTestnet
-from bot.strategy_executor import StrategyExecutor
-from bot.data_manager import DataManager
-from bot.config.settings import SETTINGS
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("logs/trading.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger("trading_bot")
 
-
-def setup_logging():
-    """Configure and return trading and error loggers."""
-    Path("logs").mkdir(exist_ok=True)
-    
-    # Trading logger
-    trading_logger = logging.getLogger('trading')
-    trading_logger.setLevel(logging.INFO)
-    
-    # Error logger
-    error_logger = logging.getLogger('errors')
-    error_logger.setLevel(logging.ERROR)
-    
-    # Handlers
-    file_fmt = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    console = logging.StreamHandler()
-    console.setFormatter(file_fmt)
-    
-    # Trading log
-    t_handler = logging.FileHandler('logs/trading.log')
-    t_handler.setFormatter(file_fmt)
-    trading_logger.addHandler(t_handler)
-    trading_logger.addHandler(console)
-    
-    # Error log
-    e_handler = logging.FileHandler('logs/errors.log')
-    e_handler.setFormatter(file_fmt)
-    error_logger.addHandler(e_handler)
-    error_logger.addHandler(console)
-    
-    return trading_logger, error_logger
-
-
-def parse_arguments():
+def parse_args() -> Dict[str, Any]:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description='Trading Bot for Binance Testnet')
-    parser.add_argument('--symbol', type=str, default=SETTINGS['TRADING_PAIR'],
-                        help=f'Trading pair (default: {SETTINGS["TRADING_PAIR"]})')
-    parser.add_argument('--interval', type=str, default=SETTINGS['TIMEFRAME'],
-                        help=f'Candle timeframe (default: {SETTINGS["TIMEFRAME"]})')
-    parser.add_argument('--strategy', type=str, default=SETTINGS['STRATEGY'],
-                        help=f'Trading strategy (default: {SETTINGS["STRATEGY"]})')
+    parser = argparse.ArgumentParser(description='Trading Bot')
     
-    return parser.parse_args()
+    parser.add_argument('--symbol', type=str, default=SETTINGS.get('trading', {}).get('symbol', 'BTC/USDT'),
+                        help='Trading symbol (default: BTC/USDT)')
+    
+    parser.add_argument('--timeframe', type=str, default=SETTINGS.get('trading', {}).get('timeframe', '1h'),
+                        help='Timeframe for analysis (default: 1h)')
+    
+    parser.add_argument('--strategy', type=str, default=SETTINGS.get('trading', {}).get('strategy', 'SMAcrossover'),
+                        help='Trading strategy to use (default: SMAcrossover)')
+    
+    parser.add_argument('--backtest', action='store_true',
+                        help='Run in backtest mode')
+    
+    return vars(parser.parse_args())
 
 
 def main():
-    """Run the trading bot."""
-    args = parse_arguments()
-    trading_logger, error_logger = setup_logging()
+    """Main function to run the trading bot."""
+    args = parse_args()
     
-    trading_logger.info(f"Starting trading bot with {args.symbol} on {args.interval} timeframe")
+    symbol = args['symbol']
+    timeframe = args['timeframe']
+    strategy_name = args['strategy']
+    backtest_mode = args['backtest']
     
-    try:
-        # Initialize components
-        exchange = BinanceTestnet(trading_logger, error_logger)
-        data_manager = DataManager(trading_logger, error_logger)
-        executor = StrategyExecutor(
-            exchange=exchange,
-            data_manager=data_manager,
-            trading_logger=trading_logger,
-            error_logger=error_logger,
-            symbol=args.symbol,
-            timeframe=args.interval,
-            strategy_name=args.strategy
-        )
-        
-        # Create data directory
-        Path("data").mkdir(exist_ok=True)
-        
-        # Bot main loop
-        trading_logger.info("Bot initialized successfully. Starting main loop...")
-        
-        while True:
-            try:
-                executor.execute_iteration()
-                time.sleep(SETTINGS['UPDATE_INTERVAL'])
-            except KeyboardInterrupt:
-                trading_logger.info("Bot stopped by user")
-                break
-            except Exception as e:
-                error_logger.exception(f"Error in main loop: {str(e)}")
-                time.sleep(SETTINGS['ERROR_SLEEP_TIME'])
+    logger.info(f"Starting Trading Bot with {strategy_name} strategy on {symbol} ({timeframe})")
     
-    except Exception as e:
-        error_logger.exception(f"Critical initialization error: {str(e)}")
-        sys.exit(1)
+    # Initialize components
+    exchange = BinanceTestnet()
+    data_manager = DataManager(exchange)
+    strategy = get_strategy(strategy_name)
+    
+    if not strategy:
+        logger.error(f"Strategy '{strategy_name}' not found")
+        return 1
+    
+    executor = StrategyExecutor(exchange, data_manager, strategy)
+    
+    if backtest_mode:
+        logger.info("Running in backtest mode")
+        executor.run_backtest(symbol, timeframe)
+    else:
+        logger.info("Running in live trading mode")
+        try:
+            while True:
+                executor.execute_strategy(symbol, timeframe)
+                logger.info(f"Waiting for next execution cycle ({SETTINGS.get('trading', {}).get('execution_interval', 60)} seconds)")
+                time.sleep(SETTINGS.get('trading', {}).get('execution_interval', 60))
+        except KeyboardInterrupt:
+            logger.info("Trading bot stopped by user")
+        except Exception as e:
+            logger.exception(f"Error in trading loop: {e}")
+            return 1
+    
+    return 0
 
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main()) 

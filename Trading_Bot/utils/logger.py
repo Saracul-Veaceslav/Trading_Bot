@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any
 import sys
 from pathlib import Path
 
-from bot.utils.config_manager import get_config_manager
+from trading_bot.utils.config_manager import get_config_manager
 
 # Get configuration for logging
 config = get_config_manager()

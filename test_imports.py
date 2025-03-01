@@ -17,7 +17,7 @@ if os.getcwd() not in sys.path:
 try:
     # Try importing from bot directory (symbolic link)
     print("\nTrying imports from 'bot' namespace:")
-    import bot
+    import trading_bot
     print("✅ Successfully imported 'bot' package")
 except ImportError as e:
     print(f"❌ Failed to import 'bot' package: {e}")
@@ -25,7 +25,7 @@ except ImportError as e:
 try:
     # Try importing from Trading_Bot directory (actual directory)
     print("\nTrying imports from 'Trading_Bot' namespace:")
-    import Trading_Bot
+    import trading_bot
     print("✅ Successfully imported 'Trading_Bot' package")
 except ImportError as e:
     print(f"❌ Failed to import 'Trading_Bot' package: {e}")
@@ -33,15 +33,15 @@ except ImportError as e:
 try:
     # Try importing specific classes from the actual directory path
     print("\nTrying to import specific classes from actual directory:")
-    from Trading_Bot.strategies.sma_crossover import SMAcrossover
+    from trading_bot.strategies.sma_crossover import SMAcrossover
     print("✅ Successfully imported 'SMAcrossover' class")
-    from Trading_Bot.exchange import BinanceTestnet
+    from trading_bot.exchange import BinanceTestnet
     print("✅ Successfully imported 'BinanceTestnet' class")
-    from Trading_Bot.data_manager import DataManager
+    from trading_bot.data_manager import DataManager
     print("✅ Successfully imported 'DataManager' class")
-    from Trading_Bot.strategy_executor import StrategyExecutor
+    from trading_bot.strategy_executor import StrategyExecutor
     print("✅ Successfully imported 'StrategyExecutor' class")
-    from Trading_Bot.config.settings import SETTINGS
+    from trading_bot.config.settings import SETTINGS
     print("✅ Successfully imported 'SETTINGS'")
 except ImportError as e:
     print(f"❌ Failed to import classes: {e}")

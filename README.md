@@ -1,6 +1,6 @@
 # Trading Bot
 
-A sophisticated algorithmic trading bot for cryptocurrency markets with support for multiple strategies, exchanges, and risk management techniques.
+A flexible cryptocurrency trading bot framework for implementing and testing various trading strategies.
 
 ## Overview
 
@@ -14,10 +14,17 @@ Key features include:
 - Backtesting capabilities
 - Customizable configuration
 
+## 🚨 Important Notice: Package Structure Changes
+
+**As of version 0.2.0, we've refactored the package structure for better maintainability and standardization.**
+
+The package has been renamed from mixed-case `Trading_Bot` to lowercase `trading_bot` following Python conventions.
+For migration instructions, see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md).
+
 ## Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.9 or higher
 - pip (Python package manager)
 
 ### Setup
@@ -34,9 +41,9 @@ Key features include:
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. Install the package in development mode:
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 4. Create a configuration file:
@@ -82,13 +89,19 @@ risk_management:
 To start the bot with the default configuration:
 
 ```bash
-python main.py
+trading-bot
+```
+
+Or directly with Python:
+
+```bash
+python -m trading_bot
 ```
 
 With specific parameters:
 
 ```bash
-python main.py --strategy sma_crossover --symbol BTC/USDT --interval 1h
+trading-bot --strategy sma_crossover --symbol BTC/USDT --interval 1h
 ```
 
 ### Command Line Arguments
@@ -143,23 +156,68 @@ python run_tests.py --file test_sma_crossover.py
 python run_tests.py --coverage
 ```
 
-See the [Tests README](Tests/README.md) for more details on testing.
+See the [Tests README](tests/README.md) for more details on testing.
 
 ## Project Structure
 
 ```
-Trading_Bot/
-├── Trading_Bot/           # Main package
-│   ├── core/              # Core functionality
-│   ├── strategies/        # Trading strategies
-│   ├── exchanges/         # Exchange integrations
-│   ├── data/              # Data management
-│   ├── risk/              # Risk management
-│   └── utils/             # Utility functions
-├── Tests/                 # Test suite
-├── config/                # Configuration files
-├── data/                  # Data storage
-└── logs/                  # Log files
+trading_bot/             # Main package (new standardized structure)
+├── core/                # Core functionality
+│   ├── __init__.py
+│   ├── strategy_executor.py
+│   └── main.py
+├── data/                # Data management
+│   ├── __init__.py
+│   ├── exceptions.py
+│   └── manager.py
+├── exchanges/           # Exchange integrations
+│   ├── __init__.py
+│   ├── exceptions.py
+│   ├── base.py
+│   └── binance.py
+├── strategies/          # Trading strategies
+│   ├── __init__.py
+│   ├── base.py
+│   ├── sma_crossover.py
+│   └── rsi_bollinger.py
+├── risk/                # Risk management
+│   ├── __init__.py
+│   └── position_sizer.py
+├── config/              # Configuration
+│   ├── __init__.py
+│   ├── exceptions.py
+│   └── settings.py
+├── utils/               # Utility functions
+│   ├── __init__.py
+│   └── logger.py
+├── __init__.py
+└── exceptions.py
+```
+
+## Development
+
+### Code Style
+
+We use the following tools to ensure code quality:
+- Black for code formatting
+- isort for import sorting
+- mypy for type checking
+- flake8 for linting
+
+You can run these tools using the pre-configured settings in `pyproject.toml`:
+
+```bash
+# Format code
+black .
+
+# Sort imports
+isort .
+
+# Type check
+mypy .
+
+# Lint
+flake8 .
 ```
 
 ## Contributing

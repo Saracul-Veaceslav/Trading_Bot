@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-from bot.risk.position_sizer import (
+from trading_bot.risk.position_sizer import (
     PositionSizer, 
     FixedRiskPositionSizer, 
     VolatilityPositionSizer, 

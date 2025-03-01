@@ -34,7 +34,7 @@ def run_tests(test_path=None, verbose=False, coverage=False, pattern=None):
         cmd.append("-v")
     
     if coverage:
-        cmd.extend(["--cov=Trading_Bot", "--cov-report=term", "--cov-report=html"])
+        cmd.extend(["--cov=trading_bot", "--cov-report=term", "--cov-report=html"])
     
     # Add test path if specified
     if test_path:
@@ -89,23 +89,37 @@ def main():
     args = parser.parse_args()
     
     # Determine the test path
-    test_path = "Tests/"
+    base_test_path = "tests/"
+    
+    test_path = base_test_path
     
     if args.unit:
-        test_path = "Tests/unit/"
+        test_path = f"{base_test_path}unit/"
     elif args.integration:
-        test_path = "Tests/integration/"
+        test_path = f"{base_test_path}integration/"
     
     if args.module:
-        test_path = f"Tests/unit/{args.module}/"
+        module_path = f"{base_test_path}unit/{args.module}/"
+        if os.path.exists(module_path):
+            test_path = module_path
+        else:
+            # Try to find module tests in the flat structure
+            print(f"Module directory {module_path} not found, searching for module tests in main test directory")
+            test_path = base_test_path
     
     if args.file:
         test_path = args.file
         if not os.path.exists(test_path):
-            # Try to find the file in the Tests directory
-            potential_paths = list(Path("Tests").glob(f"**/{args.file}"))
+            # Try to find the file in the tests directory
+            potential_paths = list(Path("tests").glob(f"**/{args.file}"))
+            
+            # Check if the file name was provided without extension
+            if not args.file.endswith('.py'):
+                potential_paths.extend(list(Path("tests").glob(f"**/{args.file}.py")))
+            
             if potential_paths:
                 test_path = str(potential_paths[0])
+                print(f"Found test file at: {test_path}")
             else:
                 print(f"Error: Test file '{args.file}' not found")
                 return 1

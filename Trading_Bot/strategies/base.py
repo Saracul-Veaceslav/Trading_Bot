@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from bot.utils.logger import get_strategy_logger
+from trading_bot.utils.logger import get_strategy_logger
 
 
 class StrategyProtocol(Protocol):

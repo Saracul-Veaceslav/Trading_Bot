@@ -13,7 +13,7 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 import logging
 
-from Trading_Bot.core.config import (
+from trading_bot.core.config import (
     load_config, 
     save_config, 
     validate_config, 
