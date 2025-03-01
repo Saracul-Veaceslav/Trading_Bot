@@ -323,4 +323,17 @@ This file documents knowledge gained during the development and refactoring of t
 - When implementation behavior changes, consider creating alternative test files rather than modifying existing ones.
 - Use try/except blocks in tests to handle both old and new behaviors when necessary.
 - Document expected behavior changes in test docstrings to aid future developers.
-- Consider parameterized tests to cover multiple scenarios with similar test logic. 
+- Consider parameterized tests to cover multiple scenarios with similar test logic.
+
+## Code Maintenance and Project Cleanup
+
+- Regular cleanup of temporary scripts and fix files is essential to prevent confusion and maintain a clean codebase
+- Temporary fix scripts should be documented with clear comments explaining their purpose and when they can be safely removed
+- Symbolic links (like the 'bot' directory pointing to 'Trading_Bot') can create confusing directory structures but may be necessary for compatibility
+- Having multiple test files with different naming conventions (test_*, *_fixed.py, *_bva.py) helps during transition periods but can be confusing long-term
+- When creating fix scripts, include safeguards and backup functionality to prevent accidental data loss
+- Automated tests should be run after cleanup activities to ensure nothing essential was removed
+- Periodically audit the project for redundant files, especially after major refactoring or bug fixing cycles
+- Test files with alternative implementations (like test_config_fixed.py) should eventually be merged back into the main test files
+- Keep a comprehensive changelog that documents cleanup activities to help team members understand what was removed and why
+- Document knowledge gained during cleanup in a knowledge base to prevent future accumulation of similar technical debt 
