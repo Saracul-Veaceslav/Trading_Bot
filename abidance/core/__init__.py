@@ -2,8 +2,40 @@
 Core module for the Abidance trading bot.
 
 This module provides core functionality used throughout the application,
-including configuration management, logging, and event handling.
+including configuration management, logging, event handling, and domain entities.
 """
+
+# Import domain entities
+from .domain import (
+    OrderSide,
+    OrderType,
+    SignalType,
+    Position,
+    Order,
+    Signal,
+    Candle,
+    Trade
+)
+
+# Import type definitions
+from .types import (
+    Timestamp,
+    Price,
+    Volume,
+    Symbol,
+    ExchangeID,
+    StrategyID,
+    OHLCV,
+    TimeseriesData,
+    Parameters,
+    Metadata,
+    SignalCallback,
+    ErrorCallback,
+    DataCallback,
+    ConfigValue,
+    Config,
+    Result
+)
 
 # Define classes to be exported
 class ConfigManager:
@@ -147,7 +179,36 @@ class EventSystem:
 
 # Define what's available when doing "from abidance.core import *"
 __all__ = [
+    # Core classes
     "ConfigManager",
     "Logger",
     "EventSystem",
+    
+    # Domain entities
+    "OrderSide",
+    "OrderType",
+    "SignalType",
+    "Position",
+    "Order",
+    "Signal",
+    "Candle",
+    "Trade",
+    
+    # Type definitions
+    "Timestamp",
+    "Price",
+    "Volume",
+    "Symbol",
+    "ExchangeID",
+    "StrategyID",
+    "OHLCV",
+    "TimeseriesData",
+    "Parameters",
+    "Metadata",
+    "SignalCallback",
+    "ErrorCallback",
+    "DataCallback",
+    "ConfigValue",
+    "Config",
+    "Result"
 ] 

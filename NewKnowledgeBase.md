@@ -15,6 +15,30 @@ The Abidance Trading Bot is organized into the following core components:
   - **data**: Data management and storage
   - **risk**: Risk management and position sizing
   - **web**: Web interface components
+  - **core**: Core domain models and fundamental types
+
+## Domain Model
+
+- **Core Entities**: The system is built around well-defined domain entities:
+  - **OrderSide**: Enum for buy/sell order sides
+  - **OrderType**: Enum for market/limit/stop-loss/take-profit order types
+  - **SignalType**: Enum for buy/sell/hold trading signals
+  - **Position**: Represents an open trading position
+  - **Order**: Represents a trading order
+  - **Signal**: Represents a trading signal
+  - **Candle**: Represents price movement over a time period
+  - **Trade**: Represents a completed trade
+
+## Type System
+
+- **Type Aliases**: Common types are defined as aliases for better code readability:
+  - **Timestamp**: Union of int and float for Unix timestamps
+  - **Price**: Union of float and Decimal for price values
+  - **Volume**: Union of float and Decimal for volume values
+  - **Symbol**: String type for trading pair symbols
+  - **TimeseriesData**: Pandas DataFrame for time series data
+  - **Parameters**: Dictionary for generic parameters
+  - **Config**: Dictionary for configuration values
 
 ## Code Organization
 
