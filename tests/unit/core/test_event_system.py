@@ -365,4 +365,30 @@ class TestEventSystem:
             odd_values.append(event.data["value"])
         
         assert sorted(even_values) == [0, 2, 4, 6, 8]
-        assert sorted(odd_values) == [1, 3, 5, 7, 9] 
+        assert sorted(odd_values) == [1, 3, 5, 7, 9]
+
+    def test_event_repr(self):
+        """Test the __repr__ method of the Event class."""
+        event = Event("test_event", {"key": "value"}, 123.45, "test_source")
+        repr_str = repr(event)
+        assert "Event(" in repr_str
+        assert "type=test_event" in repr_str
+        assert "data={'key': 'value'}" in repr_str
+        assert "timestamp=123.45" in repr_str
+        assert "source=test_source" in repr_str
+
+    def test_event_handler_exception(self):
+        """Test that exceptions in event handlers are caught and logged."""
+        event_system = EventSystem()
+        
+        # Create a handler that raises an exception
+        def failing_handler(event):
+            raise ValueError("Test exception")
+        
+        # Register the handler
+        event_system.register_handler("test_event", failing_handler)
+        
+        # Emit an event - this should not raise an exception
+        event_system.emit("test_event", {"key": "value"})
+        
+        # The test passes if no exception is raised 

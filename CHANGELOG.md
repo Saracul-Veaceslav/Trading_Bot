@@ -29,6 +29,9 @@ All notable changes to this project will be documented in this file.
 - Documentation for all modules
 - Environment class for environment variable management
 - Enhanced .env.example file with comprehensive configuration options
+- Event handler registry for centralized event handler management
+- Event subscription and handler grouping capabilities
+- Event handler decorator for simplified event registration
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
