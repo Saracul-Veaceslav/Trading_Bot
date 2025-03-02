@@ -48,7 +48,15 @@ from .container import ServiceRegistry, registry
 from .bootstrap import ApplicationBootstrap
 
 # Import event system
-from .events import EventSystem, Event, EventHandler, EventFilter
+from .events import EventSystem, Event
+
+# Import event handlers
+from .event_handlers import (
+    EventHandlerRegistry,
+    EventSubscription,
+    EventHandlerGroup,
+    event_handler
+)
 
 # Import configuration management
 from .configuration import Configuration

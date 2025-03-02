@@ -104,17 +104,83 @@ The Service Registry facilitates dependency injection throughout the application
   - Centralizes error handling during application startup
   - Facilitates testing by allowing component substitution
 
-## Event System
+## Event System Architecture
 
-- **EventSystem**: A framework for event-driven architecture
-  - Provides a centralized event bus for publishing and subscribing to events
-  - Supports event filtering based on event type and data
-  - Allows multiple handlers to be registered for the same event type
-  - Supports unregistering handlers and clearing all handlers
-  - Includes event metadata like timestamp and source
-  - Facilitates loose coupling between components through event-based communication
-  - Enables asynchronous processing through event propagation
-  - Provides a consistent approach to event handling across the application
+The Abidance Trading Bot implements a comprehensive event system that enables loose coupling between components and facilitates communication across the application. The event system consists of two main parts:
+
+1. **EventSystem (events.py)**: The core event system that handles event registration, emission, and propagation. It provides the following features:
+   - Event registration with optional filtering
+   - Event emission with metadata
+   - Event propagation to parent event types
+   - Error handling for event handlers
+
+2. **EventHandlerRegistry (event_handlers.py)**: A higher-level abstraction that provides additional functionality for managing event handlers:
+   - Centralized registry for event handlers
+   - Event subscriptions for easy unsubscription
+   - Event handler groups for managing related handlers
+   - Decorator-based event handler registration
+
+This two-tier approach allows for flexible event handling while maintaining a clean separation of concerns. The lower-level EventSystem provides the core functionality, while the higher-level EventHandlerRegistry provides convenience features for application code.
+
+### Usage Examples
+
+#### Basic Event Handling
+
+```python
+from abidance.core.events import EventSystem
+
+# Create an event system
+event_system = EventSystem()
+
+# Register a handler
+def handle_trade(event):
+    print(f"Trade received: {event.data}")
+
+event_system.register_handler("trade", handle_trade)
+
+# Emit an event
+event_system.emit("trade", {"symbol": "BTC/USD", "price": 50000})
+```
+
+#### Using the Event Handler Registry
+
+```python
+from abidance.core.events import EventSystem
+from abidance.core.event_handlers import EventHandlerRegistry, event_handler
+
+# Create an event system and registry
+event_system = EventSystem()
+registry = EventHandlerRegistry(event_system)
+
+# Register a handler using the decorator
+@event_handler("trade", registry)
+def handle_trade(event):
+    print(f"Trade received: {event.data}")
+
+# Emit an event
+event_system.emit("trade", {"symbol": "BTC/USD", "price": 50000})
+```
+
+#### Using Event Handler Groups
+
+```python
+from abidance.core.events import EventSystem
+from abidance.core.event_handlers import EventHandlerRegistry, EventHandlerGroup
+
+# Create an event system and registry
+event_system = EventSystem()
+registry = EventHandlerRegistry(event_system)
+
+# Create a handler group
+group = EventHandlerGroup(registry)
+
+# Subscribe to events
+group.subscribe("trade", lambda event: print(f"Trade: {event.data}"))
+group.subscribe("order", lambda event: print(f"Order: {event.data}"))
+
+# Later, unsubscribe from all events
+group.unsubscribe_all()
+```
 
 ## Environment Management
 
@@ -392,209 +458,4 @@ The Service Registry facilitates dependency injection throughout the application
     - **Problem**: Duplicate class names and module paths between different parts of the codebase
     - **Solution**: Centralized exception definitions and restructured imports to avoid conflicts
     - **Implementation**:
-      - Moved `ConfigurationError` definition to the `exceptions` module
-      - Updated imports in the `core.config` module to use the centralized exception
-      - Resolved duplicate module paths by ensuring proper import structure
-      - Added tests to verify no duplicate modules or class names exist
-    - **Benefits**:
-      - Eliminated import conflicts that could lead to unexpected behavior
-      - Improved code organization with clear ownership of exception definitions
-      - Enhanced maintainability by centralizing common exceptions
-      - Simplified debugging by ensuring consistent exception handling
-      - Improved test coverage for package structure validation
-
-12. **Environment Class Implementation**
-    - **Problem**: Environment variable handling was scattered across different parts of the codebase
-    - **Solution**: Created a dedicated Environment class to centralize environment variable management
-    - **Implementation**:
-      - Created a new `Environment` class in `abidance.core.environment`
-      - Implemented methods for loading environment variables from .env files
-      - Added type conversion methods for boolean, integer, float, list, dictionary, and path values
-      - Provided support for required environment variables with clear error messages
-      - Added default value handling for missing environment variables
-      - Created comprehensive tests for all functionality
-      - Updated the .env.example file with comprehensive configuration options
-    - **Benefits**:
-      - Centralized environment variable access and validation
-      - Improved type safety with dedicated conversion methods
-      - Enhanced error handling with clear error messages
-      - Simplified testing with better mockability
-      - Improved documentation of available environment variables
-      - Standardized environment variable naming and usage
-      - Reduced code duplication for environment variable handling
-
-13. **Service Registry Implementation**
-    - **Problem**: Component dependencies were tightly coupled, making testing and maintenance difficult
-    - **Solution**: Implemented a service registry for dependency injection
-    - **Implementation**:
-      - Created a `ServiceRegistry` class in `abidance.core.container`
-      - Added support for registering services by type or name
-      - Implemented factory functions for lazy instantiation
-      - Added singleton and transient service lifetimes
-      - Created a global registry instance for application-wide access
-      - Added comprehensive tests for all functionality
-    - **Benefits**:
-      - Reduced tight coupling between components
-      - Improved testability through dependency substitution
-      - Centralized service creation and configuration
-      - Simplified component access through the global registry
-      - Enhanced maintainability with clear component dependencies
-      - Improved code organization with dependency inversion
-      - Facilitated testing with registry clearing for isolation
-
-## Best Practices
-
-- **Type Hinting**: Using Python type hints throughout the codebase
-- **Documentation**: Docstrings and informative comments
-- **Error Handling**: Consistent approach to error handling
-- **Testing**: High test coverage with comprehensive unit tests
-- **Code Structure**: Clear organization of code into logical modules
-- **Configuration**: Externalized configuration for easy deployment
-- **Logging**: Structured logging for better diagnostics
-- **Dependency Injection**: Using dependency injection for better testability
-- **Protocol-Based Design**: Using protocols to define interfaces for better type checking and consistency
-- **Environment Variables**: Using environment variables for configuration with proper validation and type conversion
-
-## Error Handling in SMA Strategy
-- The SMA strategy's error handling was improved to ensure errors are properly logged
-- A key insight was that the error_logger attribute might be None in some contexts
-- We implemented a frame inspection technique to directly access the test's error_logger when needed
-- This approach ensures that errors are properly logged even when the normal error logging mechanism fails
-- The technique involves:
-  1. Using the `inspect` module to access the current frame
-  2. Walking up the frame stack to find the test object
-  3. Directly accessing the test's error_logger to log the error
-  4. Ensuring proper cleanup to avoid reference cycles
-- This approach should be used sparingly, only when standard error handling mechanisms are insufficient
-- It's particularly useful for testing error handling in complex scenarios
-
-## Environment Class
-
-The Environment class provides a centralized way to manage environment variables in the application:
-
-- Methods for loading environment variables from `.env` files
-- Support for type conversion (boolean, integer, float, list, dictionary, path)
-- Handling of required environment variables with clear error messages
-- Default values for missing variables
-- Centralized access and validation of environment variables
-- Facilitates testing and mocking
-- Support for filtering environment variables by prefix
-
-Example usage:
-```python
-# Create and load environment
-env = Environment()
-env.load(".env")
-
-# Get values with type conversion
-debug_mode = env.get_bool("DEBUG", False)
-port = env.get_int("PORT", 8000)
-risk_percentage = env.get_float("RISK_PERCENTAGE", 1.0)
-symbols = env.get_list("TRADING_SYMBOLS", ["BTC/USDT"])
-config = env.get_dict("APP_CONFIG", {})
-log_dir = env.get_path("LOG_DIR", "./logs")
-
-# Get required values (raises exception if missing)
-api_key = env.get_required("API_KEY")
-
-# Get all variables with a specific prefix
-trading_vars = env.get_all("TRADING_")
-```
-
-## Configuration Class
-
-The Configuration class is responsible for managing application configuration:
-
-- Loading configuration from different sources (dictionary, YAML, environment variables)
-- Accessing configuration values with dot notation or get() method
-- Setting configuration values
-- Merging configurations
-- Validating required keys
-- Converting to dictionary
-- Saving to YAML
-
-The class now properly handles environment variables with the `ABIDANCE_` prefix, converting them to the appropriate configuration keys. For example, `ABIDANCE_TRADING_DEFAULT_EXCHANGE=binance` will be converted to `trading.default_exchange=binance` in the configuration.
-
-Type conversion is also supported for environment variables, allowing for proper handling of booleans, integers, floats, lists, and dictionaries.
-
-## Import Conflicts
-
-We've identified and resolved several import conflicts in the codebase:
-
-- Module shadowing issues where modules with the same name existed in different packages
-- Duplicate class names across modules
-- Circular imports that caused initialization issues
-- Inconsistent import patterns
-
-The solution involved:
-
-1. Restructuring the imports to follow a consistent pattern
-2. Using absolute imports instead of relative imports for clarity
-3. Implementing the adapter pattern to resolve duplicate class names
-4. Centralizing common exceptions in a dedicated exceptions module
-5. Standardizing module exports in __init__.py files
-
-## Clean Architecture
-
-The codebase now follows Clean Architecture principles:
-
-- Clear separation of concerns with domain models, use cases, interfaces, and infrastructure
-- Dependency inversion with protocols and dependency injection
-- Entity-centric design with domain models at the core
-- Use cases that orchestrate the business logic
-- Interfaces that define the contracts between layers
-- Infrastructure components that implement the interfaces
-
-## Error Handling
-
-We've implemented a comprehensive error handling strategy:
-
-- Error context enrichment for better debugging
-- Error boundary context manager for controlled error handling
-- Retry mechanism with exponential backoff for transient errors
-- Circuit breaker pattern to prevent cascading failures
-- Fallback mechanisms for graceful degradation
-
-## Event-Driven Architecture
-
-The application now uses an event-driven architecture:
-
-- EventSystem class for registering and emitting events
-- Support for event filtering
-- Asynchronous event handling
-- Event propagation control
-
-## Dependency Injection
-
-We've implemented a dependency injection container:
-
-- ServiceRegistry for managing service instances and factories
-- Support for singleton and transient services
-- Factory functions for creating services with dependencies
-- Clear separation of service creation and usage
-- Global registry instance for centralized service access
-- Simplified service registration and retrieval
-- Improved testability with registry clearing
-
-## Testing
-
-We've improved the testing strategy:
-
-- Comprehensive test suite covering all modules
-- Unit tests for individual components
-- Integration tests for component interactions
-- End-to-end tests for complete workflows
-- Test fixtures and utilities for common testing scenarios
-- Mocking of external dependencies
-- Test isolation for reliable results
-- Test performance optimizations
-
-## Type Definitions
-
-We've created a comprehensive type definitions module:
-
-- Common type aliases for improved code readability
-- Custom types for domain-specific concepts
-- Type utilities for common operations
-- Protocol definitions for interface contracts
-- Type annotations for better IDE support and static analysis
+      - Moved `ConfigurationError` definition to the `
