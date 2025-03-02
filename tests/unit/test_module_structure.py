@@ -116,6 +116,8 @@ def test_exchange_module_exports():
     
     # Check that base classes are exported
     assert hasattr(exchange, "Exchange")
+    assert hasattr(exchange, "ExchangeBase")
+    assert hasattr(exchange, "ExchangeFactory")
     assert hasattr(exchange, "ExchangeManager")
     
     # Check that exchange implementations are exported
@@ -123,7 +125,9 @@ def test_exchange_module_exports():
     
     # Check that __all__ is defined correctly
     expected_all = [
-        "Exchange",
+        "Exchange",  # Protocol
+        "ExchangeBase",  # Abstract base class
+        "ExchangeFactory",  # Protocol
         "ExchangeManager",
         "BinanceExchange",
     ]
