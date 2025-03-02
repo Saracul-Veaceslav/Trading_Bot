@@ -40,6 +40,18 @@ The Abidance Trading Bot is organized into the following core components:
   - Enables easier testing through service substitution
   - Centralizes service creation and configuration
 
+## Application Bootstrap
+
+- **ApplicationBootstrap**: A framework for bootstrapping the application
+  - Provides a structured approach to application initialization
+  - Manages component registration and creation
+  - Handles configuration loading from YAML files
+  - Integrates with the ServiceRegistry for dependency injection
+  - Supports component factories for creating components with configuration
+  - Provides a consistent initialization process for all components
+  - Centralizes error handling during application startup
+  - Facilitates testing by allowing component substitution
+
 ## Domain Model
 
 - **Core Entities**: The system is built around well-defined domain entities:

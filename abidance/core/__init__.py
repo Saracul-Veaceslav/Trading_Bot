@@ -44,6 +44,9 @@ from .types import (
 # Import dependency injection container
 from .container import ServiceRegistry
 
+# Import application bootstrap
+from .bootstrap import ApplicationBootstrap
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -191,6 +194,7 @@ __all__ = [
     "Logger",
     "EventSystem",
     "ServiceRegistry",
+    "ApplicationBootstrap",
     
     # Domain entities
     "OrderSide",
