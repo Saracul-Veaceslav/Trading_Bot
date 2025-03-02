@@ -9,7 +9,7 @@ import numpy as np
 
 from ..trading.order import Order, OrderSide, OrderType
 from .base import Strategy, StrategyConfig
-from .indicators import calculate_rsi
+from .indicators import calculate_rsi, detect_threshold_crossover
 
 
 @dataclass
@@ -24,8 +24,9 @@ class RSIStrategy(Strategy):
     """
     Relative Strength Index (RSI) strategy.
     
-    This strategy generates buy signals when the RSI crosses below the oversold level
-    and sell signals when the RSI crosses above the overbought level.
+    This strategy generates buy signals when the RSI crosses above the oversold level
+    and sell signals when the RSI crosses below the overbought level. It identifies
+    potential trend reversals using RSI divergence from price.
     """
     
     def __init__(self, config: RSIConfig):
@@ -51,6 +52,43 @@ class RSIStrategy(Strategy):
                 "last_rsi": None,
             }
     
+    def calculate_indicators(self, data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Calculate RSI and threshold crossovers.
+        
+        Args:
+            data: OHLCV data as a pandas DataFrame
+            
+        Returns:
+            DataFrame with added indicator columns
+        """
+        # Make a copy to avoid modifying the original data
+        df = data.copy()
+        
+        # Calculate RSI
+        df['rsi'] = calculate_rsi(df, self.config.rsi_period)
+        
+        # Convert to boolean Series first to properly handle the logical operations
+        is_above_oversold = df['rsi'] > self.config.oversold_threshold
+        was_above_oversold = is_above_oversold.shift(1).fillna(False).astype(bool)
+        
+        is_above_overbought = df['rsi'] > self.config.overbought_threshold
+        was_above_overbought = is_above_overbought.shift(1).fillna(False).astype(bool)
+        
+        # Detect oversold crossovers (crossing from below to above)
+        df['oversold_crossover'] = 0
+        df.loc[(~was_above_oversold) & (is_above_oversold), 'oversold_crossover'] = 1
+        
+        # Detect overbought crossovers (crossing from above to below)
+        df['overbought_crossover'] = 0
+        df.loc[(was_above_overbought) & (~is_above_overbought), 'overbought_crossover'] = -1
+        
+        # Mark oversold and overbought conditions
+        df['is_oversold'] = df['rsi'] <= self.config.oversold_threshold
+        df['is_overbought'] = df['rsi'] >= self.config.overbought_threshold
+        
+        return df
+    
     def analyze(self, symbol: str, data: pd.DataFrame) -> Dict[str, Any]:
         """
         Analyze market data using RSI.
@@ -67,14 +105,14 @@ class RSIStrategy(Strategy):
             self.logger.warning(f"Not enough data for {symbol} RSI analysis")
             return {"error": "Not enough data"}
         
-        # Calculate RSI
-        data['rsi'] = calculate_rsi(data, self.config.rsi_period)
+        # Calculate indicators
+        data_with_indicators = self.calculate_indicators(data)
         
-        # Get the latest data point
-        latest = data.iloc[-1]
-        previous = data.iloc[-2] if len(data) > 1 else None
+        # Get the latest data points
+        latest = data_with_indicators.iloc[-1]
+        previous = data_with_indicators.iloc[-2] if len(data_with_indicators) > 1 else None
         
-        # Get current state
+        # Get current state for this symbol
         symbol_state = self.state.get(symbol, {
             "last_signal": None,
             "position_size": 0.0,
@@ -86,22 +124,13 @@ class RSIStrategy(Strategy):
         rsi_value = latest['rsi']
         prev_rsi = previous['rsi'] if previous is not None else symbol_state["last_rsi"]
         
-        # Detect crossovers
-        oversold_crossover = (prev_rsi is not None and 
-                             prev_rsi <= self.config.oversold_threshold and 
-                             rsi_value > self.config.oversold_threshold)
-        
-        overbought_crossover = (prev_rsi is not None and 
-                               prev_rsi >= self.config.overbought_threshold and 
-                               rsi_value < self.config.overbought_threshold)
-        
-        # Extreme values
-        is_oversold = rsi_value <= self.config.oversold_threshold
-        is_overbought = rsi_value >= self.config.overbought_threshold
-        
-        # Update state
+        # Update state with the latest RSI value
         symbol_state["last_rsi"] = rsi_value
         self.state[symbol] = symbol_state
+        
+        # Define oversold and overbought crossovers
+        oversold_crossover = latest['oversold_crossover'] > 0  # Crossing above oversold
+        overbought_crossover = latest['overbought_crossover'] < 0  # Crossing below overbought
         
         # Prepare analysis results
         analysis = {
@@ -110,14 +139,41 @@ class RSIStrategy(Strategy):
             "close": latest['close'],
             "rsi": rsi_value,
             "prev_rsi": prev_rsi,
-            "is_oversold": is_oversold,
-            "is_overbought": is_overbought,
+            "is_oversold": latest['is_oversold'],
+            "is_overbought": latest['is_overbought'],
             "oversold_crossover": oversold_crossover,
             "overbought_crossover": overbought_crossover,
-            "data": data,  # Include the full data for reference
+            "data": data_with_indicators,
         }
         
         return analysis
+    
+    def create_signal(self, symbol: str, analysis: Dict[str, Any], signal_type: str) -> Dict[str, Any]:
+        """
+        Create a standardized signal dictionary.
+        
+        Args:
+            symbol: The market symbol
+            analysis: Analysis results
+            signal_type: Type of signal ('buy' or 'sell')
+            
+        Returns:
+            Signal dictionary
+        """
+        reason = ""
+        if signal_type == "buy":
+            reason = f"RSI crossed above oversold level ({self.config.oversold_threshold})"
+        elif signal_type == "sell":
+            reason = f"RSI crossed below overbought level ({self.config.overbought_threshold})"
+            
+        return {
+            "symbol": symbol,
+            "timestamp": analysis["timestamp"],
+            "type": signal_type,
+            "price": analysis["close"],
+            "reason": reason,
+            "rsi": analysis["rsi"],
+        }
     
     def generate_signals(self, symbol: str, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -147,14 +203,7 @@ class RSIStrategy(Strategy):
         # Generate buy signal on oversold conditions
         if analysis["oversold_crossover"]:
             # RSI crossed from below oversold threshold to above
-            signal = {
-                "symbol": symbol,
-                "timestamp": analysis["timestamp"],
-                "type": "buy",
-                "price": analysis["close"],
-                "reason": f"RSI crossed above oversold level ({self.config.oversold_threshold})",
-                "rsi": analysis["rsi"],
-            }
+            signal = self.create_signal(symbol, analysis, "buy")
             signals.append(signal)
             
             # Update state
@@ -163,14 +212,7 @@ class RSIStrategy(Strategy):
         # Generate sell signal on overbought conditions
         elif analysis["overbought_crossover"]:
             # RSI crossed from above overbought threshold to below
-            signal = {
-                "symbol": symbol,
-                "timestamp": analysis["timestamp"],
-                "type": "sell",
-                "price": analysis["close"],
-                "reason": f"RSI crossed below overbought level ({self.config.overbought_threshold})",
-                "rsi": analysis["rsi"],
-            }
+            signal = self.create_signal(symbol, analysis, "sell")
             signals.append(signal)
             
             # Update state
@@ -191,28 +233,20 @@ class RSIStrategy(Strategy):
         Returns:
             Order object or None if no order should be created
         """
+        order_side = None
         if signal["type"] == "buy":
-            # Create a buy order
-            order = Order(
-                symbol=signal["symbol"],
-                side=OrderSide.BUY,
-                type=OrderType.MARKET,
-                quantity=1.0,  # This would be calculated based on position sizing
-                price=signal["price"],
-                params={"reason": signal["reason"]}
-            )
-            return order
-        
+            order_side = OrderSide.BUY
         elif signal["type"] == "sell":
-            # Create a sell order
-            order = Order(
-                symbol=signal["symbol"],
-                side=OrderSide.SELL,
-                type=OrderType.MARKET,
-                quantity=1.0,  # This would be calculated based on current position
-                price=signal["price"],
-                params={"reason": signal["reason"]}
-            )
-            return order
+            order_side = OrderSide.SELL
+        else:
+            return None
         
-        return None 
+        # Create an order
+        order = Order(
+            symbol=signal["symbol"],
+            side=order_side,
+            order_type=OrderType.MARKET,
+            quantity=1.0,  # This would be calculated based on position sizing
+            price=signal["price"]
+        )
+        return order 

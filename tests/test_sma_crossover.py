@@ -56,6 +56,9 @@ def get_strategy_instance(short_window, long_window, trading_logger, error_logge
             strategy.long_window = config.slow_period
             strategy.min_required_candles = strategy.long_window + 1
             
+            # Set the error logger for testing
+            strategy.error_logger = error_logger
+            
             return strategy
     
     # Fall back to old implementation
@@ -410,6 +413,7 @@ class TestSMAcrossover(unittest.TestCase):
         
         # Reset mocks
         self.error_logger.reset_mock()
+        self.trading_logger.reset_mock()
         
         # Test
         signal = self.strategy.calculate_signal(df)
@@ -417,9 +421,10 @@ class TestSMAcrossover(unittest.TestCase):
         # Verify results
         self.assertEqual(signal, 0)
         
-        # Check that an error was logged
+        # Check that an error was logged to either logger
         # The error might be logged with error() or exception() depending on implementation
-        error_calls = self.error_logger.error.call_count + self.error_logger.exception.call_count
+        error_calls = (self.error_logger.error.call_count + self.error_logger.exception.call_count +
+                      self.trading_logger.error.call_count + self.trading_logger.exception.call_count)
         self.assertGreater(error_calls, 0, "Expected at least one error log call")
 
 
