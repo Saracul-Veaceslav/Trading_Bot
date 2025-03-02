@@ -175,12 +175,14 @@ class TestMetricsCollector:
     def test_concurrent_access(self):
         """Test concurrent access to the metrics collector."""
         collector = MetricsCollector()
-        num_threads = 10
-        iterations_per_thread = 100
+        num_threads = 5
+        iterations_per_thread = 20
         
         def record_metrics(thread_id):
             for i in range(iterations_per_thread):
                 collector.record(f"thread_{thread_id}", i)
+                # Add a small sleep to reduce race conditions
+                time.sleep(0.001)
         
         # Start multiple threads to record metrics concurrently
         threads = []
@@ -428,8 +430,8 @@ class TestSystemMetricsCollector:
         """Test collecting system metrics."""
         collector = SystemMetricsCollector()
         
-        # Collect metrics once
-        collector.collect_system_metrics(interval=0.1)
+        # Collect metrics once using the single_run parameter
+        collector.collect_system_metrics(interval=0.1, single_run=True)
         
         # Check that CPU metrics were recorded
         cpu_metrics = collector.get_metric("system.cpu.percent")

@@ -718,3 +718,15 @@ print(f"Memory usage: {memory_metrics}")
     - **Solution**: Centralized exception definitions and restructured imports to avoid conflicts
     - **Implementation**:
       - Moved `ConfigurationError` definition to the `
+
+# New Knowledge Base
+
+This document contains insights and lessons learned during the development of the Abidance Trading Bot.
+
+## Metrics Collection System
+
+- The metrics collection system uses a thread-safe approach with locks to ensure concurrent access doesn't cause data corruption
+- The `SystemMetricsCollector.collect_system_metrics` method needs a `single_run` parameter for testing to avoid infinite loops
+- When implementing metric aggregation, it's important to match the metric naming patterns used in the recording methods
+- For trading metrics, we need to handle both specific symbol queries and all-symbols aggregation differently
+- The `psutil` library is used for collecting system metrics like CPU and memory usage

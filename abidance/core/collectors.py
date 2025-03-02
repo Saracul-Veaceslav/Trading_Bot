@@ -215,62 +215,195 @@ class TradingMetricsCollector(MetricsCollector):
             "timestamp": datetime.now()
         })
     
-    def get_trading_summary(self, symbol: Optional[str] = None, 
-                           since: Optional[datetime] = None,
-                           until: Optional[datetime] = None) -> Dict[str, Any]:
+    def get_trading_summary(self, symbol: Optional[str] = None, since: Optional[datetime] = None, until: Optional[datetime] = None) -> Dict[str, float]:
         """
         Get a summary of trading activity.
-        
+
         Args:
             symbol: Optional symbol to filter by
             since: Optional start time for filtering
             until: Optional end time for filtering
-            
+
         Returns:
-            A dictionary with trading summary metrics
+            Dictionary with trading summary metrics
         """
-        # Define metric patterns to aggregate
-        patterns = []
+        summary = {
+            "order_count_buy": 0,
+            "order_count_sell": 0,
+            "order_count": 0,
+            "order_volume_buy": 0.0,
+            "order_volume_sell": 0.0,
+            "order_volume": 0.0,
+            "order_value_buy": 0.0,
+            "order_value_sell": 0.0,
+            "order_value": 0.0,
+            "trade_count_buy": 0,
+            "trade_count_sell": 0,
+            "trade_count": 0,
+            "trade_volume_buy": 0.0,
+            "trade_volume_sell": 0.0,
+            "trade_volume": 0.0,
+            "trade_value_buy": 0.0,
+            "trade_value_sell": 0.0,
+            "trade_value": 0.0,
+            "fee": 0.0
+        }
+
         if symbol:
-            patterns.extend([
-                f"order_count.{symbol}.*",
-                f"order_volume.{symbol}.*",
-                f"order_value.{symbol}.*",
-                f"trade_count.{symbol}.*",
-                f"trade_volume.{symbol}.*",
-                f"trade_value.{symbol}.*",
-                f"trade_fee.{symbol}"
-            ])
+            # For a specific symbol
+            symbol_part = f".{symbol}"
+            
+            # Process order metrics
+            buy_order_count = self.get_metric(f"order_count{symbol_part}.buy", since, until)
+            if buy_order_count:
+                summary["order_count_buy"] = sum(buy_order_count.values())
+                
+            sell_order_count = self.get_metric(f"order_count{symbol_part}.sell", since, until)
+            if sell_order_count:
+                summary["order_count_sell"] = sum(sell_order_count.values())
+                
+            summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
+            
+            buy_volume = self.get_metric(f"order_volume{symbol_part}.buy", since, until)
+            if buy_volume:
+                summary["order_volume_buy"] = sum(buy_volume.values())
+                
+            sell_volume = self.get_metric(f"order_volume{symbol_part}.sell", since, until)
+            if sell_volume:
+                summary["order_volume_sell"] = sum(sell_volume.values())
+                
+            summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
+            
+            buy_value = self.get_metric(f"order_value{symbol_part}.buy", since, until)
+            if buy_value:
+                summary["order_value_buy"] = sum(buy_value.values())
+                
+            sell_value = self.get_metric(f"order_value{symbol_part}.sell", since, until)
+            if sell_value:
+                summary["order_value_sell"] = sum(sell_value.values())
+                
+            summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
+            
+            # Process trade metrics
+            buy_trades = self.get_metric(f"trade_count{symbol_part}.buy", since, until)
+            if buy_trades:
+                summary["trade_count_buy"] = sum(buy_trades.values())
+                
+            sell_trades = self.get_metric(f"trade_count{symbol_part}.sell", since, until)
+            if sell_trades:
+                summary["trade_count_sell"] = sum(sell_trades.values())
+                
+            summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
+            
+            buy_trade_volume = self.get_metric(f"trade_volume{symbol_part}.buy", since, until)
+            if buy_trade_volume:
+                summary["trade_volume_buy"] = sum(buy_trade_volume.values())
+                
+            sell_trade_volume = self.get_metric(f"trade_volume{symbol_part}.sell", since, until)
+            if sell_trade_volume:
+                summary["trade_volume_sell"] = sum(sell_trade_volume.values())
+                
+            summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
+            
+            buy_trade_value = self.get_metric(f"trade_value{symbol_part}.buy", since, until)
+            if buy_trade_value:
+                summary["trade_value_buy"] = sum(buy_trade_value.values())
+                
+            sell_trade_value = self.get_metric(f"trade_value{symbol_part}.sell", since, until)
+            if sell_trade_value:
+                summary["trade_value_sell"] = sum(sell_trade_value.values())
+                
+            summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
+            
+            # Calculate total fee
+            fee = self.get_metric(f"trade_fee{symbol_part}", since, until)
+            if fee:
+                summary["fee"] = sum(fee.values())
         else:
-            patterns.extend([
-                "order_count.*",
-                "order_volume.*",
-                "order_value.*",
-                "trade_count.*",
-                "trade_volume.*",
-                "trade_value.*",
-                "trade_fee.*"
-            ])
-        
-        # Collect metrics matching the patterns
-        summary = {}
-        for pattern in patterns:
-            # In a real implementation, we would use pattern matching
-            # For simplicity, we'll just use exact matches for now
-            if pattern.endswith(".*"):
-                base_pattern = pattern[:-2]
-                buy_metric = f"{base_pattern}.buy"
-                sell_metric = f"{base_pattern}.sell"
+            # For all symbols, aggregate metrics across all symbols
+            # Find all metrics that match our patterns
+            for metric_name in list(self._metrics.keys()):
+                # Process order metrics
+                if metric_name.startswith("order_count."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["order_count_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["order_count_sell"] += sum(values.values())
                 
-                buy_value = self.aggregate(buy_metric, AggregationType.SUM, since, until) or 0
-                sell_value = self.aggregate(sell_metric, AggregationType.SUM, since, until) or 0
+                elif metric_name.startswith("order_volume."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["order_volume_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["order_volume_sell"] += sum(values.values())
                 
-                metric_name = base_pattern.split(".")[-1]
-                summary[f"{metric_name}_buy"] = buy_value
-                summary[f"{metric_name}_sell"] = sell_value
-                summary[metric_name] = buy_value + sell_value
-            else:
-                summary[pattern.split(".")[-1]] = self.aggregate(pattern, AggregationType.SUM, since, until) or 0
+                elif metric_name.startswith("order_value."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["order_value_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["order_value_sell"] += sum(values.values())
+                
+                # Process trade metrics
+                elif metric_name.startswith("trade_count."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["trade_count_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["trade_count_sell"] += sum(values.values())
+                
+                elif metric_name.startswith("trade_volume."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["trade_volume_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["trade_volume_sell"] += sum(values.values())
+                
+                elif metric_name.startswith("trade_value."):
+                    parts = metric_name.split(".")
+                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
+                        side = parts[-1]
+                        values = self.get_metric(metric_name, since, until)
+                        if values:
+                            if side == "buy":
+                                summary["trade_value_buy"] += sum(values.values())
+                            elif side == "sell":
+                                summary["trade_value_sell"] += sum(values.values())
+                
+                # Process fee metrics
+                elif metric_name.startswith("trade_fee."):
+                    values = self.get_metric(metric_name, since, until)
+                    if values:
+                        summary["fee"] += sum(values.values())
+            
+            # Calculate totals
+            summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
+            summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
+            summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
+            summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
+            summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
+            summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
         
         return summary
 
@@ -289,12 +422,13 @@ class SystemMetricsCollector(MetricsCollector):
         self._collection_thread = None
         self._stop_collection = threading.Event()
     
-    def collect_system_metrics(self, interval: float = 60.0) -> None:
+    def collect_system_metrics(self, interval: float = 60.0, single_run: bool = False) -> None:
         """
         Collect system metrics at regular intervals.
         
         Args:
             interval: The collection interval in seconds
+            single_run: If True, collect metrics once and return (for testing)
         """
         while not self._stop_collection.is_set():
             # Collect CPU metrics
@@ -322,6 +456,10 @@ class SystemMetricsCollector(MetricsCollector):
             self.record("system.network.packets_sent", net_io.packets_sent)
             self.record("system.network.packets_recv", net_io.packets_recv)
             
+            # If single_run is True, break after one collection
+            if single_run:
+                break
+                
             # Wait for the next collection interval
             self._stop_collection.wait(interval)
     

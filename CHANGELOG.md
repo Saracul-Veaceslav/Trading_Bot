@@ -37,6 +37,10 @@ All notable changes to this project will be documented in this file.
 - Time-based metric filtering and aggregation capabilities
 - Thread-safe metrics recording and retrieval
 - Function execution timing decorator
+- Metrics Collection System with specialized collectors for performance, trading, and system metrics
+- Fixed infinite loop issue in SystemMetricsCollector by adding single_run parameter
+- Fixed TradingMetricsCollector.get_trading_summary method to correctly handle both specific symbol and all symbols cases
+- Fixed fee calculation in trading summary to correctly sum all fees
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
