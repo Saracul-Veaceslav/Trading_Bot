@@ -130,6 +130,35 @@ The Abidance Trading Bot is organized into the following core components:
    - Added specific tests for edge cases like not enough data or unknown signal types
    - Used realistic timestamps for testing to catch timezone-related issues
 
+7. **Handling Deprecation Warnings**
+   - **Pandas Deprecation Warnings**:
+     - Identified warnings related to downcasting object dtype arrays on `.fillna()`, `.ffill()`, and `.bfill()`
+     - Updated code to use the recommended approach: calling `.infer_objects(copy=False)` after `.fillna()`
+     - Example:
+       ```python
+       # Before
+       series = series.fillna(False).astype(bool)
+       
+       # After
+       series = series.fillna(False).infer_objects(copy=False).astype(bool)
+       ```
+     - For a more permanent solution, consider setting the pandas option:
+       ```python
+       pd.set_option('future.no_silent_downcasting', True)
+       ```
+   - **Datetime Deprecation Warnings**:
+     - Identified warnings related to `datetime.utcnow()` usage
+     - Updated code to use the recommended approach: `datetime.now(timezone.utc)`
+     - Example:
+       ```python
+       # Before
+       timestamp = datetime.utcnow()
+       
+       # After
+       timestamp = datetime.now(timezone.utc)
+       ```
+     - This change ensures timezone-aware datetime objects, which is the preferred approach in modern Python
+
 ## Best Practices
 
 - **Type Hinting**: Using Python type hints throughout the codebase
@@ -139,6 +168,7 @@ The Abidance Trading Bot is organized into the following core components:
 - **Code Structure**: Clear organization of code into logical modules
 - **Configuration**: Externalized configuration for easy deployment
 - **Logging**: Structured logging for better diagnostics
+- **Dependency Injection**: Using dependency injection for better testability
 
 ## Error Handling in SMA Strategy
 - The SMA strategy's error handling was improved to ensure errors are properly logged

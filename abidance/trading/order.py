@@ -2,7 +2,7 @@
 Order module for creating and managing trading orders.
 """
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 
@@ -44,7 +44,7 @@ class Order:
     def __post_init__(self):
         """Initialize default values after creation."""
         if self.created_at is None:
-            self.created_at = datetime.utcnow()
+            self.created_at = datetime.now(timezone.utc)
     
     def to_dict(self) -> dict:
         """Convert the order to a dictionary for storage or transmission."""

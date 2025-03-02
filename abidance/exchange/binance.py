@@ -2,7 +2,7 @@
 Binance exchange implementation.
 """
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 
 from ..exceptions import ExchangeError
@@ -70,7 +70,7 @@ class BinanceExchange(Exchange):
             "ask": 50001.0,
             "last": 50000.5,
             "volume": 100.0,
-            "timestamp": datetime.utcnow().timestamp(),
+            "timestamp": datetime.now(timezone.utc).timestamp(),
         }
     
     def get_ohlcv(self, symbol: str, timeframe: str = '1h', 
@@ -90,7 +90,7 @@ class BinanceExchange(Exchange):
         """
         # Stub implementation
         self.logger.debug(f"Getting OHLCV for {symbol} ({timeframe}) from Binance")
-        now = datetime.utcnow().timestamp() * 1000
+        now = datetime.now(timezone.utc).timestamp() * 1000
         return [
             [now - 3600000, 50000.0, 50100.0, 49900.0, 50050.0, 100.0],
             [now - 7200000, 49800.0, 50000.0, 49700.0, 49900.0, 120.0],
@@ -155,7 +155,7 @@ class BinanceExchange(Exchange):
             "quantity": order.quantity,
             "side": binance_side,
             "type": binance_order_type,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
             "trade_id": "987654321",
             "fee": order.quantity * 0.001,  # 0.1% fee
             "fee_currency": order.symbol.split('/')[1],  # Quote currency
@@ -181,7 +181,7 @@ class BinanceExchange(Exchange):
             "success": True,
             "order_id": order_id,
             "symbol": symbol,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
         }
     
     def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
@@ -208,7 +208,7 @@ class BinanceExchange(Exchange):
             "quantity": 1.0,
             "filled": 1.0,
             "remaining": 0.0,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
         }
     
     def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -234,6 +234,6 @@ class BinanceExchange(Exchange):
                 "remaining": 0.5,
                 "side": "BUY",
                 "type": "LIMIT",
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(timezone.utc),
             }
         ] 

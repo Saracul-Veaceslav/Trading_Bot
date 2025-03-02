@@ -152,7 +152,9 @@ def detect_crossover(series1: pd.Series, series2: pd.Series) -> pd.Series:
     
     # Ensure boolean type to avoid issues with unary ~ operator
     above = above.astype(bool)
-    prev_above = prev_above.fillna(False).astype(bool)
+    # Use recommended approach from warning message to avoid downcasting warning
+    prev_above = prev_above.fillna(False).infer_objects(copy=False)
+    prev_above = prev_above.astype(bool)
     
     # Detect crossovers
     crossover = pd.Series(0, index=series1.index)
