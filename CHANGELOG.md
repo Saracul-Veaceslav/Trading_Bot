@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Portfolio management capabilities
 - Strategy Protocol and StrategyFactory Protocol for better strategy implementation consistency
 - Exchange Protocol and ExchangeFactory Protocol for consistent exchange implementations
+- Dependency injection container with ServiceRegistry for managing service instances and factories
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles

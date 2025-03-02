@@ -233,6 +233,7 @@ def test_core_module_exports():
     assert hasattr(core, "ConfigManager")
     assert hasattr(core, "Logger")
     assert hasattr(core, "EventSystem")
+    assert hasattr(core, "ServiceRegistry")
     
     # Check that domain entities are exported
     assert hasattr(core, "OrderSide")

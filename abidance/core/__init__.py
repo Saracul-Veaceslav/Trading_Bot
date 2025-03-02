@@ -41,6 +41,9 @@ from .types import (
     Result
 )
 
+# Import dependency injection container
+from .container import ServiceRegistry
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -187,6 +190,7 @@ __all__ = [
     "ConfigManager",
     "Logger",
     "EventSystem",
+    "ServiceRegistry",
     
     # Domain entities
     "OrderSide",

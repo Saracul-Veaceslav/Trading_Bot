@@ -29,6 +29,17 @@ The Abidance Trading Bot is organized into the following core components:
 - **No Circular Imports**: The module structure is designed to avoid circular imports
 - **Categorized Exports**: Exports in `__all__` are often categorized with comments for better readability
 
+## Dependency Injection
+
+- **ServiceRegistry**: A simple dependency injection container for managing service instances
+  - Supports registering services by type or name
+  - Supports factory functions for creating service instances
+  - Supports singleton and transient service lifetimes
+  - Provides a clear API for registering and retrieving services
+  - Facilitates loose coupling between components
+  - Enables easier testing through service substitution
+  - Centralizes service creation and configuration
+
 ## Domain Model
 
 - **Core Entities**: The system is built around well-defined domain entities:
