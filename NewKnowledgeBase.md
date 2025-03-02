@@ -251,47 +251,194 @@ else:
 from abidance.core.validation import Validator, ValidationError
 from typing import List, Any
 
-class PasswordValidator(Validator):
+class CustomPasswordValidator(Validator):
     def validate(self, value: Any) -> List[ValidationError]:
         errors = []
-        
         if not isinstance(value, str):
-            errors.append(ValidationError(
-                field="",
-                message="Password must be a string",
-                code="type"
-            ))
+            errors.append(ValidationError("password", "Password must be a string", "TYPE_ERROR"))
             return errors
             
         if len(value) < 8:
-            errors.append(ValidationError(
-                field="",
-                message="Password must be at least 8 characters",
-                code="min_length"
-            ))
+            errors.append(ValidationError("password", "Password must be at least 8 characters", "MIN_LENGTH"))
             
         if not any(c.isupper() for c in value):
-            errors.append(ValidationError(
-                field="",
-                message="Password must contain at least one uppercase letter",
-                code="uppercase"
-            ))
-            
-        if not any(c.islower() for c in value):
-            errors.append(ValidationError(
-                field="",
-                message="Password must contain at least one lowercase letter",
-                code="lowercase"
-            ))
+            errors.append(ValidationError("password", "Password must contain at least one uppercase letter", "UPPERCASE_REQUIRED"))
             
         if not any(c.isdigit() for c in value):
-            errors.append(ValidationError(
-                field="",
-                message="Password must contain at least one digit",
-                code="digit"
-            ))
+            errors.append(ValidationError("password", "Password must contain at least one digit", "DIGIT_REQUIRED"))
             
         return errors
+```
+
+## Metrics Collection System
+
+The Abidance Trading Bot implements a comprehensive metrics collection system that enables tracking and analyzing various aspects of the application's performance and behavior. The metrics system consists of two main parts:
+
+1. **Core Metrics Framework (metrics.py)**: The foundation of the metrics system that defines the basic metrics structures:
+   - `MetricsCollector`: A base class for collecting and retrieving metrics with timestamps
+   - `AggregationType`: An enumeration of supported aggregation types (SUM, AVG, MIN, MAX, COUNT, LAST, FIRST)
+
+2. **Specialized Metrics Collectors (collectors.py)**: A collection of specialized collectors for different types of metrics:
+   - `PerformanceMetricsCollector`: Tracks execution time, memory usage, and CPU usage
+   - `TradingMetricsCollector`: Tracks trading activities, orders, trades, portfolio values, and positions
+   - `SystemMetricsCollector`: Tracks system-level metrics like CPU, memory, disk, and network usage
+
+This two-tier approach allows for flexible metrics collection while maintaining a clean separation of concerns. The lower-level metrics framework provides the core functionality, while the higher-level collectors provide specialized metrics collection logic.
+
+### Key Features
+
+- **Time-Based Metrics**: All metrics are recorded with timestamps, allowing for time-based filtering and analysis
+- **Thread Safety**: The metrics collection system is thread-safe, allowing for concurrent access from multiple threads
+- **Aggregation**: Metrics can be aggregated using various aggregation types (sum, average, min, max, count, etc.)
+- **Filtering**: Metrics can be filtered by time range (since, until) for targeted analysis
+- **Performance Timing**: The `PerformanceMetricsCollector` provides a decorator for timing function execution
+- **Trading Metrics**: The `TradingMetricsCollector` provides methods for tracking orders, trades, and portfolio values
+- **System Monitoring**: The `SystemMetricsCollector` provides methods for tracking system resource usage
+
+### Usage Examples
+
+#### Basic Metrics Collection
+
+```python
+from abidance.core.metrics import MetricsCollector
+
+# Create a metrics collector
+collector = MetricsCollector()
+
+# Record a metric
+collector.record("api_requests", 1)
+
+# Record a metric with a specific timestamp
+from datetime import datetime
+collector.record_with_timestamp("api_latency", 150, datetime.now())
+
+# Get metrics
+metrics = collector.get_metric("api_requests")
+print(f"API requests: {metrics}")
+
+# Get the latest metric value
+latest = collector.get_latest("api_latency")
+print(f"Latest API latency: {latest} ms")
+```
+
+#### Using Aggregation
+
+```python
+from abidance.core.metrics import MetricsCollector, AggregationType
+
+# Create a metrics collector
+collector = MetricsCollector()
+
+# Record multiple metrics
+collector.record("response_time", 100)
+collector.record("response_time", 150)
+collector.record("response_time", 120)
+
+# Aggregate metrics
+avg_response_time = collector.aggregate("response_time", AggregationType.AVG)
+max_response_time = collector.aggregate("response_time", AggregationType.MAX)
+min_response_time = collector.aggregate("response_time", AggregationType.MIN)
+
+print(f"Average response time: {avg_response_time} ms")
+print(f"Maximum response time: {max_response_time} ms")
+print(f"Minimum response time: {min_response_time} ms")
+```
+
+#### Performance Timing
+
+```python
+from abidance.core.collectors import PerformanceMetricsCollector
+
+# Create a performance metrics collector
+collector = PerformanceMetricsCollector()
+
+# Use the timer manually
+collector.start_timer("database_query")
+# ... perform database query ...
+elapsed = collector.stop_timer("database_query")
+print(f"Database query took {elapsed:.2f} seconds")
+
+# Use the decorator for timing functions
+@collector.time_function()
+def process_data(data):
+    # ... process data ...
+    return result
+
+# Call the function - timing will be recorded automatically
+result = process_data(data)
+
+# Get the timing metrics
+timing_metrics = collector.get_metric("timer.process_data")
+print(f"Process data timing: {timing_metrics}")
+```
+
+#### Trading Metrics
+
+```python
+from abidance.core.collectors import TradingMetricsCollector
+
+# Create a trading metrics collector
+collector = TradingMetricsCollector()
+
+# Record an order
+collector.record_order(
+    order_id="123",
+    symbol="BTC/USD",
+    side="buy",
+    order_type="market",
+    quantity=1.0,
+    price=50000.0
+)
+
+# Record a trade
+collector.record_trade(
+    trade_id="456",
+    symbol="BTC/USD",
+    side="buy",
+    quantity=1.0,
+    price=50000.0,
+    fee=25.0
+)
+
+# Record portfolio value
+collector.record_portfolio_value(100000.0)
+
+# Record a position
+collector.record_position(
+    symbol="BTC/USD",
+    quantity=1.0,
+    entry_price=50000.0,
+    current_price=52000.0
+)
+
+# Get a trading summary
+summary = collector.get_trading_summary("BTC/USD")
+print(f"Trading summary: {summary}")
+```
+
+#### System Metrics
+
+```python
+from abidance.core.collectors import SystemMetricsCollector
+
+# Create a system metrics collector
+collector = SystemMetricsCollector()
+
+# Start collecting system metrics in the background
+collector.start_collection(interval=5.0)  # Collect every 5 seconds
+
+# ... application runs ...
+
+# Stop collection
+collector.stop_collection()
+
+# Get CPU metrics
+cpu_metrics = collector.get_metric("system.cpu.percent")
+print(f"CPU usage: {cpu_metrics}")
+
+# Get memory metrics
+memory_metrics = collector.get_metric("system.memory.percent")
+print(f"Memory usage: {memory_metrics}")
 ```
 
 ## Environment Management

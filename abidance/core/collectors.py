@@ -1,0 +1,351 @@
+"""
+Specialized metric collectors for the Abidance trading bot.
+
+This module provides specialized metric collectors for different aspects
+of the application, such as performance, trading, and system metrics.
+"""
+
+from typing import Dict, Any, Optional, List, Union, Callable
+from datetime import datetime, timedelta
+import time
+import threading
+import psutil
+import os
+from functools import wraps
+
+from .metrics import MetricsCollector, AggregationType
+
+
+class PerformanceMetricsCollector(MetricsCollector):
+    """
+    Collector for performance-related metrics.
+    
+    This collector specializes in tracking execution time, memory usage,
+    and other performance-related metrics.
+    """
+    
+    def __init__(self):
+        """Initialize the performance metrics collector."""
+        super().__init__()
+        self._timers: Dict[str, float] = {}
+    
+    def start_timer(self, timer_name: str) -> None:
+        """
+        Start a timer for measuring execution time.
+        
+        Args:
+            timer_name: The name of the timer
+        """
+        self._timers[timer_name] = time.time()
+    
+    def stop_timer(self, timer_name: str) -> float:
+        """
+        Stop a timer and record the elapsed time.
+        
+        Args:
+            timer_name: The name of the timer
+            
+        Returns:
+            The elapsed time in seconds
+            
+        Raises:
+            KeyError: If the timer was not started
+        """
+        if timer_name not in self._timers:
+            raise KeyError(f"Timer '{timer_name}' was not started")
+            
+        elapsed = time.time() - self._timers[timer_name]
+        self.record(f"timer.{timer_name}", elapsed)
+        del self._timers[timer_name]
+        return elapsed
+    
+    def record_memory_usage(self, label: str = "memory") -> float:
+        """
+        Record the current memory usage of the process.
+        
+        Args:
+            label: Label to use for the metric
+            
+        Returns:
+            The memory usage in bytes
+        """
+        process = psutil.Process(os.getpid())
+        memory_info = process.memory_info()
+        memory_usage = memory_info.rss  # Resident Set Size in bytes
+        self.record(f"{label}.rss", memory_usage)
+        return memory_usage
+    
+    def record_cpu_usage(self, label: str = "cpu") -> float:
+        """
+        Record the current CPU usage of the process.
+        
+        Args:
+            label: Label to use for the metric
+            
+        Returns:
+            The CPU usage as a percentage
+        """
+        process = psutil.Process(os.getpid())
+        cpu_percent = process.cpu_percent(interval=0.1)
+        self.record(f"{label}.percent", cpu_percent)
+        return cpu_percent
+    
+    def time_function(self, func_name: Optional[str] = None):
+        """
+        Decorator to time a function's execution.
+        
+        Args:
+            func_name: Optional name for the timer. If not provided,
+                      the function's name will be used.
+                      
+        Returns:
+            A decorator function
+        """
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                timer_name = func_name or func.__name__
+                self.start_timer(timer_name)
+                try:
+                    result = func(*args, **kwargs)
+                    return result
+                finally:
+                    self.stop_timer(timer_name)
+            return wrapper
+        return decorator
+
+
+class TradingMetricsCollector(MetricsCollector):
+    """
+    Collector for trading-related metrics.
+    
+    This collector specializes in tracking trading activity, such as
+    orders, trades, and portfolio performance.
+    """
+    
+    def record_order(self, order_id: str, symbol: str, side: str, 
+                    order_type: str, quantity: float, price: float) -> None:
+        """
+        Record an order.
+        
+        Args:
+            order_id: The ID of the order
+            symbol: The trading symbol
+            side: The order side (buy/sell)
+            order_type: The order type (market/limit/etc.)
+            quantity: The order quantity
+            price: The order price
+        """
+        self.record(f"order.{symbol}.{side}", {
+            "order_id": order_id,
+            "symbol": symbol,
+            "side": side,
+            "type": order_type,
+            "quantity": quantity,
+            "price": price,
+            "timestamp": datetime.now()
+        })
+        
+        # Also record order count metrics
+        self.record(f"order_count.{symbol}.{side}", 1)
+        self.record(f"order_volume.{symbol}.{side}", quantity)
+        self.record(f"order_value.{symbol}.{side}", quantity * price)
+    
+    def record_trade(self, trade_id: str, symbol: str, side: str,
+                    quantity: float, price: float, fee: float) -> None:
+        """
+        Record a trade.
+        
+        Args:
+            trade_id: The ID of the trade
+            symbol: The trading symbol
+            side: The trade side (buy/sell)
+            quantity: The trade quantity
+            price: The trade price
+            fee: The trade fee
+        """
+        self.record(f"trade.{symbol}.{side}", {
+            "trade_id": trade_id,
+            "symbol": symbol,
+            "side": side,
+            "quantity": quantity,
+            "price": price,
+            "fee": fee,
+            "timestamp": datetime.now()
+        })
+        
+        # Also record trade count metrics
+        self.record(f"trade_count.{symbol}.{side}", 1)
+        self.record(f"trade_volume.{symbol}.{side}", quantity)
+        self.record(f"trade_value.{symbol}.{side}", quantity * price)
+        self.record(f"trade_fee.{symbol}", fee)
+    
+    def record_portfolio_value(self, portfolio_value: float) -> None:
+        """
+        Record the current portfolio value.
+        
+        Args:
+            portfolio_value: The total value of the portfolio
+        """
+        self.record("portfolio.value", portfolio_value)
+    
+    def record_position(self, symbol: str, quantity: float, 
+                       entry_price: float, current_price: float) -> None:
+        """
+        Record a position.
+        
+        Args:
+            symbol: The trading symbol
+            quantity: The position quantity
+            entry_price: The average entry price
+            current_price: The current market price
+        """
+        position_value = quantity * current_price
+        unrealized_pnl = quantity * (current_price - entry_price)
+        unrealized_pnl_percent = (unrealized_pnl / (quantity * entry_price)) * 100 if quantity * entry_price != 0 else 0
+        
+        self.record(f"position.{symbol}", {
+            "symbol": symbol,
+            "quantity": quantity,
+            "entry_price": entry_price,
+            "current_price": current_price,
+            "position_value": position_value,
+            "unrealized_pnl": unrealized_pnl,
+            "unrealized_pnl_percent": unrealized_pnl_percent,
+            "timestamp": datetime.now()
+        })
+    
+    def get_trading_summary(self, symbol: Optional[str] = None, 
+                           since: Optional[datetime] = None,
+                           until: Optional[datetime] = None) -> Dict[str, Any]:
+        """
+        Get a summary of trading activity.
+        
+        Args:
+            symbol: Optional symbol to filter by
+            since: Optional start time for filtering
+            until: Optional end time for filtering
+            
+        Returns:
+            A dictionary with trading summary metrics
+        """
+        # Define metric patterns to aggregate
+        patterns = []
+        if symbol:
+            patterns.extend([
+                f"order_count.{symbol}.*",
+                f"order_volume.{symbol}.*",
+                f"order_value.{symbol}.*",
+                f"trade_count.{symbol}.*",
+                f"trade_volume.{symbol}.*",
+                f"trade_value.{symbol}.*",
+                f"trade_fee.{symbol}"
+            ])
+        else:
+            patterns.extend([
+                "order_count.*",
+                "order_volume.*",
+                "order_value.*",
+                "trade_count.*",
+                "trade_volume.*",
+                "trade_value.*",
+                "trade_fee.*"
+            ])
+        
+        # Collect metrics matching the patterns
+        summary = {}
+        for pattern in patterns:
+            # In a real implementation, we would use pattern matching
+            # For simplicity, we'll just use exact matches for now
+            if pattern.endswith(".*"):
+                base_pattern = pattern[:-2]
+                buy_metric = f"{base_pattern}.buy"
+                sell_metric = f"{base_pattern}.sell"
+                
+                buy_value = self.aggregate(buy_metric, AggregationType.SUM, since, until) or 0
+                sell_value = self.aggregate(sell_metric, AggregationType.SUM, since, until) or 0
+                
+                metric_name = base_pattern.split(".")[-1]
+                summary[f"{metric_name}_buy"] = buy_value
+                summary[f"{metric_name}_sell"] = sell_value
+                summary[metric_name] = buy_value + sell_value
+            else:
+                summary[pattern.split(".")[-1]] = self.aggregate(pattern, AggregationType.SUM, since, until) or 0
+        
+        return summary
+
+
+class SystemMetricsCollector(MetricsCollector):
+    """
+    Collector for system-related metrics.
+    
+    This collector specializes in tracking system metrics such as
+    CPU usage, memory usage, disk I/O, and network activity.
+    """
+    
+    def __init__(self):
+        """Initialize the system metrics collector."""
+        super().__init__()
+        self._collection_thread = None
+        self._stop_collection = threading.Event()
+    
+    def collect_system_metrics(self, interval: float = 60.0) -> None:
+        """
+        Collect system metrics at regular intervals.
+        
+        Args:
+            interval: The collection interval in seconds
+        """
+        while not self._stop_collection.is_set():
+            # Collect CPU metrics
+            cpu_percent = psutil.cpu_percent(interval=0.1)
+            self.record("system.cpu.percent", cpu_percent)
+            
+            # Collect memory metrics
+            memory = psutil.virtual_memory()
+            self.record("system.memory.total", memory.total)
+            self.record("system.memory.available", memory.available)
+            self.record("system.memory.used", memory.used)
+            self.record("system.memory.percent", memory.percent)
+            
+            # Collect disk metrics
+            disk = psutil.disk_usage('/')
+            self.record("system.disk.total", disk.total)
+            self.record("system.disk.used", disk.used)
+            self.record("system.disk.free", disk.free)
+            self.record("system.disk.percent", disk.percent)
+            
+            # Collect network metrics
+            net_io = psutil.net_io_counters()
+            self.record("system.network.bytes_sent", net_io.bytes_sent)
+            self.record("system.network.bytes_recv", net_io.bytes_recv)
+            self.record("system.network.packets_sent", net_io.packets_sent)
+            self.record("system.network.packets_recv", net_io.packets_recv)
+            
+            # Wait for the next collection interval
+            self._stop_collection.wait(interval)
+    
+    def start_collection(self, interval: float = 60.0) -> None:
+        """
+        Start collecting system metrics in a background thread.
+        
+        Args:
+            interval: The collection interval in seconds
+        """
+        if self._collection_thread and self._collection_thread.is_alive():
+            return
+            
+        self._stop_collection.clear()
+        self._collection_thread = threading.Thread(
+            target=self.collect_system_metrics,
+            args=(interval,),
+            daemon=True
+        )
+        self._collection_thread.start()
+    
+    def stop_collection(self) -> None:
+        """Stop collecting system metrics."""
+        if self._collection_thread and self._collection_thread.is_alive():
+            self._stop_collection.set()
+            self._collection_thread.join(timeout=1.0)
+            self._collection_thread = None 

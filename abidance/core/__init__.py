@@ -76,6 +76,14 @@ from .validators import (
     CustomValidator
 )
 
+# Import metrics
+from abidance.core.metrics import MetricsCollector, AggregationType
+from abidance.core.collectors import (
+    PerformanceMetricsCollector,
+    TradingMetricsCollector,
+    SystemMetricsCollector
+)
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -270,4 +278,11 @@ __all__ = [
     'PatternValidator',
     'EmailValidator',
     'CustomValidator',
+    
+    # Metrics
+    'MetricsCollector',
+    'AggregationType',
+    'PerformanceMetricsCollector',
+    'TradingMetricsCollector',
+    'SystemMetricsCollector'
 ] 
