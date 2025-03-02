@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-exchange support
 - Portfolio management capabilities
 - Strategy Protocol and StrategyFactory Protocol for better strategy implementation consistency
+- Exchange Protocol and ExchangeFactory Protocol for consistent exchange implementations
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
