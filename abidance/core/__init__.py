@@ -64,6 +64,18 @@ from .configuration import Configuration
 # Import environment
 from .environment import Environment
 
+# Import validation framework
+from .validation import ValidationError, Validator, ValidationContext
+from .validators import (
+    RequiredValidator,
+    TypeValidator,
+    RangeValidator,
+    LengthValidator,
+    PatternValidator,
+    EmailValidator,
+    CustomValidator
+)
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -245,5 +257,17 @@ __all__ = [
     "DataCallback",
     "ConfigValue",
     "Config",
-    "Result"
+    "Result",
+    
+    # Validation
+    'ValidationError',
+    'Validator',
+    'ValidationContext',
+    'RequiredValidator',
+    'TypeValidator',
+    'RangeValidator',
+    'LengthValidator',
+    'PatternValidator',
+    'EmailValidator',
+    'CustomValidator',
 ] 

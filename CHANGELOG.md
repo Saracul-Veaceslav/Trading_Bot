@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Event handler registry for centralized event handler management
 - Event subscription and handler grouping capabilities
 - Event handler decorator for simplified event registration
+- Validation framework with common validators (Required, Type, Range, Length, Pattern, Email, Custom)
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
