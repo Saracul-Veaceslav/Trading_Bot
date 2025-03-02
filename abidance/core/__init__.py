@@ -47,6 +47,9 @@ from .container import ServiceRegistry
 # Import application bootstrap
 from .bootstrap import ApplicationBootstrap
 
+# Import event system
+from .events import EventSystem, Event, EventHandler, EventFilter
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -195,6 +198,9 @@ __all__ = [
     "EventSystem",
     "ServiceRegistry",
     "ApplicationBootstrap",
+    "Event",
+    "EventHandler",
+    "EventFilter",
     
     # Domain entities
     "OrderSide",

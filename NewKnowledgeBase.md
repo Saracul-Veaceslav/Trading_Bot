@@ -52,6 +52,18 @@ The Abidance Trading Bot is organized into the following core components:
   - Centralizes error handling during application startup
   - Facilitates testing by allowing component substitution
 
+## Event System
+
+- **EventSystem**: A framework for event-driven architecture
+  - Provides a centralized event bus for publishing and subscribing to events
+  - Supports event filtering based on event type and data
+  - Allows multiple handlers to be registered for the same event type
+  - Supports unregistering handlers and clearing all handlers
+  - Includes event metadata like timestamp and source
+  - Facilitates loose coupling between components through event-based communication
+  - Enables asynchronous processing through event propagation
+  - Provides a consistent approach to event handling across the application
+
 ## Domain Model
 
 - **Core Entities**: The system is built around well-defined domain entities:

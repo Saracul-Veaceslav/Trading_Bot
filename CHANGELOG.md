@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exchange Protocol and ExchangeFactory Protocol for consistent exchange implementations
 - Dependency injection container with ServiceRegistry for managing service instances and factories
 - Application bootstrap framework with ApplicationBootstrap class for application initialization and component management
+- Event system with EventSystem class for event-driven architecture, supporting event registration, emission, and filtering
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
