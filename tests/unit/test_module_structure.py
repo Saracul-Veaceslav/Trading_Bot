@@ -77,6 +77,10 @@ def test_strategy_module_exports():
     assert hasattr(strategy, "RSIStrategy")
     assert hasattr(strategy, "RSIConfig")
     
+    # Check that protocols are exported
+    assert hasattr(strategy, "StrategyProtocol")
+    assert hasattr(strategy, "StrategyFactory")
+    
     # Check that indicators are exported
     assert hasattr(strategy, "calculate_sma")
     assert hasattr(strategy, "calculate_ema")
@@ -94,6 +98,8 @@ def test_strategy_module_exports():
         "SMAConfig",
         "RSIStrategy",
         "RSIConfig",
+        "StrategyProtocol",
+        "StrategyFactory",
         "calculate_sma",
         "calculate_ema",
         "calculate_rsi",

@@ -10,6 +10,7 @@ from .base import Strategy, StrategyConfig
 from .registry import StrategyRegistry
 from .sma import SMAStrategy, SMAConfig
 from .rsi import RSIStrategy, RSIConfig
+from .protocols import Strategy as StrategyProtocol, StrategyFactory
 from .indicators import (
     calculate_sma,
     calculate_ema,
@@ -24,6 +25,10 @@ __all__ = [
     # Base classes
     "Strategy",
     "StrategyConfig",
+    
+    # Protocols
+    "StrategyProtocol",
+    "StrategyFactory",
     
     # Registry
     "StrategyRegistry",

@@ -94,6 +94,8 @@ The Abidance Trading Bot is organized into the following core components:
 - **Technical Indicators**: Common indicators like SMA, RSI, MACD are implemented in a utility module
 - **Signal Generation**: Standardized approach to generating trading signals
 - **Order Creation**: Consistent pattern for converting signals to orders
+- **Strategy Protocol**: Protocol defining the interface that all strategies must implement
+- **StrategyFactory Protocol**: Protocol for creating strategy instances with consistent configuration
 
 ## Risk Management
 
@@ -214,6 +216,27 @@ The Abidance Trading Bot is organized into the following core components:
      - Add deprecation warnings to the adapter classes to encourage migration
      - Eventually remove the adapter classes once all code has been migrated
 
+9. **Protocol-Based Strategy Implementation**
+   - **Problem**: Strategy implementations lacked a consistent interface, making it difficult to ensure all strategies provided the required functionality
+   - **Solution**: Implemented Protocol classes to define the required interface for strategies and strategy factories
+   - **Implementation**:
+     - Created `StrategyProtocol` to define the required methods for all strategy implementations
+     - Created `StrategyFactory` protocol to define the interface for creating strategy instances
+     - Added runtime type checking to ensure strategies satisfy the protocol
+     - Created comprehensive tests to verify that existing strategies satisfy the protocol
+     - Added documentation to explain the purpose and usage of the protocols
+   - **Benefits**:
+     - Provides a clear contract for strategy implementations
+     - Enables static type checking for strategy implementations
+     - Makes it easier to create new strategies by providing a clear interface to implement
+     - Improves code maintainability by ensuring consistent strategy interfaces
+     - Facilitates better testing by allowing mock strategies that satisfy the protocol
+   - **Future Improvements**:
+     - Consider adding more specific protocols for different types of strategies
+     - Add protocol validation at runtime when strategies are registered
+     - Provide utility functions to simplify common strategy operations
+     - Create a strategy template generator to bootstrap new strategy implementations
+
 ## Best Practices
 
 - **Type Hinting**: Using Python type hints throughout the codebase
@@ -224,6 +247,7 @@ The Abidance Trading Bot is organized into the following core components:
 - **Configuration**: Externalized configuration for easy deployment
 - **Logging**: Structured logging for better diagnostics
 - **Dependency Injection**: Using dependency injection for better testability
+- **Protocol-Based Design**: Using protocols to define interfaces for better type checking and consistency
 
 ## Error Handling in SMA Strategy
 - The SMA strategy's error handling was improved to ensure errors are properly logged
