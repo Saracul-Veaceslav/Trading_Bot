@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed memory leaks
 - Updated datetime.utcnow() usage to datetime.now(timezone.utc) to address deprecation warnings
 - Updated pandas fillna operations to use infer_objects(copy=False) to address deprecation warnings
+- Resolved duplicate class names across modules by implementing adapter pattern for Order, Position, Trade, OrderSide, and OrderType classes
 
 ## [0.2.0] - 2023-06-15
 

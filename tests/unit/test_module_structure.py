@@ -153,6 +153,8 @@ def test_trading_module_exports():
     assert hasattr(trading, "Trade")
     assert hasattr(trading, "Position")
     assert hasattr(trading, "TradingEngine")
+    assert hasattr(trading, "OrderSide")
+    assert hasattr(trading, "OrderType")
     
     # Check that __all__ is defined correctly
     expected_all = [
@@ -160,6 +162,8 @@ def test_trading_module_exports():
         "Trade",
         "Position",
         "TradingEngine",
+        "OrderSide",
+        "OrderType",
     ]
     assert set(trading.__all__) == set(expected_all)
 

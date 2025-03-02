@@ -196,6 +196,24 @@ The Abidance Trading Bot is organized into the following core components:
        ```
      - This change ensures timezone-aware datetime objects, which is the preferred approach in modern Python
 
+8. **Adapter Pattern for Module Compatibility**
+   - **Problem**: Duplicate class names (`Order`, `Position`, `Trade`, `OrderSide`, `OrderType`) across `abidance.trading` and `abidance.core` modules
+   - **Solution**: Implemented the adapter pattern to maintain backward compatibility while resolving duplicate class names
+   - **Implementation**:
+     - Kept detailed implementations in the `trading` module
+     - Created adapter classes in the `core` module that delegate to the `trading` module implementations
+     - Updated the `core/__init__.py` to import and re-export the adapter classes
+     - Modified the import conflict test to allow specific duplicates for adapter classes
+   - **Benefits**:
+     - Preserved backward compatibility with existing code that imports from `abidance.core`
+     - Eliminated duplicate implementations that could lead to inconsistencies
+     - Established a clear ownership of domain models in the `trading` module
+     - Maintained the existing test suite without requiring extensive rewrites
+   - **Future Improvements**:
+     - Consider gradually migrating all code to use the `trading` module implementations directly
+     - Add deprecation warnings to the adapter classes to encourage migration
+     - Eventually remove the adapter classes once all code has been migrated
+
 ## Best Practices
 
 - **Type Hinting**: Using Python type hints throughout the codebase

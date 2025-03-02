@@ -7,13 +7,17 @@ including configuration management, logging, event handling, and domain entities
 
 # Import domain entities
 from .domain import (
+    SignalType,
+    Signal,
+    Candle
+)
+
+# Import trading domain entities
+from abidance.trading import (
     OrderSide,
     OrderType,
-    SignalType,
     Position,
     Order,
-    Signal,
-    Candle,
     Trade
 )
 
