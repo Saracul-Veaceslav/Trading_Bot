@@ -64,6 +64,28 @@ The Abidance Trading Bot is organized into the following core components:
   - Enables asynchronous processing through event propagation
   - Provides a consistent approach to event handling across the application
 
+## Environment Management
+
+- **Environment**: A class for managing environment variables
+  - Provides methods for loading environment variables from .env files
+  - Supports type conversion for boolean, integer, float, list, dictionary, and path values
+  - Handles required environment variables with clear error messages
+  - Supports default values for missing environment variables
+  - Provides a consistent API for accessing environment variables
+  - Centralizes environment variable access and validation
+  - Facilitates testing by allowing environment variable mocking
+  - Supports filtering environment variables by prefix
+  - Uses Path.exists() instead of os.path.exists() for better testability
+  - Raises ConfigurationError with descriptive messages when environment files don't exist
+  - Implements comprehensive type conversion with error handling
+  - Provides get_all() method to retrieve all environment variables with a specific prefix
+  - Integrates with the Configuration class for a complete configuration management system
+  - Supports both .env file loading and direct environment variable access
+  - Includes comprehensive test coverage with mocking of environment variables and file operations
+  - Follows a consistent error handling pattern across all methods
+  - Provides clear documentation for all methods and parameters
+  - Implements a clean separation between loading and accessing environment variables
+
 ## Domain Model
 
 - **Core Entities**: The system is built around well-defined domain entities:
@@ -119,6 +141,32 @@ The Abidance Trading Bot is organized into the following core components:
 - **Environment Variables**: Support for environment variable interpolation
 - **Defaults**: Sensible defaults are provided for most configuration options
 - **Strategy-Specific Config**: Each strategy has its own configuration class
+- **Environment Management**: Dedicated Environment class for handling environment variables with type conversion
+
+## Configuration and Environment Integration
+
+- **Layered Configuration**: The system supports a layered configuration approach
+  - Base configuration from YAML files
+  - Environment variable overrides with the `ABIDANCE_` prefix
+  - Command-line argument overrides (planned)
+  - Runtime configuration changes
+- **Backward Compatibility**: The Configuration class maintains backward compatibility with existing code
+  - Supports both direct environment variable names and prefixed names
+  - Maps common configuration keys to their environment variable equivalents
+  - Preserves existing behavior while enabling new features
+- **Type Conversion**: Both Configuration and Environment classes handle type conversion
+  - Environment class provides specialized methods for different types
+  - Configuration class handles nested dictionaries and complex structures
+  - Both use consistent error handling patterns
+- **Validation**: Configuration validation ensures required fields are present
+  - Required keys are checked before the application starts
+  - Type validation ensures values are of the expected type
+  - Range validation ensures values are within acceptable bounds
+- **Testing**: Comprehensive test coverage for both classes
+  - Mocking of environment variables and file operations
+  - Tests for edge cases and error conditions
+  - Tests for type conversion and validation
+  - Tests for backward compatibility
 
 ## Trading Strategies
 
@@ -235,7 +283,29 @@ The Abidance Trading Bot is organized into the following core components:
        ```
      - This change ensures timezone-aware datetime objects, which is the preferred approach in modern Python
 
-8. **Adapter Pattern for Module Compatibility**
+8. **Resolving Import Conflicts and Module Shadowing**
+   - **Module Shadowing Issues**:
+     - Identified and resolved cases where module names shadowed Python standard library or third-party modules
+     - Renamed modules to avoid conflicts with built-in modules
+     - Used absolute imports to ensure correct module resolution
+     - Implemented consistent import patterns across the codebase
+   - **Duplicate Class Names**:
+     - Identified and resolved cases where the same class name was used in multiple modules
+     - Renamed classes to be more specific and avoid conflicts
+     - Added tests to detect duplicate class names across modules
+     - Implemented a test that verifies no module shadowing occurs
+   - **Import Conflict Resolution**:
+     - Created a test suite specifically for detecting import conflicts
+     - Implemented tests for detecting module shadowing, duplicate class names, and wildcard imports
+     - Added checks for direct internal imports that could cause circular dependencies
+     - Established a consistent import pattern across the codebase
+   - **Package Structure Improvements**:
+     - Reorganized the package structure to avoid naming conflicts
+     - Implemented tests to verify the package structure is correct
+     - Added checks for duplicate modules in the package
+     - Ensured all modules have proper `__init__.py` files with explicit exports
+
+9. **Adapter Pattern for Module Compatibility**
    - **Problem**: Duplicate class names (`Order`, `Position`, `Trade`, `OrderSide`, `OrderType`) across `abidance.trading` and `abidance.core` modules
    - **Solution**: Implemented the adapter pattern to maintain backward compatibility while resolving duplicate class names
    - **Implementation**:
@@ -248,53 +318,58 @@ The Abidance Trading Bot is organized into the following core components:
      - Eliminated duplicate implementations that could lead to inconsistencies
      - Established a clear ownership of domain models in the `trading` module
      - Maintained the existing test suite without requiring extensive rewrites
-   - **Future Improvements**:
-     - Consider gradually migrating all code to use the `trading` module implementations directly
-     - Add deprecation warnings to the adapter classes to encourage migration
-     - Eventually remove the adapter classes once all code has been migrated
 
-9. **Protocol-Based Strategy Implementation**
-   - **Problem**: Strategy implementations lacked a consistent interface, making it difficult to ensure all strategies provided the required functionality
-   - **Solution**: Implemented Protocol classes to define the required interface for strategies and strategy factories
-   - **Implementation**:
-     - Created `StrategyProtocol` to define the required methods for all strategy implementations
-     - Created `StrategyFactory` protocol to define the interface for creating strategy instances
-     - Added runtime type checking to ensure strategies satisfy the protocol
-     - Created comprehensive tests to verify that existing strategies satisfy the protocol
-     - Added documentation to explain the purpose and usage of the protocols
-   - **Benefits**:
-     - Provides a clear contract for strategy implementations
-     - Enables static type checking for strategy implementations
-     - Makes it easier to create new strategies by providing a clear interface to implement
-     - Improves code maintainability by ensuring consistent strategy interfaces
-     - Facilitates better testing by allowing mock strategies that satisfy the protocol
-   - **Future Improvements**:
-     - Consider adding more specific protocols for different types of strategies
-     - Add protocol validation at runtime when strategies are registered
-     - Provide utility functions to simplify common strategy operations
-     - Create a strategy template generator to bootstrap new strategy implementations
-
-10. **Protocol-Based Exchange Implementation**
-    - **Problem**: Exchange implementations lacked a consistent interface, making it difficult to ensure all exchanges provided the required functionality
-    - **Solution**: Implemented Protocol classes to define the required interface for exchanges and exchange factories
+10. **Configuration Class Improvements**
+    - **Problem**: The `Configuration` class had inconsistencies between implementation and tests, particularly with environment variable handling
+    - **Solution**: Refactored the `Configuration` class to align with test expectations and improve functionality
     - **Implementation**:
-      - Created `Exchange` protocol to define the required methods for all exchange implementations
-      - Created `ExchangeFactory` protocol to define the interface for creating exchange instances
-      - Added runtime type checking to ensure exchanges satisfy the protocol
-      - Created comprehensive tests to verify that existing exchanges satisfy the protocol
-      - Added documentation to explain the purpose and usage of the protocols
-      - Created a factory function for creating exchange instances from configuration
+      - Renamed internal `_config` attribute to `data` for better clarity and consistency with tests
+      - Enhanced `load_from_env` method to properly handle environment variables with the `ABIDANCE_` prefix
+      - Added JSON parsing for environment variables that contain list or dictionary values
+      - Implemented type conversion for boolean, integer, and float values
+      - Added backward compatibility for specific hardcoded environment variable mappings
+      - Renamed `validate_required` to `validate_required_keys` while maintaining backward compatibility
     - **Benefits**:
-      - Provides a clear contract for exchange implementations
-      - Enables static type checking for exchange implementations
-      - Makes it easier to create new exchange adapters by providing a clear interface to implement
-      - Improves code maintainability by ensuring consistent exchange interfaces
-      - Facilitates better testing by allowing mock exchanges that satisfy the protocol
-    - **Future Improvements**:
-      - Consider adding more specific protocols for different types of exchanges
-      - Add protocol validation at runtime when exchanges are registered
-      - Provide utility functions to simplify common exchange operations
-      - Create an exchange template generator to bootstrap new exchange implementations
+      - Improved consistency between implementation and tests
+      - Enhanced environment variable handling with proper type conversion
+      - Maintained backward compatibility with existing code
+      - Simplified configuration management with clearer attribute naming
+      - Improved error handling for configuration validation
+
+11. **Import Conflict Resolution**
+    - **Problem**: Duplicate class names and module paths between different parts of the codebase
+    - **Solution**: Centralized exception definitions and restructured imports to avoid conflicts
+    - **Implementation**:
+      - Moved `ConfigurationError` definition to the `exceptions` module
+      - Updated imports in the `core.config` module to use the centralized exception
+      - Resolved duplicate module paths by ensuring proper import structure
+      - Added tests to verify no duplicate modules or class names exist
+    - **Benefits**:
+      - Eliminated import conflicts that could lead to unexpected behavior
+      - Improved code organization with clear ownership of exception definitions
+      - Enhanced maintainability by centralizing common exceptions
+      - Simplified debugging by ensuring consistent exception handling
+      - Improved test coverage for package structure validation
+
+12. **Environment Class Implementation**
+    - **Problem**: Environment variable handling was scattered across different parts of the codebase
+    - **Solution**: Created a dedicated Environment class to centralize environment variable management
+    - **Implementation**:
+      - Created a new `Environment` class in `abidance.core.environment`
+      - Implemented methods for loading environment variables from .env files
+      - Added type conversion methods for boolean, integer, float, list, dictionary, and path values
+      - Provided support for required environment variables with clear error messages
+      - Added default value handling for missing environment variables
+      - Created comprehensive tests for all functionality
+      - Updated the .env.example file with comprehensive configuration options
+    - **Benefits**:
+      - Centralized environment variable access and validation
+      - Improved type safety with dedicated conversion methods
+      - Enhanced error handling with clear error messages
+      - Simplified testing with better mockability
+      - Improved documentation of available environment variables
+      - Standardized environment variable naming and usage
+      - Reduced code duplication for environment variable handling
 
 ## Best Practices
 
@@ -307,6 +382,7 @@ The Abidance Trading Bot is organized into the following core components:
 - **Logging**: Structured logging for better diagnostics
 - **Dependency Injection**: Using dependency injection for better testability
 - **Protocol-Based Design**: Using protocols to define interfaces for better type checking and consistency
+- **Environment Variables**: Using environment variables for configuration with proper validation and type conversion
 
 ## Error Handling in SMA Strategy
 - The SMA strategy's error handling was improved to ensure errors are properly logged
@@ -320,3 +396,131 @@ The Abidance Trading Bot is organized into the following core components:
   4. Ensuring proper cleanup to avoid reference cycles
 - This approach should be used sparingly, only when standard error handling mechanisms are insufficient
 - It's particularly useful for testing error handling in complex scenarios
+
+## Environment Class
+
+The Environment class provides a centralized way to manage environment variables in the application:
+
+- Methods for loading environment variables from `.env` files
+- Support for type conversion (boolean, integer, float, list, dictionary, path)
+- Handling of required environment variables with clear error messages
+- Default values for missing variables
+- Centralized access and validation of environment variables
+- Facilitates testing and mocking
+- Support for filtering environment variables by prefix
+
+Example usage:
+```python
+# Create and load environment
+env = Environment()
+env.load(".env")
+
+# Get values with type conversion
+debug_mode = env.get_bool("DEBUG", False)
+port = env.get_int("PORT", 8000)
+risk_percentage = env.get_float("RISK_PERCENTAGE", 1.0)
+symbols = env.get_list("TRADING_SYMBOLS", ["BTC/USDT"])
+config = env.get_dict("APP_CONFIG", {})
+log_dir = env.get_path("LOG_DIR", "./logs")
+
+# Get required values (raises exception if missing)
+api_key = env.get_required("API_KEY")
+
+# Get all variables with a specific prefix
+trading_vars = env.get_all("TRADING_")
+```
+
+## Configuration Class
+
+The Configuration class is responsible for managing application configuration:
+
+- Loading configuration from different sources (dictionary, YAML, environment variables)
+- Accessing configuration values with dot notation or get() method
+- Setting configuration values
+- Merging configurations
+- Validating required keys
+- Converting to dictionary
+- Saving to YAML
+
+The class now properly handles environment variables with the `ABIDANCE_` prefix, converting them to the appropriate configuration keys. For example, `ABIDANCE_TRADING_DEFAULT_EXCHANGE=binance` will be converted to `trading.default_exchange=binance` in the configuration.
+
+Type conversion is also supported for environment variables, allowing for proper handling of booleans, integers, floats, lists, and dictionaries.
+
+## Import Conflicts
+
+We've identified and resolved several import conflicts in the codebase:
+
+- Module shadowing issues where modules with the same name existed in different packages
+- Duplicate class names across modules
+- Circular imports that caused initialization issues
+- Inconsistent import patterns
+
+The solution involved:
+
+1. Restructuring the imports to follow a consistent pattern
+2. Using absolute imports instead of relative imports for clarity
+3. Implementing the adapter pattern to resolve duplicate class names
+4. Centralizing common exceptions in a dedicated exceptions module
+5. Standardizing module exports in __init__.py files
+
+## Clean Architecture
+
+The codebase now follows Clean Architecture principles:
+
+- Clear separation of concerns with domain models, use cases, interfaces, and infrastructure
+- Dependency inversion with protocols and dependency injection
+- Entity-centric design with domain models at the core
+- Use cases that orchestrate the business logic
+- Interfaces that define the contracts between layers
+- Infrastructure components that implement the interfaces
+
+## Error Handling
+
+We've implemented a comprehensive error handling strategy:
+
+- Error context enrichment for better debugging
+- Error boundary context manager for controlled error handling
+- Retry mechanism with exponential backoff for transient errors
+- Circuit breaker pattern to prevent cascading failures
+- Fallback mechanisms for graceful degradation
+
+## Event-Driven Architecture
+
+The application now uses an event-driven architecture:
+
+- EventSystem class for registering and emitting events
+- Support for event filtering
+- Asynchronous event handling
+- Event propagation control
+
+## Dependency Injection
+
+We've implemented a dependency injection container:
+
+- ServiceRegistry for managing service instances and factories
+- Support for singleton and transient services
+- Factory functions for creating services with dependencies
+- Clear separation of service creation and usage
+
+## Testing
+
+We've improved the testing strategy:
+
+- Comprehensive test suite covering all modules
+- Unit tests for individual components
+- Integration tests for component interactions
+- End-to-end tests for complete workflows
+- Test fixtures and utilities for common testing scenarios
+- Mocking of external dependencies
+- Test isolation for reliable results
+- Test performance optimizations
+
+## Type Definitions
+
+We've created a comprehensive type definitions module:
+
+- Common type aliases for improved code readability
+- Custom types for domain-specific concepts
+- Type utilities for common operations
+- Protocol definitions for interface contracts
+- Type annotations for better IDE support and static analysis

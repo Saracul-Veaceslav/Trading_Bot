@@ -50,6 +50,12 @@ from .bootstrap import ApplicationBootstrap
 # Import event system
 from .events import EventSystem, Event, EventHandler, EventFilter
 
+# Import configuration management
+from .configuration import Configuration
+
+# Import environment
+from .environment import Environment
+
 # Define classes to be exported
 class ConfigManager:
     """
@@ -201,6 +207,8 @@ __all__ = [
     "Event",
     "EventHandler",
     "EventFilter",
+    "Configuration",
+    "Environment",
     
     # Domain entities
     "OrderSide",

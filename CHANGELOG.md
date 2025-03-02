@@ -2,89 +2,111 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+## Unreleased
 
 ### Added
-- Core domain model extraction with clear entity definitions (OrderSide, OrderType, SignalType, Position, Order, Signal, Candle, Trade)
-- Type definitions module with common type aliases and custom types
-- Consistent module structure with standardized __init__.py files and explicit exports
-- Comprehensive tests for module structure and imports
-- Web monitoring capabilities with Streamlit dashboard
-- User guides and documentation
+- Core domain model extraction
+- Type definitions module
+- Web monitoring capabilities
 - Risk management module
-- Machine learning integration for strategy enhancement
-- Backtesting framework
-- REST API support
-- WebSocket support
-- Notification system
-- Multi-exchange support
-- Portfolio management capabilities
-- Strategy Protocol and StrategyFactory Protocol for better strategy implementation consistency
-- Exchange Protocol and ExchangeFactory Protocol for consistent exchange implementations
-- Dependency injection container with ServiceRegistry for managing service instances and factories
-- Application bootstrap framework with ApplicationBootstrap class for application initialization and component management
-- Event system with EventSystem class for event-driven architecture, supporting event registration, emission, and filtering
+- Machine learning integration
+- Comprehensive exception hierarchy
+- Event-driven architecture
+- Dependency injection container
+- Application bootstrap framework
+- Strategy factory pattern
+- Exchange adapter pattern
+- Technical indicator utilities
+- Data management utilities
+- Configuration validation
+- Circuit breaker pattern
+- Retry mechanism with exponential backoff
+- Error boundary context manager
+- Error context enrichment
+- Plugin architecture
+- Comprehensive test suite
+- Documentation for all modules
+- Environment class for environment variable management
+- Enhanced .env.example file with comprehensive configuration options
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
-- Improved error handling with context-aware exceptions
-- Enhanced logging system
-- Optimized data processing
-- Modularized strategy implementation
-- Standardized configuration management
+- Improved error handling with contextual information
+- Enhanced logging with structured data
+- Standardized module structure and exports
+- Simplified configuration management
 - Improved type annotations
-- Reorganized package structure
+- Improved naming conventions
+- Enhanced test coverage
+- Improved documentation
+- Optimized performance-critical code paths
+- Improved error messages
 
 ### Fixed
-- Module shadowing in imports
-- Improved error handling in SMA strategy
-- Fixed parameter naming in RSI strategy (changed 'type' to 'order_type')
-- Removed unnecessary 'params' parameter in RSI strategy
-- Fixed threshold crossover detection
-- Enhanced test coverage
-- Resolved concurrency issues
-- Fixed configuration validation
-- Improved error messages
-- Addressed performance bottlenecks
-- Fixed memory leaks
-- Updated datetime.utcnow() usage to datetime.now(timezone.utc) to address deprecation warnings
-- Updated pandas fillna operations to use infer_objects(copy=False) to address deprecation warnings
-- Resolved duplicate class names across modules by implementing adapter pattern for Order, Position, Trade, OrderSide, and OrderType classes
+- Module shadowing issues
+- Parameter naming inconsistencies
+- Concurrency issues
+- Performance bottlenecks
+- Deprecated warnings
+- Import conflicts
+- Duplicate class names
+- Environment variable loading issues
+- Type conversion issues
+- Backward compatibility issues
+- Inconsistencies in error handling
+- Inconsistencies in logging
+- Inconsistencies in type annotations
+- Inconsistencies in documentation
 
-## [0.2.0] - 2023-06-15
+## 0.2.0
 
 ### Added
-- Multiple strategy support
-- Position sizing module
-- Risk management rules
-- Improved backtesting capabilities
-- Data visualization tools
+- Backtesting module
 - Performance metrics
-- Strategy optimization tools
+- Strategy optimization
+- Portfolio management
+- Multi-timeframe analysis
+- Advanced technical indicators
+- Market sentiment analysis
+- Risk management rules
+- Position sizing algorithms
+- Reporting and visualization
+- Telegram notifications
+- Email alerts
+- Web dashboard
+- REST API
+- WebSocket support
+- Database integration
+- Logging enhancements
+- Configuration management
+- Documentation
 
 ### Changed
-- Enhanced error handling
-- Improved logging
-- Optimized data processing
-- Better configuration management
+- Improved strategy framework
+- Enhanced exchange integration
+- Optimized data handling
+- Refactored core components
+- Updated dependencies
 
 ### Fixed
-- Fixed bugs in order execution
-- Improved error recovery
-- Enhanced exception handling
-- Fixed data synchronization issues
+- Memory leaks in data processing
+- Race conditions in order execution
+- Error handling in API calls
+- Configuration loading issues
+- Timezone handling bugs
+- Performance issues in backtesting
+- Strategy signal calculation errors
 
-## [0.1.0] - 2023-03-01
+## 0.1.0
 
 ### Added
 - Initial release
-- Basic trading bot framework
-- Simple Moving Average (SMA) strategy
-- Relative Strength Index (RSI) strategy
-- Binance exchange integration
-- Data management system
+- Basic trading functionality
+- Support for Binance exchange
+- SMA crossover strategy
+- RSI strategy
+- Data collection and storage
+- Simple backtesting
 - Configuration system
-- Logging system 
+- Logging system
+- Command-line interface 
