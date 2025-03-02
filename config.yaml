@@ -1,0 +1,96 @@
+# Trading Bot Configuration
+# Configured for paper trading with XRP/USDT
+
+# General settings
+general:
+  log_level: INFO
+  log_file: logs/trading_bot.log
+  data_dir: data
+  results_dir: results
+  timezone: UTC
+
+# Trading settings
+trading:
+  mode: paper  # Set to paper trading mode
+  update_interval: 60  # seconds between updates
+  max_open_trades: 3
+  daily_target_profit: 0.02  # 2% daily target
+  exit_on_target: true  # Exit all positions when daily target is reached
+
+# Exchange settings
+exchange:
+  name: binance  # Using Binance
+  testnet: true  # Use testnet for paper trading
+
+  # API credentials (required for paper trading)
+  # To get Testnet API keys:
+  # 1. For Futures Testnet: Visit https://testnet.binancefuture.com/ and look for the "API Key" tab
+  # 2. For Spot Testnet: Visit https://testnet.binance.vision/, sign in with GitHub, and click "Generate HMAC_SHA256 Key"
+  credentials:
+    binance:
+      api_key: YOUR_API_KEY_HERE
+      api_secret: YOUR_API_SECRET_HERE
+
+  # Rate limiting
+  rate_limit: 
+    requests_per_minute: 1200
+    order_rate_limit: 50
+
+# Trading pairs configuration
+symbols:
+  - symbol: XRP/USDT  # Trading XRP/USDT
+    timeframe: 15m    # Using 15-minute candles
+    strategy: sma_crossover  # Using SMA crossover strategy
+    quantity: 100     # Fixed quantity per trade
+    max_allocation: 0.2  # Max 20% of capital
+    
+# Risk management settings
+risk:
+  max_risk_per_trade: 0.01  # 1% max risk per trade
+  max_risk_total: 0.05  # 5% max total risk
+  default_stop_loss_pct: 0.03  # 3% default stop loss
+  use_trailing_stop: true
+  trailing_stop_activation_pct: 0.02  # 2% profit to activate trailing stop
+  trailing_stop_distance_pct: 0.015  # 1.5% trailing stop distance
+  target_profit_pct: 0.05  # 5% take profit
+  use_atr_for_stops: false  # Use ATR for stop loss calculation
+  atr_multiplier: 2.0
+  atr_period: 14
+
+# Strategy-specific settings
+strategies:
+  sma_crossover:
+    short_window: 10
+    long_window: 50
+    
+  rsi_strategy:
+    rsi_period: 14
+    oversold_threshold: 30
+    overbought_threshold: 70
+
+# Backtesting settings (not used for paper trading but included for completeness)
+backtest:
+  start_date: 2022-01-01
+  end_date: 2022-12-31
+  initial_capital: 10000
+  commission: 0.001  # 0.1% commission per trade
+  slippage: 0.0005  # 0.05% slippage
+
+# Notification settings
+notifications:
+  enabled: false  # Set to true if you want notifications
+  methods:
+    telegram:
+      enabled: false
+    email:
+      enabled: false
+    discord:
+      enabled: false
+  
+  events:
+    trade_opened: true
+    trade_closed: true
+    stop_loss_hit: true
+    take_profit_hit: true
+    daily_summary: true
+    error: true 

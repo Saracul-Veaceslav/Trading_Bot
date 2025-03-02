@@ -1,18 +1,141 @@
-# Trading Bot
+# Abidance Crypto Trading Bot
 
-A flexible cryptocurrency trading bot framework for implementing and testing various trading strategies.
+A comprehensive cryptocurrency trading bot framework with support for multiple exchanges, strategies, and risk management techniques.
 
-## Overview
+## Features
 
-This Trading Bot is designed to automate cryptocurrency trading using various technical analysis strategies. It supports multiple exchanges, timeframes, and trading pairs, with a focus on modularity and extensibility.
+- **Multi-Exchange Support**: Integration with cryptocurrency exchanges (primarily Binance)
+- **Trading Strategy Framework**: Support for implementing and executing various trading strategies
+  - Pre-built strategies include SMA Crossover and RSI Bollinger Bands
+  - Modular design for adding custom strategies
+- **Risk Management System**: 
+  - Multiple position sizing algorithms (Fixed Risk, Volatility-based, Kelly Criterion)
+  - Stop-loss and take-profit functionality
+- **Data Management**: 
+  - Historical and real-time OHLCV data handling
+  - Storage and retrieval via both file-based and database systems
+- **Backtesting Capabilities**: Ability to test strategies against historical market data
+- **Error Handling Framework**: Comprehensive error management with retries, fallbacks, and circuit breakers
 
-Key features include:
-- Multiple built-in trading strategies (SMA Crossover, RSI with Bollinger Bands)
-- Support for multiple exchanges
-- Comprehensive risk management
-- Data collection and storage
-- Backtesting capabilities
-- Customizable configuration
+## Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/abidance.git
+   cd abidance
+   ```
+
+2. Create and activate a virtual environment:
+   ```
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+## Configuration
+
+1. Copy the example configuration file:
+   ```
+   cp config.yaml.example config.yaml
+   ```
+
+2. Edit the configuration file to set up your trading preferences:
+   - API credentials for your exchange
+   - Trading pairs and timeframes
+   - Strategy parameters
+   - Risk management settings
+
+### Getting Binance Testnet API Keys
+
+For paper trading, you'll need Binance Testnet API keys:
+
+1. For Futures Testnet:
+   - Visit https://testnet.binancefuture.com/
+   - Look for the "API Key" tab in the panel below the main chart
+
+2. For Spot Testnet:
+   - Visit https://testnet.binance.vision/
+   - Sign in with GitHub
+   - Click "Generate HMAC_SHA256 Key"
+
+## Usage
+
+### Running the Bot
+
+To run the bot with default settings from the config file:
+```
+python abidance_main.py
+```
+
+### Command Line Options
+
+- `--config CONFIG`: Path to configuration file (default: config.yaml)
+- `--symbol SYMBOL`: Trading symbol (overrides config.yaml)
+- `--timeframe TIMEFRAME`: Timeframe for analysis (overrides config.yaml)
+- `--strategy STRATEGY`: Trading strategy to use (overrides config.yaml)
+- `--backtest`: Run in backtest mode
+- `--timeout TIMEOUT`: Timeout in seconds (0 for no timeout, default: 0)
+
+### Examples
+
+Run with a specific symbol and timeframe:
+```
+python abidance_main.py --symbol BTC/USDT --timeframe 1h
+```
+
+Run in backtest mode:
+```
+python abidance_main.py --backtest
+```
+
+Run with a specific strategy:
+```
+python abidance_main.py --strategy rsi_strategy
+```
+
+## Available Strategies
+
+1. **SMA Crossover Strategy**
+   - Uses two Simple Moving Averages to generate buy/sell signals
+   - Buy when short SMA crosses above long SMA
+   - Sell when short SMA crosses below long SMA
+
+2. **RSI Strategy**
+   - Uses Relative Strength Index to identify overbought/oversold conditions
+   - Buy when RSI crosses below oversold threshold and then back above
+   - Sell when RSI crosses above overbought threshold and then back below
+
+## Development
+
+### Project Structure
+
+- `abidance/`: Main package
+  - `core/`: Core functionality
+  - `data/`: Data management
+  - `exchange/`: Exchange integrations
+  - `strategy/`: Trading strategies
+  - `trading/`: Trading engine and order management
+  - `type_defs/`: Type definitions
+  - `exceptions/`: Custom exceptions
+  - `utils/`: Utility functions
+
+### Adding a New Strategy
+
+1. Create a new file in the `abidance/strategy/` directory
+2. Implement the `Strategy` interface
+3. Register your strategy in the `StrategyRegistry`
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This software is for educational purposes only. Use at your own risk. The authors are not responsible for any financial losses incurred from using this software.
 
 ## 🚨 Important Notice: Package Structure Changes
 
@@ -20,38 +143,6 @@ Key features include:
 
 The package has been renamed from mixed-case `Trading_Bot` to lowercase `trading_bot` following Python conventions.
 For migration instructions, see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md).
-
-## Installation
-
-### Prerequisites
-- Python 3.9 or higher
-- pip (Python package manager)
-
-### Setup
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/Trading_Bot.git
-   cd Trading_Bot
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-
-3. Install the package in development mode:
-   ```bash
-   pip install -e .
-   ```
-
-4. Create a configuration file:
-   ```bash
-   cp config.yaml.example config.yaml
-   ```
-
-5. Edit the configuration file with your exchange API keys and strategy parameters.
 
 ## Configuration
 
@@ -81,56 +172,6 @@ risk_management:
   stop_loss_pct: 0.02     # 2% stop loss
   take_profit_pct: 0.05   # 5% take profit
 ```
-
-## Usage
-
-### Running the Bot
-
-To start the bot with the default configuration:
-
-```bash
-trading-bot
-```
-
-Or directly with Python:
-
-```bash
-python -m trading_bot
-```
-
-With specific parameters:
-
-```bash
-trading-bot --strategy sma_crossover --symbol BTC/USDT --interval 1h
-```
-
-### Command Line Arguments
-
-- `--strategy`: Trading strategy to use (default: sma_crossover)
-- `--symbol`: Trading pair (default: BTC/USDT)
-- `--interval`: Timeframe (default: 1h)
-- `--exchange`: Exchange to use (default: binance)
-- `--config`: Path to configuration file (default: config.yaml)
-- `--test`: Run in test mode without executing real trades (default: True)
-
-## Available Strategies
-
-### SMA Crossover
-A simple moving average crossover strategy that generates buy signals when the short-term moving average crosses above the long-term moving average, and sell signals when it crosses below.
-
-Parameters:
-- `short_window`: Period for the short-term moving average
-- `long_window`: Period for the long-term moving average
-
-### RSI with Bollinger Bands
-A strategy that uses the Relative Strength Index (RSI) in combination with Bollinger Bands to identify overbought and oversold conditions.
-
-Parameters:
-- `rsi_period`: Period for RSI calculation
-- `rsi_overbought`: RSI level considered overbought
-- `rsi_oversold`: RSI level considered oversold
-- `bb_period`: Period for Bollinger Bands calculation
-- `bb_std_dev`: Standard deviation multiplier for Bollinger Bands
 
 ## Testing
 
@@ -230,10 +271,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Disclaimer
-
-This software is for educational purposes only. Do not risk money which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING RESULTS. 
+ 

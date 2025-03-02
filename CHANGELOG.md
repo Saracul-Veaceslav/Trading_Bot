@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Performance and scalability optimizations
 - Created comprehensive migration guide for standardizing package structure
 - Created scripts for automating import updates during migration
+- Created USER_GUIDE.md with comprehensive instructions for non-technical users on how to set up, run, and monitor the trading bot
 - Implemented comprehensive error handling framework with:
   - ErrorContext class for enriching exceptions with contextual information
   - error_boundary context manager for controlled error handling
