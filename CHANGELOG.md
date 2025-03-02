@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Comprehensive exception hierarchy
 - Event-driven architecture
 - Dependency injection container
+- Global service registry instance
 - Application bootstrap framework
 - Strategy factory pattern
 - Exchange adapter pattern

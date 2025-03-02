@@ -39,6 +39,58 @@ The Abidance Trading Bot is organized into the following core components:
   - Facilitates loose coupling between components
   - Enables easier testing through service substitution
   - Centralizes service creation and configuration
+- **Global Registry Instance**: A global instance of the ServiceRegistry is available
+  - Accessible via `from abidance.core import registry`
+  - Provides a centralized service registry for the entire application
+  - Simplifies service access without passing the registry around
+  - Follows the singleton pattern for global access
+  - Enables components to register and retrieve services from anywhere in the application
+  - Can be cleared for testing purposes to ensure test isolation
+
+## Service Registry Implementation
+
+The Service Registry is implemented in the `abidance.core.container` module and provides a simple dependency injection container for the application. Key aspects of the implementation include:
+
+- **Type-Based Registration**: Services can be registered by their type (class or protocol) or by a string name
+- **Factory Functions**: Support for lazy instantiation through factory functions
+- **Singleton Management**: Automatic caching of singleton instances for efficient reuse
+- **Transient Services**: Support for creating new instances on each request
+- **Clear API**: Simple methods for registering, checking, and retrieving services
+- **Type Safety**: Comprehensive type annotations for better IDE support and static analysis
+- **Global Instance**: A global registry instance is available for application-wide service access
+- **Testing Support**: The registry can be cleared for test isolation
+
+Example usage:
+```python
+from abidance.core import registry, ServiceRegistry
+
+# Register a service instance
+registry.register(Logger, logger_instance)
+
+# Register a service with a name
+registry.register("config", config_instance)
+
+# Register a factory function for lazy instantiation
+registry.register_factory(Database, create_database, singleton=True)
+
+# Check if a service is registered
+if registry.has(Logger):
+    # Get a service
+    logger = registry.get(Logger)
+    logger.info("Service retrieved from registry")
+
+# Get a named service
+config = registry.get("config")
+
+# Clear the registry (useful for testing)
+registry.clear()
+
+# Create a local registry for specific components
+local_registry = ServiceRegistry()
+local_registry.register(Cache, cache_instance)
+```
+
+The Service Registry facilitates dependency injection throughout the application, making component dependencies explicit and easier to manage. This reduces tight coupling between components and improves testability by allowing dependencies to be easily substituted during testing.
 
 ## Application Bootstrap
 
@@ -371,6 +423,25 @@ The Abidance Trading Bot is organized into the following core components:
       - Standardized environment variable naming and usage
       - Reduced code duplication for environment variable handling
 
+13. **Service Registry Implementation**
+    - **Problem**: Component dependencies were tightly coupled, making testing and maintenance difficult
+    - **Solution**: Implemented a service registry for dependency injection
+    - **Implementation**:
+      - Created a `ServiceRegistry` class in `abidance.core.container`
+      - Added support for registering services by type or name
+      - Implemented factory functions for lazy instantiation
+      - Added singleton and transient service lifetimes
+      - Created a global registry instance for application-wide access
+      - Added comprehensive tests for all functionality
+    - **Benefits**:
+      - Reduced tight coupling between components
+      - Improved testability through dependency substitution
+      - Centralized service creation and configuration
+      - Simplified component access through the global registry
+      - Enhanced maintainability with clear component dependencies
+      - Improved code organization with dependency inversion
+      - Facilitated testing with registry clearing for isolation
+
 ## Best Practices
 
 - **Type Hinting**: Using Python type hints throughout the codebase
@@ -501,6 +572,9 @@ We've implemented a dependency injection container:
 - Support for singleton and transient services
 - Factory functions for creating services with dependencies
 - Clear separation of service creation and usage
+- Global registry instance for centralized service access
+- Simplified service registration and retrieval
+- Improved testability with registry clearing
 
 ## Testing
 

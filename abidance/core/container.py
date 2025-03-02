@@ -126,3 +126,6 @@ class ServiceRegistry:
         self._services.clear()
         self._factories.clear()
         self._singletons.clear() 
+
+# Global service registry instance
+registry = ServiceRegistry() 

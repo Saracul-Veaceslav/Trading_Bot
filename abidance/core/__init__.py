@@ -42,7 +42,7 @@ from .types import (
 )
 
 # Import dependency injection container
-from .container import ServiceRegistry
+from .container import ServiceRegistry, registry
 
 # Import application bootstrap
 from .bootstrap import ApplicationBootstrap
@@ -203,6 +203,7 @@ __all__ = [
     "Logger",
     "EventSystem",
     "ServiceRegistry",
+    "registry",
     "ApplicationBootstrap",
     "Event",
     "EventHandler",
