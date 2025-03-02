@@ -10,12 +10,24 @@ The Abidance Trading Bot is organized into the following core components:
   - **strategy**: Trading strategies and technical indicators
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
+  - **typing**: Alternative type definitions (to be consolidated with type_defs)
   - **exceptions**: Custom exception hierarchy
   - **utils**: Utility functions and common helpers
   - **data**: Data management and storage
   - **risk**: Risk management and position sizing
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
+  - **api**: API interfaces and implementations
+  - **ml**: Machine learning models and utilities
+
+## Module Structure
+
+- **Consistent Exports**: Each module has a well-defined `__all__` list that explicitly declares its public API
+- **Docstrings**: Every module has a comprehensive docstring explaining its purpose
+- **Import Organization**: Imports are organized in a consistent pattern across modules
+- **Explicit Imports**: Modules explicitly import and re-export components from submodules
+- **No Circular Imports**: The module structure is designed to avoid circular imports
+- **Categorized Exports**: Exports in `__all__` are often categorized with comments for better readability
 
 ## Domain Model
 
@@ -63,6 +75,7 @@ The Abidance Trading Bot is organized into the following core components:
 - **Mocking**: Test utilities for mocking external dependencies
 - **Fixtures**: Reusable test data and configurations
 - **Test Helper Methods**: Common testing utilities for frequently used patterns
+- **Module Structure Tests**: Tests to verify consistent module structure and exports
 
 ## Configuration Management
 
