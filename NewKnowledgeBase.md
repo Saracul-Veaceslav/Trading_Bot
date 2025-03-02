@@ -182,6 +182,118 @@ group.subscribe("order", lambda event: print(f"Order: {event.data}"))
 group.unsubscribe_all()
 ```
 
+## Validation Framework
+
+The Abidance Trading Bot implements a comprehensive validation framework that provides a consistent way to validate data across the application. The validation framework consists of two main parts:
+
+1. **Core Validation Framework (validation.py)**: The foundation of the validation system that defines the basic validation structures:
+   - `ValidationError`: A dataclass representing a validation error with field, message, and code
+   - `Validator`: An abstract base class that all validators must implement
+   - `ValidationContext`: A class that manages multiple validators for different fields
+
+2. **Common Validators (validators.py)**: A collection of common validators that can be used throughout the application:
+   - `RequiredValidator`: Ensures a value is not None or empty
+   - `TypeValidator`: Ensures a value is of a specific type
+   - `RangeValidator`: Ensures a numeric value is within a specified range
+   - `LengthValidator`: Ensures a value's length is within a specified range
+   - `PatternValidator`: Ensures a string value matches a regular expression pattern
+   - `EmailValidator`: Ensures a string value is a valid email address
+   - `CustomValidator`: Uses a custom validation function for complex validation logic
+
+This two-tier approach allows for flexible validation while maintaining a clean separation of concerns. The lower-level validation framework provides the core functionality, while the higher-level validators provide common validation logic.
+
+### Usage Examples
+
+#### Basic Validation
+
+```python
+from abidance.core.validation import ValidationError, Validator
+from abidance.core.validators import RequiredValidator
+
+# Create a validator
+validator = RequiredValidator()
+
+# Validate a value
+errors = validator.validate(None)
+if errors:
+    for error in errors:
+        print(f"Validation error: {error}")
+```
+
+#### Using the ValidationContext
+
+```python
+from abidance.core.validation import ValidationContext
+from abidance.core.validators import RequiredValidator, TypeValidator, RangeValidator
+
+# Create a validation context
+context = ValidationContext()
+
+# Add validators for different fields
+context.add_validator("name", RequiredValidator())
+context.add_validator("name", TypeValidator(str))
+context.add_validator("age", TypeValidator(int))
+context.add_validator("age", RangeValidator(min_value=18, max_value=120))
+
+# Validate data
+data = {"name": "John Doe", "age": 30}
+if context.is_valid(data):
+    print("Data is valid")
+else:
+    errors = context.validate(data)
+    for error in errors:
+        print(f"Field '{error.field}': {error.message} (code: {error.code})")
+```
+
+#### Creating a Custom Validator
+
+```python
+from abidance.core.validation import Validator, ValidationError
+from typing import List, Any
+
+class PasswordValidator(Validator):
+    def validate(self, value: Any) -> List[ValidationError]:
+        errors = []
+        
+        if not isinstance(value, str):
+            errors.append(ValidationError(
+                field="",
+                message="Password must be a string",
+                code="type"
+            ))
+            return errors
+            
+        if len(value) < 8:
+            errors.append(ValidationError(
+                field="",
+                message="Password must be at least 8 characters",
+                code="min_length"
+            ))
+            
+        if not any(c.isupper() for c in value):
+            errors.append(ValidationError(
+                field="",
+                message="Password must contain at least one uppercase letter",
+                code="uppercase"
+            ))
+            
+        if not any(c.islower() for c in value):
+            errors.append(ValidationError(
+                field="",
+                message="Password must contain at least one lowercase letter",
+                code="lowercase"
+            ))
+            
+        if not any(c.isdigit() for c in value):
+            errors.append(ValidationError(
+                field="",
+                message="Password must contain at least one digit",
+                code="digit"
+            ))
+            
+        return errors
+```
+
 ## Environment Management
 
 - **Environment**: A class for managing environment variables

@@ -99,7 +99,8 @@ class TestImportConflicts:
             "Position",    # Position class is used in both trading and core (adapter pattern)
             "Trade",       # Trade class is used in both trading and core (adapter pattern)
             "OrderSide",   # OrderSide enum is used in both trading and core
-            "OrderType"    # OrderType enum is used in both trading and core
+            "OrderType",   # OrderType enum is used in both trading and core
+            "ValidationError"  # ValidationError is used in both core and exceptions
         }
         
         real_duplicates = {k: v for k, v in duplicate_classes.items() if k not in allowed_duplicates}
