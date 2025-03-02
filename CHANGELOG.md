@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Core domain model extraction with clear entity definitions (OrderSide, OrderType, SignalType, Position, Order, Signal, Candle, Trade)
+- Type definitions module with common type aliases and custom types
 - Web monitoring capabilities with Streamlit dashboard
 - User guides and documentation
 - Risk management module
