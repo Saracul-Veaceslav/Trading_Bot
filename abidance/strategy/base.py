@@ -3,11 +3,22 @@ Base strategy module defining the abstract Strategy interface.
 """
 from abc import ABC, abstractmethod
 import logging
-from typing import Any, Dict, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Union, ClassVar
 
 import pandas as pd
 
 from ..trading.order import Order
+
+
+@dataclass
+class StrategyConfig:
+    """Base configuration for trading strategies."""
+    name: str
+    symbols: List[str]
+    timeframe: str = '1h'
+    risk_per_trade: float = 0.02  # Default 2% risk per trade
+    parameters: Dict[str, Any] = field(default_factory=dict)
 
 
 class Strategy(ABC):
@@ -18,22 +29,19 @@ class Strategy(ABC):
     its abstract methods to provide a consistent interface.
     """
     
-    def __init__(self, name: str, symbols: List[str], timeframe: str = '1h', 
-                 parameters: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: StrategyConfig):
         """
         Initialize the strategy.
         
         Args:
-            name: Strategy name
-            symbols: List of symbols to trade
-            timeframe: Timeframe for analysis
-            parameters: Strategy-specific parameters
+            config: Strategy configuration
         """
-        self.name = name
-        self.symbols = symbols
-        self.timeframe = timeframe
-        self.parameters = parameters or {}
-        self.logger = logging.getLogger(f"{__name__}.{name}")
+        self.config = config
+        self.name = config.name
+        self.symbols = config.symbols
+        self.timeframe = config.timeframe
+        self.parameters = config.parameters
+        self.logger = logging.getLogger(f"{__name__}.{self.name}")
         
         # State tracking
         self.is_running = False
@@ -53,7 +61,7 @@ class Strategy(ABC):
     @abstractmethod
     def analyze(self, symbol: str, data: pd.DataFrame) -> Dict[str, Any]:
         """
-        Analyze market data and generate signals.
+        Analyze market data and compute indicators.
         
         Args:
             symbol: The market symbol
@@ -67,7 +75,7 @@ class Strategy(ABC):
     @abstractmethod
     def generate_signals(self, symbol: str, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Generate trading signals based on analysis.
+        Generate trading signals based on analysis results.
         
         Args:
             symbol: The market symbol
@@ -88,17 +96,16 @@ class Strategy(ABC):
         Returns:
             Order object or None if no order should be created
         """
-        # Default implementation - override in subclasses for custom logic
-        self.logger.info(f"Creating order from signal: {signal}")
-        
-        # This is a stub - in a real implementation, this would create an Order object
+        # Default implementation returns None
+        # Subclasses can override this method to create orders
         return None
     
     def update(self, symbol: str, data: pd.DataFrame) -> List[Order]:
         """
-        Update the strategy with new data and generate orders.
+        Update the strategy with new market data.
         
-        This is the main entry point for strategy execution.
+        This method is called periodically with new market data.
+        It runs the analysis, generates signals, and creates orders.
         
         Args:
             symbol: The market symbol
@@ -107,11 +114,7 @@ class Strategy(ABC):
         Returns:
             List of orders to execute
         """
-        if symbol not in self.symbols:
-            self.logger.warning(f"Symbol {symbol} not in strategy symbols list")
-            return []
-        
-        # Analyze the data
+        # Analyze market data
         analysis = self.analyze(symbol, data)
         
         # Generate signals
@@ -128,23 +131,19 @@ class Strategy(ABC):
     
     def start(self) -> None:
         """Start the strategy."""
-        if not self.is_running:
-            self.initialize()
-            self.is_running = True
-            self.logger.info(f"Started strategy: {self.name}")
+        self.is_running = True
+        self.initialize()
     
     def stop(self) -> None:
         """Stop the strategy."""
-        if self.is_running:
-            self.is_running = False
-            self.logger.info(f"Stopped strategy: {self.name}")
+        self.is_running = False
     
     def get_state(self) -> Dict[str, Any]:
         """
         Get the current state of the strategy.
         
         Returns:
-            Dictionary with strategy state
+            Dictionary with the current state
         """
         return {
             "name": self.name,
@@ -161,19 +160,13 @@ class Strategy(ABC):
         Set the state of the strategy.
         
         Args:
-            state: Dictionary with strategy state
+            state: Dictionary with the state to set
         """
         if "state" in state:
             self.state = state["state"]
-        if "parameters" in state:
-            self.parameters = state["parameters"]
-        if "is_running" in state:
-            self.is_running = state["is_running"]
         if "last_update_time" in state:
             self.last_update_time = state["last_update_time"]
-        
-        self.logger.debug(f"Updated strategy state: {self.name}")
     
     def __str__(self) -> str:
         """String representation of the strategy."""
-        return f"{self.name} ({', '.join(self.symbols)} @ {self.timeframe})" 
+        return f"{self.name} ({self.__class__.__name__})" 

@@ -2,7 +2,7 @@
 
 import unittest
 import logging
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import pandas as pd
 from datetime import datetime, timedelta
 import sys
@@ -19,6 +19,55 @@ sys.modules['bot.strategies.base'] = tests.test_utils.mock_strategy
 from trading_bot.strategies.sma_crossover import SMAcrossover
 from trading_bot.config.settings import STRATEGY_PARAMS
 
+# Try to import the new strategy implementation if available
+try:
+    from abidance.strategy import SMAStrategy, SMAConfig
+    HAS_NEW_IMPLEMENTATION = True
+except ImportError:
+    HAS_NEW_IMPLEMENTATION = False
+
+
+def get_strategy_instance(short_window, long_window, trading_logger, error_logger):
+    """
+    Factory function to create a strategy instance that works with both old and new implementations.
+    
+    This allows our tests to run on both code versions, facilitating the transition.
+    """
+    # First try the new implementation if available
+    if HAS_NEW_IMPLEMENTATION:
+        # In the new implementation, we patch the logging mechanism
+        with patch('abidance.strategy.base.logging.getLogger') as mock_get_logger:
+            mock_get_logger.return_value = trading_logger
+            
+            # Create configuration
+            config = SMAConfig(
+                name="SMA Test",
+                symbols=["BTCUSDT"],
+                timeframe="1h",
+                fast_period=short_window,
+                slow_period=long_window,
+            )
+            
+            # Create strategy
+            strategy = SMAStrategy(config)
+            
+            # Add backward compatibility attributes
+            strategy.short_window = config.fast_period
+            strategy.long_window = config.slow_period
+            strategy.min_required_candles = strategy.long_window + 1
+            
+            return strategy
+    
+    # Fall back to old implementation
+    old_strategy = SMAcrossover(
+        short_window=short_window,
+        long_window=long_window,
+        trading_logger=trading_logger,
+        error_logger=error_logger
+    )
+    
+    return old_strategy
+
 
 class TestSMAcrossover(unittest.TestCase):
     """Tests for the SMA Crossover strategy."""
@@ -29,9 +78,9 @@ class TestSMAcrossover(unittest.TestCase):
         self.trading_logger = MagicMock(spec=logging.Logger)
         self.error_logger = MagicMock(spec=logging.Logger)
         
-        # Initialize with correct parameters: short_window, long_window, and loggers
-        self.strategy = SMAcrossover(
-            short_window=10, 
+        # Initialize strategy using the factory function
+        self.strategy = get_strategy_instance(
+            short_window=10,
             long_window=50,
             trading_logger=self.trading_logger,
             error_logger=self.error_logger
@@ -40,16 +89,27 @@ class TestSMAcrossover(unittest.TestCase):
         # Backup and modify params for testing
         self.original_params = STRATEGY_PARAMS['sma_crossover'].copy()
         STRATEGY_PARAMS['sma_crossover'] = {'SMA_SHORT': 3, 'SMA_LONG': 5}
-        self.strategy.params = STRATEGY_PARAMS['sma_crossover']
         
-        # Set the short and long window to match the test parameters
-        self.strategy.short_window = STRATEGY_PARAMS['sma_crossover']['SMA_SHORT']
-        self.strategy.long_window = STRATEGY_PARAMS['sma_crossover']['SMA_LONG']
-        self.strategy.min_required_candles = self.strategy.long_window + 1
+        # Set parameters compatible with both versions
+        if HAS_NEW_IMPLEMENTATION:
+            self.strategy.config.fast_period = STRATEGY_PARAMS['sma_crossover']['SMA_SHORT']
+            self.strategy.config.slow_period = STRATEGY_PARAMS['sma_crossover']['SMA_LONG']
+        else:
+            self.strategy.params = STRATEGY_PARAMS['sma_crossover']
+            self.strategy.short_window = STRATEGY_PARAMS['sma_crossover']['SMA_SHORT']
+            self.strategy.long_window = STRATEGY_PARAMS['sma_crossover']['SMA_LONG']
+            
+        self.strategy.min_required_candles = (self.strategy.long_window if hasattr(self.strategy, 'long_window') 
+                                             else self.strategy.config.slow_period) + 1
     
     def tearDown(self):
         """Clean up after tests."""
+        # Restore original parameters
         STRATEGY_PARAMS['sma_crossover'] = self.original_params
+        
+        # Reset mocks
+        self.trading_logger.reset_mock()
+        self.error_logger.reset_mock()
     
     def test_calculate_signal_not_enough_data(self):
         """

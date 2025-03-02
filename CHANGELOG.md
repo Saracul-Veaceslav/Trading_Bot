@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the Abidance Trading Bot project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Web monitoring capabilities through Streamlit
+- User Guide with detailed instructions for non-technical users
+- Support for Binance Testnet monitoring via external dashboard
+- Binance API integration documentation
 - Created a new modular structure for the Trading Bot
 - Implemented core bot infrastructure with command-line interface
 - Added configuration management with support for different data sources
@@ -88,6 +92,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created strategy-specific exceptions for signal generation and execution errors
   - Implemented configuration exceptions for validation and loading errors
   - Added utility exceptions for general purpose error handling
+- Created a reusable technical indicators module with functions for calculating:
+  - Simple Moving Average (SMA)
+  - Exponential Moving Average (EMA)
+  - Relative Strength Index (RSI)
+  - Bollinger Bands
+  - Moving Average Convergence Divergence (MACD)
+  - Crossover detection between data series
 
 ### Changed
 - Refactored project to follow clean architecture principles
@@ -132,6 +143,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized data retrieval with caching mechanisms for frequently accessed data
 - Renamed duplicate module files to avoid conflicts:
   - Renamed abidance/data/manager.py to abidance/data/data_manager.py to avoid conflict with trading_bot/data/manager.py
+- Simplified error handling framework for better readability and maintainability
+- Reduced code duplication in exceptions module
+- Improved error message clarity and context information
+- Streamlined configuration loading with better error messages
+- Refactored trading strategies to use dataclasses for configuration:
+  - Created StrategyConfig base class for common configuration parameters
+  - Added strategy-specific config classes (SMAConfig, RSIConfig)
+  - Simplified strategy initialization with typed configuration objects
+- Extracted common technical indicator calculations into a reusable module
+- Improved signal generation with clearer crossover detection
+- Enhanced backward compatibility in strategy tests to support both old and new implementations
 
 ### Fixed
 - Fixed issues with data handling and pandas warnings
@@ -186,31 +208,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced data repository implementations with comprehensive error handling
 - Fixed module shadowing issue in utils module by using import alias for datetime module
 - Resolved duplicate module issue by renaming conflicting files
-- Fixed module shadowing issue where abidance.typing was shadowing the standard library typing module
-- Renamed typing module to type_defs to avoid conflicts with standard library
+- Fixed module shadowing issue where `abidance.typing` was shadowing the standard library `typing` module
+- Renamed `typing` module to `type_defs` to avoid conflicts with standard library
 - Added proper error handling for invalid string inputs in ensure_timedelta function
 - Created py.typed marker file for type_defs module to indicate type hint support
+- Fixed exception hierarchy to be more consistent
+- Fixed chained assignment warnings in strategy implementations by using proper pandas indexing
+- Improved strategy test compatibility with both old and new implementations
 
 ## [0.2.0] - 2023-08-15
 
 ### Added
-- Risk management module with position sizing
-- Support for additional technical indicators
-- Multi-exchange support via adapters
-- Comprehensive test suite with unit and integration tests
+- Backtesting engine with historical data processing
+- Performance analysis tools for strategy evaluation
+- Risk management system with configurable parameters
+- Multiple position sizing strategies (Fixed Risk, Volatility-based, Kelly Criterion)
+- Support for more technical indicators
+- API endpoints for remote monitoring
 
 ### Changed
-- Refactored strategy implementation for better modularity
-- Improved data management with optimized storage
-- Enhanced logging system with structured logs
+- Updated exchange API integration to support more order types
+- Improved data storage and retrieval system
+- Enhanced logging with structured formatter
+- Optimized strategy execution pipeline
 
 ### Fixed
-- Various bug fixes and performance improvements
+- Race condition in concurrent market data processing
+- Memory leak in long-running backtests
+- Incorrect risk calculation in certain market conditions
+- Timezone handling in historical data analysis
+- Error handling in exchange communication
 
-## [0.1.0] - 2023-04-10
+## [0.1.0] - 2023-04-22
 
 ### Added
-- Initial release with basic trading functionality
-- Support for Binance exchange
-- Implementation of SMA crossover strategy
-- Data fetching and basic backtesting capabilities 
+- Initial implementation of trading bot framework
+- Basic trading strategies: SMA Crossover, RSI
+- Integration with Binance exchange
+- Data management system for OHLCV data
+- Configuration system with YAML support
+- Logging infrastructure
+- Basic exception handling
+- Command-line interface for bot operation 

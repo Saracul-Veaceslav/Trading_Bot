@@ -276,3 +276,95 @@ This document contains insights and knowledge gained during development of the T
 - **Migration Approach**: When renaming modules, update all imports and references in a single coordinated change to avoid breaking functionality.
 - **Type Validation Robustness**: When implementing type conversion functions like `ensure_timedelta`, include comprehensive validation for all possible input formats to prevent subtle bugs.
 - **Error Message Clarity**: Providing clear error messages for invalid inputs helps developers quickly identify and fix issues during development.
+
+## Project Structure
+
+- The `abidance` package is organized into several subpackages that follow domain-driven design principles. The main modules include:
+  - `trading`: Core trading logic and order management
+  - `exchange`: Exchange-specific integrations
+  - `strategy`: Trading strategy implementations
+  - `data`: Data management and storage
+  - `ml`: Machine learning components (currently placeholders)
+  - `api`: API and interface components (currently placeholders)
+  - `core`: Core domain models and business logic
+  - `utils`: Utility functions and helpers
+  - `exceptions`: Centralized exception definitions
+  - `type_defs`: Type definitions for the application
+
+## Code Organization
+
+- The project uses a modular architecture where each domain concept is encapsulated in its own module.
+- Public APIs are exported through `__init__.py` files which control what's accessible from each module.
+- Factory patterns are used to create strategies and position sizers based on configuration.
+- The bot can run in either paper trading (simulation) or live trading mode.
+
+## Exception Handling
+
+- The project uses a hierarchical exception system with `AbidanceError` as the base exception.
+- Domain-specific exceptions inherit from `AbidanceError` to allow for granular error handling.
+- The `ErrorContext` class is used to enrich exceptions with context information for better debugging.
+- Error handling utilities like `error_boundary`, `retry`, and `CircuitBreaker` provide robust error recovery options.
+- When simplifying the exceptions module, we found that using single-line class definitions for simple exceptions significantly improves readability without sacrificing functionality.
+
+## Testing
+
+- Tests are organized into a structure that mirrors the main codebase.
+- Unit tests are separated from integration tests.
+- Tests use pytest fixtures for common setup and teardown operations.
+- Mock objects are used to simulate exchange behavior in tests.
+
+## Configuration
+
+- Configuration is loaded from YAML files with support for environment variable overrides.
+- There's a default configuration that can be customized through command-line arguments.
+- A configuration validation system ensures all required settings are present and valid.
+
+## Trading Strategies
+
+- Trading strategies inherit from a base `Strategy` class that defines common behavior.
+- Each strategy implements its own `analyze` and `generate_signals` methods.
+- Strategies use Pandas DataFrames for efficient data manipulation and indicator calculation.
+- The SMA strategy uses moving average crossovers to generate buy/sell signals.
+- The RSI strategy uses relative strength index values to identify overbought/oversold conditions.
+
+## Risk Management
+
+- Position sizing is handled by specialized classes implementing different sizing algorithms.
+- Stop-loss and take-profit levels can be set in both absolute and percentage terms.
+- Risk parameters are configurable through the main config file.
+
+## Exchange Integration
+
+- Exchange-specific logic is encapsulated in adapter classes that translate between bot concepts and exchange APIs.
+- The Binance exchange implementation supports both actual trading and Testnet for testing.
+- API calls include rate limiting and error handling to prevent issues with exchange connections.
+
+## Data Management
+
+- OHLCV data (Open, High, Low, Close, Volume) is stored in CSV files organized by symbol and timeframe.
+- Trade data is also persistently stored to enable performance analysis.
+- Data retrieval is optimized to minimize exchange API calls.
+
+## Web Interface
+
+- The API module includes placeholder classes for HTTP and WebSocket servers.
+- There are command-line options to start a web interface, but the implementation is not yet complete.
+- Web monitoring could be implemented using Streamlit or FastAPI based on requirements in the configuration.
+
+## Bot Lifecycle
+
+- The bot follows a main loop where it periodically:
+  1. Fetches new market data
+  2. Runs strategy analysis
+  3. Generates signals
+  4. Executes trades based on signals
+  5. Manages existing positions
+- The main loop can be interrupted with CTRL+C for a graceful shutdown.
+
+## Code Refactoring Insights
+
+- Reducing redundancy in exception classes significantly improves code maintainability.
+- Simplified docstrings with focused, clear documentation make the code more readable.
+- Consistent naming patterns across modules make the codebase easier to navigate.
+- The implementation plan outlines a comprehensive roadmap for future development with test-driven approach.
+- Cursor IDE performance can be impacted by overly complex code, especially with deeply nested class hierarchies and verbose docstrings.

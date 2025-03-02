@@ -1,14 +1,24 @@
 """
 Simple Moving Average (SMA) strategy implementation.
 """
+from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import numpy as np
 
 from ..trading.order import Order, OrderSide, OrderType
-from .base import Strategy
+from .base import Strategy, StrategyConfig
+from .indicators import calculate_sma, detect_crossover
 
+
+@dataclass
+class SMAConfig(StrategyConfig):
+    """Configuration for SMA strategy."""
+    fast_period: int = 20
+    slow_period: int = 50
+    volume_factor: float = 1.5
+    
 
 class SMAStrategy(Strategy):
     """
@@ -18,31 +28,16 @@ class SMAStrategy(Strategy):
     and sell signals when the fast SMA crosses below the slow SMA.
     """
     
-    def __init__(self, name: str, symbols: List[str], timeframe: str = '1h', 
-                 parameters: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: SMAConfig):
         """
         Initialize the SMA strategy.
         
         Args:
-            name: Strategy name
-            symbols: List of symbols to trade
-            timeframe: Timeframe for analysis
-            parameters: Strategy-specific parameters
+            config: Strategy configuration
         """
-        # Default parameters
-        default_params = {
-            "fast_period": 20,
-            "slow_period": 50,
-            "volume_factor": 1.5,
-            "risk_per_trade": 0.02,  # 2% risk per trade
-        }
+        super().__init__(config)
+        self.config: SMAConfig = config  # Type hint for IDE support
         
-        # Merge with provided parameters
-        if parameters:
-            default_params.update(parameters)
-            
-        super().__init__(name, symbols, timeframe, default_params)
-    
     def initialize(self) -> None:
         """Initialize the strategy before running."""
         self.logger.info(f"Initializing SMA strategy: {self.name}")
@@ -67,43 +62,33 @@ class SMAStrategy(Strategy):
             Dictionary with analysis results
         """
         # Ensure we have enough data
-        if len(data) < self.parameters["slow_period"]:
+        if len(data) < self.config.slow_period:
             self.logger.warning(f"Not enough data for {symbol} analysis")
             return {"error": "Not enough data"}
         
         # Calculate SMAs
-        fast_period = self.parameters["fast_period"]
-        slow_period = self.parameters["slow_period"]
+        data['fast_sma'] = calculate_sma(data, self.config.fast_period)
+        data['slow_sma'] = calculate_sma(data, self.config.slow_period)
         
-        # Calculate SMAs on the close price
-        data['fast_sma'] = data['close'].rolling(window=fast_period).mean()
-        data['slow_sma'] = data['close'].rolling(window=slow_period).mean()
-        
-        # Calculate crossover signals
-        data['signal'] = 0
-        data.loc[data['fast_sma'] > data['slow_sma'], 'signal'] = 1  # Buy signal
-        data.loc[data['fast_sma'] < data['slow_sma'], 'signal'] = -1  # Sell signal
-        
-        # Calculate signal changes (crossovers)
-        data['signal_change'] = data['signal'].diff()
+        # Detect crossovers
+        data['crossover'] = detect_crossover(data['fast_sma'], data['slow_sma'])
         
         # Volume analysis
-        data['volume_sma'] = data['volume'].rolling(window=fast_period).mean()
+        data['volume_sma'] = calculate_sma(data, self.config.fast_period, 'volume')
         data['volume_ratio'] = data['volume'] / data['volume_sma']
         
         # Get the latest data point
         latest = data.iloc[-1]
         
         # Check if we have a crossover
-        crossover = False
+        crossover_value = latest['crossover']
+        crossover = crossover_value != 0
         crossover_type = None
         
-        if not pd.isna(latest['signal_change']):
-            if latest['signal_change'] > 0:  # Bullish crossover
-                crossover = True
+        if crossover:
+            if crossover_value > 0:
                 crossover_type = "bullish"
-            elif latest['signal_change'] < 0:  # Bearish crossover
-                crossover = True
+            else:
                 crossover_type = "bearish"
         
         # Prepare analysis results
@@ -113,10 +98,9 @@ class SMAStrategy(Strategy):
             "close": latest['close'],
             "fast_sma": latest['fast_sma'],
             "slow_sma": latest['slow_sma'],
-            "signal": latest['signal'],
-            "volume_ratio": latest['volume_ratio'],
             "crossover": crossover,
             "crossover_type": crossover_type,
+            "volume_ratio": latest['volume_ratio'],
             "data": data,  # Include the full data for signal generation
         }
         
@@ -150,7 +134,7 @@ class SMAStrategy(Strategy):
         # Check for crossover
         if analysis["crossover"]:
             # Volume confirmation
-            volume_confirmed = analysis["volume_ratio"] >= self.parameters["volume_factor"]
+            volume_confirmed = analysis["volume_ratio"] >= self.config.volume_factor
             
             if analysis["crossover_type"] == "bullish" and volume_confirmed:
                 # Generate buy signal
@@ -201,46 +185,28 @@ class SMAStrategy(Strategy):
         Returns:
             Order object or None if no order should be created
         """
-        symbol = signal["symbol"]
-        price = signal["price"]
-        
         if signal["type"] == "buy":
-            # Calculate position size based on risk
-            risk_amount = self.parameters["risk_per_trade"]
-            # In a real implementation, this would calculate based on account balance
-            quantity = risk_amount * 100 / price  # Simplified calculation
-            
+            # Create a buy order
             order = Order(
-                symbol=symbol,
+                symbol=signal["symbol"],
                 side=OrderSide.BUY,
-                order_type=OrderType.MARKET,
-                quantity=quantity,
-                price=price
+                type=OrderType.MARKET,
+                quantity=1.0,  # This would be calculated based on position sizing
+                price=signal["price"],
+                params={"reason": signal["reason"]}
             )
-            
-            # Update state
-            self.state[symbol]["position_size"] = quantity
-            self.state[symbol]["entry_price"] = price
-            
             return order
-            
+        
         elif signal["type"] == "sell":
-            # Check if we have a position to sell
-            position_size = self.state[symbol]["position_size"]
-            
-            if position_size > 0:
-                order = Order(
-                    symbol=symbol,
-                    side=OrderSide.SELL,
-                    order_type=OrderType.MARKET,
-                    quantity=position_size,
-                    price=price
-                )
-                
-                # Update state
-                self.state[symbol]["position_size"] = 0
-                self.state[symbol]["entry_price"] = 0
-                
-                return order
+            # Create a sell order
+            order = Order(
+                symbol=signal["symbol"],
+                side=OrderSide.SELL,
+                type=OrderType.MARKET,
+                quantity=1.0,  # This would be calculated based on current position
+                price=signal["price"],
+                params={"reason": signal["reason"]}
+            )
+            return order
         
         return None 
