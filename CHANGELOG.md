@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Strategy Composition Framework with CompositeStrategy and VotingStrategy classes
 - Strategy Optimization Framework with grid search capabilities
 - Performance metrics calculation (Sharpe ratio, Sortino ratio, max drawdown, win rate, profit factor)
+- Property-Based Testing Framework for trading strategies
+  - Data generators for OHLCV, order book, and trade data
+  - Property validators for testing strategy invariants
+  - Test helpers for creating trending and sideways markets
+  - Comprehensive test suite for strategy properties
 - Parallel optimization execution for improved performance
 - Backtest method in Strategy base class for strategy evaluation
 - Comprehensive test suite for optimization module

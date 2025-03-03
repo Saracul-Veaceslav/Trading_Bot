@@ -41,6 +41,8 @@ The Abidance Trading Bot is organized into the following core components:
     - **mock_data.py**: Utilities for generating synthetic market data
     - **pylon_storage.py**: Storage utilities for testing
     - **binance_data_fetcher.py**: Binance data fetching utilities for testing
+    - **properties.py**: Property-based testing utilities for strategies
+    - **generators.py**: Data generators for property-based testing
 
 ## Module Structure
 
@@ -935,6 +937,112 @@ df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h", save=True)
 ```
 
 This Historical Data Management system provides a solid foundation for backtesting and strategy development by ensuring consistent access to historical market data. The combination of efficient storage with Parquet, flexible loading options, and robust data validation makes it a powerful tool for algorithmic trading development.
+
+## Property-Based Testing Framework
+
+The Abidance Trading Bot implements a comprehensive Property-Based Testing Framework that enables thorough testing of trading strategies under various market conditions. This framework consists of two main components:
+
+1. **Data Generators (testing/generators.py)**: A collection of generators for creating test data:
+   - **generate_ohlcv_data**: Generates realistic OHLCV data with proper price relationships
+   - **generate_strategy_parameters**: Generates valid parameters for different strategy types
+   - **generate_market_data**: Generates market data for multiple symbols
+   - **generate_order_book_data**: Generates order book data with bids and asks
+   - **generate_trade_data**: Generates trade data with timestamps, prices, and sides
+
+2. **Property Validators (testing/properties.py)**: Utilities for testing strategy properties:
+   - **validate_ohlcv_data**: Validates that OHLCV data satisfies basic properties
+   - **test_strategy_signal_invariants**: Tests that strategy signals satisfy basic invariants
+   - **test_strategy_consistency**: Tests that strategy signals are consistent when run multiple times
+   - **test_strategy_edge_cases**: Tests strategy behavior with edge cases like NaN values
+   - **create_trending_market**: Creates a trending market from base data
+   - **create_sideways_market**: Creates a sideways market from base data
+
+### Key Features
+
+- **Hypothesis Integration**: Built on the Hypothesis property-based testing library
+- **Realistic Data Generation**: Generates realistic market data with proper price relationships
+- **Strategy Invariant Testing**: Tests properties that should hold for all strategies
+- **Market Scenario Testing**: Tests strategy behavior in different market conditions
+- **Edge Case Handling**: Tests strategy robustness with problematic data
+- **Customizable Parameters**: Allows fine-tuning of data generation parameters
+
+### Usage Examples
+
+#### Basic Property Testing
+
+```python
+from hypothesis import given, settings, HealthCheck
+from abidance.testing.generators import generate_ohlcv_data
+from abidance.strategy import SMAStrategy, SMAConfig
+
+@given(data=generate_ohlcv_data())
+@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
+def test_sma_strategy_signals(data):
+    # Create strategy
+    config = SMAConfig(
+        name="SMA Test",
+        symbols=["BTC/USDT"],
+        fast_period=10,
+        slow_period=30
+    )
+    strategy = SMAStrategy(config)
+    
+    # Calculate signal
+    signal = strategy.calculate_signal(data)
+    
+    # Check that the signal is valid
+    assert signal in [1, 0, -1]  # 1=BUY, 0=HOLD, -1=SELL
+```
+
+#### Testing with Market Scenarios
+
+```python
+from hypothesis import given, settings, HealthCheck
+from abidance.testing.generators import generate_ohlcv_data
+from abidance.testing.properties import create_trending_market
+from abidance.strategy import SMAStrategy, SMAConfig
+
+@given(data=generate_ohlcv_data())
+@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
+def test_strategy_in_trending_market(data):
+    # Create strategy
+    config = SMAConfig(
+        name="SMA Test",
+        symbols=["BTC/USDT"],
+        fast_period=10,
+        slow_period=30
+    )
+    strategy = SMAStrategy(config)
+    
+    # Create a trending market
+    trending_data = create_trending_market(data, trend_factor=0.01)
+    
+    # Calculate signal
+    signal = strategy.calculate_signal(trending_data)
+    
+    # In a strong uptrend, we might expect a buy signal
+    # (but this isn't guaranteed, so we don't assert it)
+    print(f"Signal in uptrend: {signal}")
+```
+
+#### Using the Property Test Helpers
+
+```python
+from abidance.testing.properties import test_strategy_signal_invariants
+from abidance.strategy import SMAStrategy, SMAConfig
+
+# Create a test function for SMA strategy
+test_sma_signals = test_strategy_signal_invariants(
+    strategy_class=SMAStrategy,
+    config_class=SMAConfig,
+    config_params={'fast_period': 10, 'slow_period': 30}
+)
+
+# Run the test
+test_sma_signals()
+```
+
+This Property-Based Testing Framework provides a powerful approach to testing trading strategies by generating a wide range of test cases and verifying that important properties hold across all of them. This helps identify edge cases and ensures that strategies behave correctly under various market conditions.
 
 ## Pylon Storage System
 
