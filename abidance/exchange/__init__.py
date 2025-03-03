@@ -1,7 +1,7 @@
 """
 Exchange module for interfacing with cryptocurrency exchanges.
 
-This module provides standardized interfaces for connecting to and 
+This module provides standardized interfaces for connecting to and
 interacting with various cryptocurrency exchanges.
 """
 
@@ -18,4 +18,4 @@ __all__ = [
     "ExchangeFactory",  # Protocol
     "ExchangeManager",
     "BinanceExchange",
-] 
+]

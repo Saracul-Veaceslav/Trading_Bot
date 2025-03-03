@@ -7,4 +7,4 @@ helping to identify bottlenecks and monitor system health.
 
 from abidance.monitoring.performance import PerformanceMetrics
 
-__all__ = ["PerformanceMetrics"] 
+__all__ = ["PerformanceMetrics"]

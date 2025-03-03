@@ -86,4 +86,4 @@ __all__ = [
     'CircuitOpenError',
     'ErrorContext', 'error_boundary', 'retry',
     'fallback', 'CircuitBreaker'
-] 
+]

@@ -23,38 +23,38 @@ logger = logging.getLogger(__name__)
 class Configuration:
     """
     Configuration management system for the Abidance trading bot.
-    
+
     This class provides functionality for loading configuration from various
     sources, accessing configuration values with dot notation, and validating
     required configuration keys.
-    
+
     Examples:
         >>> config = Configuration()
         >>> config.load_from_yaml('config.yaml')
         >>> config.load_from_env(prefix='ABIDANCE_')
         >>> api_key = config.get('exchange.api_key')
     """
-    
+
     def __init__(self):
         """Initialize an empty configuration."""
         self.data: Dict[str, Any] = {}
-    
+
     def load_from_dict(self, config_dict: Dict[str, Any]) -> None:
         """
         Load configuration from a dictionary.
-        
+
         Args:
             config_dict: Dictionary containing configuration values.
         """
         self.data.update(config_dict)
-    
+
     def load_from_yaml(self, file_path: str) -> None:
         """
         Load configuration from a YAML file.
-        
+
         Args:
             file_path: Path to the YAML configuration file.
-            
+
         Raises:
             ConfigurationError: If the file is not found or contains invalid YAML.
         """
@@ -68,15 +68,15 @@ class Configuration:
                     raise ConfigurationError(f"Invalid YAML in {file_path}: {str(e)}")
         except FileNotFoundError:
             raise ConfigurationError(f"File not found: {file_path}")
-    
+
     def _convert_value(self, value: str, target_type: Type[T]) -> T:
         """
         Convert a string value to the specified type.
-        
+
         Args:
             value: String value to convert.
             target_type: Type to convert to (bool, int, float, str).
-            
+
         Returns:
             Converted value of the specified type.
         """
@@ -88,33 +88,33 @@ class Configuration:
             return float(value)
         else:
             return value
-    
+
     def load_from_env(self, prefix: str = '', type_mapping: Optional[Dict[str, Type]] = None) -> None:
         """
         Load configuration from environment variables.
-        
+
         Environment variables are converted to configuration keys by:
         1. Removing the prefix
         2. Converting to lowercase
         3. Replacing underscores with dots
-        
+
         For example, with prefix='ABIDANCE_':
         ABIDANCE_APP_NAME -> app.name
         ABIDANCE_TRADING_RISK_PERCENTAGE -> trading.risk_percentage
-        
+
         Args:
             prefix: Prefix for environment variables to include.
             type_mapping: Dictionary mapping configuration keys to their expected types.
         """
         type_mapping = type_mapping or {}
-        
+
         for env_key, env_value in os.environ.items():
             if prefix and not env_key.startswith(prefix):
                 continue
-            
+
             # Convert environment variable key to configuration key
             config_key = env_key[len(prefix):].lower().replace('_', '.')
-            
+
             # Try to parse JSON for list/dict values
             try:
                 if env_value.startswith('[') and env_value.endswith(']'):
@@ -138,10 +138,10 @@ class Configuration:
             except json.JSONDecodeError:
                 # If JSON parsing fails, use the raw string
                 value = env_value
-            
+
             # Set the value in the configuration
             self.set(config_key, value)
-            
+
             # For backward compatibility, also set using hardcoded mappings
             if env_key == "ABIDANCE_APP_NAME":
                 self.set("app.name", value)
@@ -155,48 +155,48 @@ class Configuration:
                 self.set("trading.enabled", env_value.lower() in ('true', 'yes', '1', 'y'))
             elif env_key == "ABIDANCE_TRADING_MAX_TRADES":
                 self.set("trading.max_trades", int(env_value) if env_value.isdigit() else env_value)
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """
         Get a configuration value using dot notation.
-        
+
         Args:
             key: Configuration key using dot notation (e.g., 'app.name').
             default: Default value to return if the key is not found.
-            
+
         Returns:
             Configuration value or default if not found.
         """
         parts = key.split('.')
         current = self.data
-        
+
         for part in parts:
             if not isinstance(current, dict) or part not in current:
                 return default
             current = current[part]
-        
+
         return current
-    
+
     def get_all(self) -> Dict[str, Any]:
         """
         Get all configuration values.
-        
+
         Returns:
             Dictionary containing all configuration values.
         """
         return self.data
-    
+
     def set(self, key: str, value: Any) -> None:
         """
         Set a configuration value using dot notation.
-        
+
         Args:
             key: Configuration key using dot notation (e.g., 'app.name').
             value: Value to set.
         """
         parts = key.split('.')
         current = self.data
-        
+
         # Navigate to the nested dictionary
         for i, part in enumerate(parts[:-1]):
             if part not in current:
@@ -205,26 +205,26 @@ class Configuration:
                 # Convert non-dict to dict if needed
                 current[part] = {}
             current = current[part]
-        
+
         # Set the value
         current[parts[-1]] = value
-    
+
     def merge(self, other: 'Configuration') -> None:
         """
         Merge another configuration into this one.
-        
+
         Values in the other configuration will override values in this one
         if they have the same keys.
-        
+
         Args:
             other: Another Configuration instance to merge from.
         """
         self._merge_dicts(self.data, other.to_dict())
-    
+
     def _merge_dicts(self, target: Dict[str, Any], source: Dict[str, Any]) -> None:
         """
         Recursively merge source dictionary into target dictionary.
-        
+
         Args:
             target: Target dictionary to merge into.
             source: Source dictionary to merge from.
@@ -234,14 +234,14 @@ class Configuration:
                 self._merge_dicts(target[key], value)
             else:
                 target[key] = value
-    
+
     def validate_required_keys(self, required_keys: List[str]) -> None:
         """
         Validate that all required configuration keys are present.
-        
+
         Args:
             required_keys: List of required configuration keys.
-            
+
         Raises:
             ConfigurationError: If any required keys are missing.
         """
@@ -250,28 +250,28 @@ class Configuration:
             raise ConfigurationError(
                 f"Missing required configuration key: {', '.join(missing_keys)}"
             )
-    
+
     # Keep the old method name for backward compatibility
     def validate_required(self, required_keys: List[str]) -> None:
         """Alias for validate_required_keys for backward compatibility."""
         return self.validate_required_keys(required_keys)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """
         Convert configuration to a dictionary.
-        
+
         Returns:
             Dictionary representation of the configuration.
         """
         return self.data
-    
+
     def save_to_yaml(self, file_path: str) -> None:
         """
         Save configuration to a YAML file.
-        
+
         Args:
             file_path: Path to save the YAML configuration file.
-            
+
         Raises:
             ConfigurationError: If there's an error writing to the file.
         """
@@ -279,4 +279,4 @@ class Configuration:
             with open(file_path, 'w') as file:
                 yaml.dump(self.data, file, default_flow_style=False)
         except Exception as e:
-            raise ConfigurationError(f"Error saving configuration to {file_path}: {str(e)}") 
+            raise ConfigurationError(f"Error saving configuration to {file_path}: {str(e)}")

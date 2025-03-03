@@ -14,11 +14,11 @@ class APIServer:
         self.host = host
         self.port = port
         self.routes = {}
-    
+
     def add_route(self, path, handler, methods=None):
         """
         Add a route to the API server.
-        
+
         Args:
             path: URL path
             handler: Function to handle the request
@@ -27,14 +27,14 @@ class APIServer:
         if methods is None:
             methods = ["GET"]
         self.routes[path] = {"handler": handler, "methods": methods}
-    
+
     def start(self):
         """
         Start the API server.
         """
         # Placeholder implementation
         pass
-    
+
     def stop(self):
         """
         Stop the API server.
@@ -51,25 +51,25 @@ class WebSocketServer:
         self.host = host
         self.port = port
         self.clients = set()
-    
+
     def start(self):
         """
         Start the WebSocket server.
         """
         # Placeholder implementation
         pass
-    
+
     def stop(self):
         """
         Stop the WebSocket server.
         """
         # Placeholder implementation
         pass
-    
+
     def broadcast(self, message):
         """
         Broadcast a message to all connected clients.
-        
+
         Args:
             message: Message to broadcast
         """
@@ -81,4 +81,4 @@ class WebSocketServer:
 __all__ = [
     "APIServer",
     "WebSocketServer",
-] 
+]

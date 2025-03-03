@@ -46,4 +46,4 @@ __all__ = [
     "Strategy",
     "StrategyRegistry",
     "DataManager",
-] 
+]

@@ -12,4 +12,4 @@ __all__ = [
     'PerformanceMetrics',
     'StrategyEvaluator',
     'PerformanceReport',
-] 
+]

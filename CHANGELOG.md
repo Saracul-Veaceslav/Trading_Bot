@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Compression for reduced storage size
   - Schema enforcement for data consistency
   - Memory-mapped files for faster reads
+- Pylint code quality check for the entire project with results saved to pylint_report.txt
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
@@ -63,6 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed PylonStorage's store_dataframe method to support custom partitioning columns
 - Fixed test_performance method in PylonStorage tests to use non-deprecated frequency format ('h' instead of 'H')
 - Fixed code quality issues in performance testing framework (trailing whitespace, missing newlines, import organization)
+- Fixed cyclic import issue in strategy indicators module by reorganizing imports
+- Fixed unnecessary ellipsis constants in protocol methods
+- Fixed missing final newlines in multiple files
+- Fixed unused imports in various modules
 
 ### Removed
 

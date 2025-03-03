@@ -5,7 +5,7 @@ This module defines all the core types used throughout the trading bot,
 providing a consistent type system for all components.
 """
 from typing import (
-    Any, Callable, Dict, List, Literal, Optional, Protocol, Tuple, 
+    Any, Callable, Dict, List, Literal, Optional, Protocol, Tuple,
     TypeVar, Union, cast, overload
 )
 from enum import Enum, auto
@@ -38,10 +38,10 @@ class PriceType(str, Enum):
     TYPICAL = "TYPICAL"  # (high + low + close) / 3
     MEDIAN = "MEDIAN"   # (high + low) / 2
     WEIGHTED = "WEIGHTED" # (high + low + close + close) / 4
-    
+
     def __str__(self) -> str:
         """Return the string representation of the price type.
-        
+
         :return: The name of the price type
         :rtype: str
         """
@@ -59,10 +59,10 @@ class OrderType(str, Enum):
     STOP = "STOP"
     STOP_LIMIT = "STOP_LIMIT"
     TRAILING_STOP = "TRAILING_STOP"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the order type.
-        
+
         :return: The name of the order type
         :rtype: str
         """
@@ -73,18 +73,18 @@ class OrderSide(str, Enum):
     """Sides of an order (buy or sell)."""
     BUY = "BUY"
     SELL = "SELL"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the order side.
-        
+
         :return: The name of the order side
         :rtype: str
         """
         return self.value
-    
+
     def opposite(self) -> "OrderSide":
         """Return the opposite order side.
-        
+
         :return: The opposite order side
         :rtype: OrderSide
         """
@@ -99,10 +99,10 @@ class OrderStatus(str, Enum):
     CANCELED = "CANCELED"
     REJECTED = "REJECTED"
     EXPIRED = "EXPIRED"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the order status.
-        
+
         :return: The name of the order status
         :rtype: str
         """
@@ -114,10 +114,10 @@ class TimeInForce(str, Enum):
     GTC = "GTC"  # Good Till Canceled
     IOC = "IOC"  # Immediate Or Cancel
     FOK = "FOK"  # Fill Or Kill
-    
+
     def __str__(self) -> str:
         """Return the string representation of the time in force.
-        
+
         :return: The name of the time in force
         :rtype: str
         """
@@ -131,18 +131,18 @@ class PositionSide(str, Enum):
     """Side of a position (long or short)."""
     LONG = "LONG"
     SHORT = "SHORT"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the position side.
-        
+
         :return: The name of the position side
         :rtype: str
         """
         return self.value
-    
+
     def opposite(self) -> "PositionSide":
         """Return the opposite position side.
-        
+
         :return: The opposite position side
         :rtype: PositionSide
         """
@@ -154,10 +154,10 @@ class PositionType(str, Enum):
     SPOT = "SPOT"
     MARGIN = "MARGIN"
     FUTURES = "FUTURES"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the position type.
-        
+
         :return: The name of the position type
         :rtype: str
         """
@@ -197,10 +197,10 @@ class SignalType(str, Enum):
     BUY = "BUY"
     SELL = "SELL"
     HOLD = "HOLD"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the signal type.
-        
+
         :return: The name of the signal type
         :rtype: str
         """
@@ -217,28 +217,28 @@ StrategyId = str  # Type alias for strategy IDs
 
 class Strategy(Protocol):
     """Protocol defining the interface for a trading strategy."""
-    
+
     def generate_signal(self, data: OHLCVDataFrame) -> Signal:
         """Generate a trading signal based on the provided data.
-        
+
         :param data: The OHLCV data to analyze
         :type data: OHLCVDataFrame
         :return: The generated trading signal
         :rtype: Signal
         """
         ...
-    
+
     def get_parameters(self) -> "ParamDict":
         """Get the current parameters of the strategy.
-        
+
         :return: A dictionary of parameter names and values
         :rtype: ParamDict
         """
         ...
-    
+
     def set_parameters(self, params: "ParamDict") -> None:
         """Set the parameters of the strategy.
-        
+
         :param params: A dictionary of parameter names and values
         :type params: ParamDict
         :return: None
@@ -257,10 +257,10 @@ ParamDict = Dict[ParamName, ParamValue]  # Type alias for parameter dictionaries
 
 class BoundedFloat:
     """A float value with a minimum and maximum bound."""
-    
+
     def __init__(self, min_value: float, max_value: float, value: float):
         """Initialize a bounded float.
-        
+
         :param min_value: The minimum allowed value
         :type min_value: float
         :param max_value: The maximum allowed value
@@ -271,14 +271,14 @@ class BoundedFloat:
         """
         if not min_value <= value <= max_value:
             raise ValueError(f"Value {value} is outside allowed range [{min_value}, {max_value}]")
-        
+
         self.min_value = min_value
         self.max_value = max_value
         self.value = value
-    
+
     def __repr__(self) -> str:
         """Return the string representation of the bounded float.
-        
+
         :return: String representation
         :rtype: str
         """
@@ -287,10 +287,10 @@ class BoundedFloat:
 
 class BoundedInt:
     """An integer value with a minimum and maximum bound."""
-    
+
     def __init__(self, min_value: int, max_value: int, value: int):
         """Initialize a bounded integer.
-        
+
         :param min_value: The minimum allowed value
         :type min_value: int
         :param max_value: The maximum allowed value
@@ -301,14 +301,14 @@ class BoundedInt:
         """
         if not min_value <= value <= max_value:
             raise ValueError(f"Value {value} is outside allowed range [{min_value}, {max_value}]")
-        
+
         self.min_value = min_value
         self.max_value = max_value
         self.value = value
-    
+
     def __repr__(self) -> str:
         """Return the string representation of the bounded integer.
-        
+
         :return: String representation
         :rtype: str
         """
@@ -327,10 +327,10 @@ class ResultType(str, Enum):
     """Types of results."""
     SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
-    
+
     def __str__(self) -> str:
         """Return the string representation of the result type.
-        
+
         :return: The name of the result type
         :rtype: str
         """
@@ -339,54 +339,54 @@ class ResultType(str, Enum):
 
 class Result(Protocol[T]):
     """Protocol defining the interface for a result type."""
-    
+
     def is_success(self) -> bool:
         """Check if the result is a success.
-        
+
         :return: True if the result is a success, False otherwise
         :rtype: bool
         """
         ...
-    
+
     def is_failure(self) -> bool:
         """Check if the result is a failure.
-        
+
         :return: True if the result is a failure, False otherwise
         :rtype: bool
         """
         ...
-    
+
     def unwrap(self) -> T:
         """Get the value if the result is a success.
-        
+
         :return: The success value
         :rtype: T
         :raises Exception: If the result is a failure
         """
         ...
-    
+
     def unwrap_or(self, default: T) -> T:
         """Get the value if the result is a success, or a default value if it's a failure.
-        
+
         :param default: The default value to return if the result is a failure
         :type default: T
         :return: The success value or the default value
         :rtype: T
         """
         ...
-    
+
     def unwrap_error(self) -> Exception:
         """Get the error if the result is a failure.
-        
+
         :return: The error
         :rtype: Exception
         :raises Exception: If the result is a success
         """
         ...
-    
+
     def map(self, f: Callable[[T], T]) -> "Result[T]":
         """Apply a function to the success value.
-        
+
         :param f: The function to apply
         :type f: Callable[[T], T]
         :return: A new result with the function applied to the success value, or the original failure
@@ -397,59 +397,59 @@ class Result(Protocol[T]):
 
 class Success(Result[T]):
     """A success result."""
-    
+
     def __init__(self, value: T):
         """Initialize a success result.
-        
+
         :param value: The success value
         :type value: T
         """
         self.value = value
-    
+
     def is_success(self) -> bool:
         """Check if the result is a success.
-        
+
         :return: Always True for a Success
         :rtype: bool
         """
         return True
-    
+
     def is_failure(self) -> bool:
         """Check if the result is a failure.
-        
+
         :return: Always False for a Success
         :rtype: bool
         """
         return False
-    
+
     def unwrap(self) -> T:
         """Get the success value.
-        
+
         :return: The success value
         :rtype: T
         """
         return self.value
-    
+
     def unwrap_or(self, default: T) -> T:
         """Get the success value.
-        
+
         :param default: The default value (ignored for Success)
         :type default: T
         :return: The success value
         :rtype: T
         """
         return self.value
-    
+
     def unwrap_error(self) -> Exception:
         """Get the error (not applicable for Success).
-        
+
         :raises Exception: Always raises an exception for a Success
         """
         raise Exception("Cannot unwrap error from a Success")
-    
+
     def map(self, f: Callable[[T], T]) -> "Result[T]":
         """Apply a function to the success value.
-        
+
         :param f: The function to apply
         :type f: Callable[[T], T]
         :return: A new Success with the function applied to the value
@@ -460,59 +460,59 @@ class Success(Result[T]):
 
 class Failure(Result[T]):
     """A failure result."""
-    
+
     def __init__(self, error: Exception):
         """Initialize a failure result.
-        
+
         :param error: The error that caused the failure
         :type error: Exception
         """
         self.error = error
-    
+
     def is_success(self) -> bool:
         """Check if the result is a success.
-        
+
         :return: Always False for a Failure
         :rtype: bool
         """
         return False
-    
+
     def is_failure(self) -> bool:
         """Check if the result is a failure.
-        
+
         :return: Always True for a Failure
         :rtype: bool
         """
         return True
-    
+
     def unwrap(self) -> T:
         """Get the success value (not applicable for Failure).
-        
+
         :raises Exception: Always raises the stored error for a Failure
         """
         raise self.error
-    
+
     def unwrap_or(self, default: T) -> T:
         """Get a default value.
-        
+
         :param default: The default value to return
         :type default: T
         :return: The default value
         :rtype: T
         """
         return default
-    
+
     def unwrap_error(self) -> Exception:
         """Get the error.
-        
+
         :return: The error that caused the failure
         :rtype: Exception
         """
         return self.error
-    
+
     def map(self, f: Callable[[T], T]) -> "Result[T]":
         """Apply a function to the success value (not applicable for Failure).
-        
+
         :param f: The function to apply (ignored for Failure)
         :type f: Callable[[T], T]
         :return: The same Failure
@@ -523,10 +523,10 @@ class Failure(Result[T]):
 
 class Either:
     """An Either monad that can be either a left (error) or right (success) value."""
-    
+
     def __init__(self, is_right: bool, right_value: Optional[T] = None, left_value: Optional[E] = None):
         """Initialize an Either monad.
-        
+
         :param is_right: Whether this is a right (success) value
         :type is_right: bool
         :param right_value: The right (success) value
@@ -537,48 +537,48 @@ class Either:
         self._is_right = is_right
         self._right_value = right_value
         self._left_value = left_value
-    
+
     @classmethod
     def right(cls, value: T) -> "Either[E, T]":
         """Create a right (success) Either.
-        
+
         :param value: The right (success) value
         :type value: T
         :return: A right Either
         :rtype: Either[E, T]
         """
         return cls(True, right_value=value)
-    
+
     @classmethod
     def left(cls, value: E) -> "Either[E, T]":
         """Create a left (error) Either.
-        
+
         :param value: The left (error) value
         :type value: E
         :return: A left Either
         :rtype: Either[E, T]
         """
         return cls(False, left_value=value)
-    
+
     def is_right(self) -> bool:
         """Check if this is a right (success) Either.
-        
+
         :return: True if this is a right Either, False otherwise
         :rtype: bool
         """
         return self._is_right
-    
+
     def is_left(self) -> bool:
         """Check if this is a left (error) Either.
-        
+
         :return: True if this is a left Either, False otherwise
         :rtype: bool
         """
         return not self._is_right
-    
+
     def unwrap_right(self) -> T:
         """Get the right (success) value.
-        
+
         :return: The right value
         :rtype: T
         :raises Exception: If this is a left Either
@@ -586,10 +586,10 @@ class Either:
         if not self._is_right:
             raise Exception("Cannot unwrap right value from a left Either")
         return cast(T, self._right_value)
-    
+
     def unwrap_left(self) -> E:
         """Get the left (error) value.
-        
+
         :return: The left value
         :rtype: E
         :raises Exception: If this is a right Either
@@ -597,10 +597,10 @@ class Either:
         if self._is_right:
             raise Exception("Cannot unwrap left value from a right Either")
         return cast(E, self._left_value)
-    
+
     def map(self, f: Callable[[T], T]) -> "Either[E, T]":
         """Apply a function to the right (success) value.
-        
+
         :param f: The function to apply
         :type f: Callable[[T], T]
         :return: A new Either with the function applied to the right value, or the original left Either
@@ -609,10 +609,10 @@ class Either:
         if self._is_right:
             return Either.right(f(cast(T, self._right_value)))
         return self
-    
+
     def bind(self, f: Callable[[T], "Either[E, T]"]) -> "Either[E, T]":
         """Apply a function that returns an Either to the right (success) value.
-        
+
         :param f: The function to apply
         :type f: Callable[[T], Either[E, T]]
         :return: The result of applying the function to the right value, or the original left Either
@@ -639,7 +639,7 @@ ExchangeConfig = Dict[str, Any]  # Type alias for exchange configuration
 
 def to_timestamp(value: Union[datetime, date, Timestamp, TimestampMS], unit: str = 's') -> Timestamp:
     """Convert a value to a Unix timestamp.
-    
+
     :param value: The value to convert (datetime, date, timestamp, or timestamp in milliseconds)
     :type value: Union[datetime, date, Timestamp, TimestampMS]
     :param unit: The unit of the timestamp ('s' for seconds, 'ms' for milliseconds)
@@ -655,13 +655,13 @@ def to_timestamp(value: Union[datetime, date, Timestamp, TimestampMS], unit: str
         if unit == 'ms':
             return value / 1000.0
         return value
-    
+
     raise TypeError(f"Cannot convert {type(value)} to timestamp")
 
 
 def from_timestamp(value: Union[Timestamp, TimestampMS, str], unit: str = 's') -> datetime:
     """Convert a Unix timestamp to a datetime.
-    
+
     :param value: The timestamp to convert (seconds, milliseconds, or string representation)
     :type value: Union[Timestamp, TimestampMS, str]
     :param unit: The unit of the timestamp ('s' for seconds, 'ms' for milliseconds)
@@ -671,7 +671,7 @@ def from_timestamp(value: Union[Timestamp, TimestampMS, str], unit: str = 's') -
     """
     if isinstance(value, str):
         value = float(value)
-    
+
     if unit == 'ms':
         return datetime.fromtimestamp(value / 1000.0)
     return datetime.fromtimestamp(value)
@@ -679,7 +679,7 @@ def from_timestamp(value: Union[Timestamp, TimestampMS, str], unit: str = 's') -
 
 def ensure_datetime(value: Union[datetime, Timestamp, TimestampMS, str]) -> datetime:
     """Ensure a value is a datetime.
-    
+
     :param value: The value to convert (datetime, timestamp, timestamp in milliseconds, or string)
     :type value: Union[datetime, Timestamp, TimestampMS, str]
     :return: The datetime object
@@ -704,13 +704,13 @@ def ensure_datetime(value: Union[datetime, Timestamp, TimestampMS, str]) -> date
                 return from_timestamp(float(value))
             except ValueError:
                 raise ValueError(f"Cannot parse {value} as datetime")
-    
+
     raise TypeError(f"Cannot convert {type(value)} to datetime")
 
 
 def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -> timedelta:
     """Ensure a value is a timedelta.
-    
+
     :param value: The value to convert (timedelta, seconds, dictionary with time units, or string)
     :type value: Union[timedelta, int, float, Dict[str, int], str]
     :return: The timedelta object
@@ -728,12 +728,12 @@ def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -
         # Parse string like "1d 2h 3m 4s"
         pattern = r'(?:(\d+)([dhms]))'
         matches = re.findall(pattern, value)
-        
+
         if not matches:
             raise ValueError(f"Cannot parse {value} as timedelta")
-        
+
         time_dict = {'days': 0, 'hours': 0, 'minutes': 0, 'seconds': 0}
-        
+
         for amount, unit in matches:
             if unit == 'd':
                 time_dict['days'] += int(amount)
@@ -743,9 +743,9 @@ def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -
                 time_dict['minutes'] += int(amount)
             elif unit == 's':
                 time_dict['seconds'] += int(amount)
-        
+
         return timedelta(**time_dict)
-    
+
     raise TypeError(f"Cannot convert {type(value)} to timedelta")
 
 
@@ -758,7 +758,7 @@ __all__ = [
     "TimeRange",
     "DateRange",
     "Numeric",
-    
+
     # Enums
     "PriceType",
     "OrderType",
@@ -769,21 +769,21 @@ __all__ = [
     "PositionType",
     "SignalType",
     "ResultType",
-    
+
     # Protocols
     "Strategy",
     "Result",
-    
+
     # Classes
     "BoundedFloat",
     "BoundedInt",
     "Success",
     "Failure",
     "Either",
-    
+
     # Functions
     "to_timestamp",
     "from_timestamp",
     "ensure_datetime",
     "ensure_timedelta",
-] 
+]

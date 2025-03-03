@@ -28,7 +28,7 @@ class SignalType(Enum):
 class Signal:
     """
     Represents a trading signal.
-    
+
     A signal is a recommendation to buy, sell, or hold an asset.
     """
     symbol: str
@@ -43,7 +43,7 @@ class Signal:
 class Candle:
     """
     Represents a price candle.
-    
+
     A candle represents price movement over a specific time period.
     """
     symbol: str
@@ -69,7 +69,7 @@ class Position:
     stop_loss: Optional[float] = None
     take_profit: Optional[float] = None
     position_id: Optional[str] = None
-    
+
     def __post_init__(self):
         """Convert to TradingPosition if needed."""
         # This adapter could be expanded to convert between the two formats if needed
@@ -88,7 +88,7 @@ class Order:
     timestamp: datetime
     price: Optional[float] = None
     order_id: Optional[str] = None
-    
+
     def __post_init__(self):
         """Convert to TradingOrder if needed."""
         # This adapter could be expanded to convert between the two formats if needed
@@ -108,8 +108,8 @@ class Trade:
     trade_id: Optional[str] = None
     fee: Optional[float] = None
     fee_currency: Optional[str] = None
-    
+
     def __post_init__(self):
         """Convert to TradingTrade if needed."""
         # This adapter could be expanded to convert between the two formats if needed
-        pass 
+        pass

@@ -53,6 +53,63 @@ The Abidance Trading Bot is organized into the following core components:
 - **No Circular Imports**: The module structure is designed to avoid circular imports
 - **Categorized Exports**: Exports in `__all__` are often categorized with comments for better readability
 
+## Avoiding Cyclic Imports
+
+Cyclic imports occur when two or more modules import each other, directly or indirectly, creating a dependency cycle. These can cause various issues including:
+
+- Import errors
+- Unexpected behavior
+- Incomplete module initialization
+- Reduced code maintainability
+
+The Abidance Trading Bot uses several strategies to avoid cyclic imports:
+
+1. **Proper Module Hierarchy**: Organizing modules in a hierarchical structure where higher-level modules import from lower-level modules, not vice versa.
+
+2. **Import Organization**: Following a consistent import pattern:
+   - Standard library imports first
+   - Third-party library imports second
+   - Local application imports last
+   - Imports within each group are alphabetized
+
+3. **Strategic Import Placement**: Moving imports inside functions or methods when they're only needed there, rather than at the module level.
+
+4. **Forward References**: Using string literals for type hints when referring to types that would cause circular imports.
+
+5. **Interface Segregation**: Breaking large interfaces into smaller, more focused ones to reduce dependencies.
+
+6. **Dependency Inversion**: Using abstract base classes or protocols to define interfaces that both modules can depend on, rather than having them depend directly on each other.
+
+7. **Refactoring Modules**: When cyclic dependencies are detected, refactoring the code to move shared functionality to a common module that both can import.
+
+Example of fixing a cyclic import in the strategy indicators module:
+
+```python
+# Before (problematic):
+# In __init__.py
+from .base import Indicator
+from .momentum import RSI, MACD
+
+# In momentum.py
+from .base import Indicator
+
+# Solution:
+# In __init__.py
+# Standard library imports
+import sys
+from typing import Tuple, Dict, Any
+
+# Third-party imports
+import pandas as pd
+import numpy as np
+
+# Local imports
+from .base import Indicator
+from .momentum import RSI, MACD
+```
+
+This approach ensures that imports are organized properly and prevents cyclic dependencies by establishing a clear hierarchy of imports.
+
 ## Dependency Injection
 
 - **ServiceRegistry**: A simple dependency injection container for managing service instances
@@ -1250,3 +1307,31 @@ benchmark.plot_comparison(metric="mean_execution_time", save_path="execution_tim
 result_path = benchmark.save_results()
 print(f"Benchmark results saved to: {result_path}")
 ```
+
+## Code Quality
+
+### Pylint Analysis
+
+The project has been analyzed with Pylint (version 3.3.4) to identify code quality issues. Key findings include:
+
+1. **Common Issues**:
+   - Trailing whitespace in many files
+   - Missing final newlines
+   - Lines exceeding maximum length (100 characters)
+   - Unused imports in several modules
+   - Broad exception catching (catching Exception)
+   - Improper logging format strings (using f-strings instead of % formatting)
+   - Unspecified encoding when opening files
+
+2. **Duplicate Code**:
+   - Significant code duplication between `abidance.type_defs.__init__` and `abidance.typing.__init__`
+   - Duplicate strategy code patterns in RSI and SMA strategy implementations
+   - Duplicate indicator calculation code
+
+3. **Cyclic Imports**:
+   - Cyclic imports detected in the exceptions module
+
+4. **Overall Rating**:
+   - The codebase received a rating of 5.35/10 from Pylint
+
+These findings provide opportunities for code quality improvements, particularly in reducing duplication, fixing import issues, and addressing style inconsistencies.

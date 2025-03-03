@@ -202,7 +202,7 @@ class Environment:
 
         # Fall back to comma-separated string
         return [item.strip() for item in value.split(',')]
-    
+
     def get_dict(self, key: str, default: Optional[Dict[str, Any]] = None, required: bool = False) -> Optional[Dict[str, Any]]:
         """
         Get an environment variable as a dictionary.
@@ -241,7 +241,7 @@ class Environment:
 
         Returns:
             The Path value of the environment variable, or the default value if not set.
-            
+
         Raises:
             ConfigurationError: If required is True and the environment variable is not set.
         """
@@ -295,4 +295,4 @@ class Environment:
 
 
 # Global environment instance
-env = Environment() 
+env = Environment()

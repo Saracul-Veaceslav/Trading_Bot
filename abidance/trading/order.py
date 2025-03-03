@@ -26,7 +26,7 @@ class OrderSide(Enum):
 class Order:
     """
     Represents a trading order.
-    
+
     An order is an instruction to buy or sell a specific amount of an asset
     at a specific price or market conditions.
     """
@@ -40,12 +40,12 @@ class Order:
     exchange_id: str = None
     exchange_order_id: Optional[str] = None
     status: str = "created"
-    
+
     def __post_init__(self):
         """Initialize default values after creation."""
         if self.created_at is None:
             self.created_at = datetime.now(timezone.utc)
-    
+
     def to_dict(self) -> dict:
         """Convert the order to a dictionary for storage or transmission."""
         return {
@@ -60,7 +60,7 @@ class Order:
             "exchange_order_id": self.exchange_order_id,
             "status": self.status,
         }
-    
+
     @classmethod
     def from_dict(cls, data: dict) -> 'Order':
         """Create an Order instance from a dictionary."""
@@ -69,9 +69,9 @@ class Order:
             data["side"] = OrderSide(data["side"])
         if isinstance(data.get("order_type"), str):
             data["order_type"] = OrderType(data["order_type"])
-        
+
         # Convert ISO format date back to datetime
         if isinstance(data.get("created_at"), str):
             data["created_at"] = datetime.fromisoformat(data["created_at"])
-        
-        return cls(**data) 
+
+        return cls(**data)

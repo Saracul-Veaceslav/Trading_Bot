@@ -12,14 +12,14 @@ class FeatureEngineering:
     """
     def __init__(self):
         pass
-    
+
     def create_features(self, data):
         """
         Create features from raw data.
-        
+
         Args:
             data: Raw data to create features from
-            
+
         Returns:
             Transformed data with features
         """
@@ -33,24 +33,24 @@ class ModelRegistry:
     """
     def __init__(self):
         self.models = {}
-    
+
     def register_model(self, name, model):
         """
         Register a model in the registry.
-        
+
         Args:
             name: Name of the model
             model: The model object
         """
         self.models[name] = model
-    
+
     def get_model(self, name):
         """
         Get a model from the registry.
-        
+
         Args:
             name: Name of the model
-            
+
         Returns:
             The model object
         """
@@ -63,22 +63,22 @@ class PredictionService:
     """
     def __init__(self, model_registry=None):
         self.model_registry = model_registry or ModelRegistry()
-    
+
     def predict(self, model_name, data):
         """
         Make predictions using a model.
-        
+
         Args:
             model_name: Name of the model to use
             data: Data to make predictions on
-            
+
         Returns:
             Predictions
         """
         model = self.model_registry.get_model(model_name)
         if model is None:
             return None
-        
+
         # Placeholder implementation
         return data
 
@@ -88,4 +88,4 @@ __all__ = [
     "FeatureEngineering",
     "ModelRegistry",
     "PredictionService",
-] 
+]

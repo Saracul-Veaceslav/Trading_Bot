@@ -25,13 +25,13 @@ class OptimizationResult:
 
 class StrategyOptimizer:
     """Optimizer for strategy parameters."""
-    
+
     def __init__(self, strategy_class: Type[Strategy],
                  parameter_ranges: Dict[str, List[Any]],
                  metric_function: Callable[[pd.DataFrame], float]):
         """
         Initialize the strategy optimizer.
-        
+
         Args:
             strategy_class: The strategy class to optimize
             parameter_ranges: Dictionary mapping parameter names to lists of possible values
@@ -41,16 +41,16 @@ class StrategyOptimizer:
         self.parameter_ranges = parameter_ranges
         self.metric_function = metric_function
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        
+
     def _evaluate_parameters(self, params: Dict[str, Any],
                            data: pd.DataFrame) -> OptimizationResult:
         """
         Evaluate a set of parameters.
-        
+
         Args:
             params: Dictionary of parameter values to evaluate
             data: Historical price data
-            
+
         Returns:
             OptimizationResult with performance metrics
         """
@@ -59,7 +59,7 @@ class StrategyOptimizer:
             strategy = self.strategy_class(**params)
             trades = strategy.backtest(data)
             performance = self.metric_function(trades)
-            
+
             return OptimizationResult(
                 parameters=params,
                 performance_metrics={'metric': performance},
@@ -73,18 +73,18 @@ class StrategyOptimizer:
                 performance_metrics={'metric': float('-inf')},
                 trades=pd.DataFrame()
             )
-    
-    def optimize(self, data: pd.DataFrame, 
+
+    def optimize(self, data: pd.DataFrame,
                 max_iterations: int = 100,
                 n_jobs: int = -1) -> List[OptimizationResult]:
         """
         Optimize strategy parameters using grid search.
-        
+
         Args:
             data: Historical price data
             max_iterations: Maximum number of parameter combinations to try
             n_jobs: Number of parallel jobs to run (-1 for all available cores)
-            
+
         Returns:
             List of optimization results sorted by performance
         """
@@ -95,14 +95,14 @@ class StrategyOptimizer:
             param_combinations.append(params)
             if len(param_combinations) >= max_iterations:
                 break
-                
+
         self.logger.info(f"Generated {len(param_combinations)} parameter combinations")
-        
+
         # Determine number of workers
         if n_jobs <= 0:
             import multiprocessing
             n_jobs = multiprocessing.cpu_count()
-        
+
         # Evaluate parameters in parallel
         results = []
         with ThreadPoolExecutor(max_workers=n_jobs) as executor:
@@ -111,32 +111,32 @@ class StrategyOptimizer:
                 executor.submit(self._evaluate_parameters, params, data)
                 for params in param_combinations
             ]
-            
+
             for future in futures:
                 try:
                     results.append(future.result())
                 except Exception as e:
                     self.logger.error(f"Error in parameter evaluation: {str(e)}")
-                
+
         # Sort by performance
-        results.sort(key=lambda x: x.performance_metrics['metric'], 
+        results.sort(key=lambda x: x.performance_metrics['metric'],
                     reverse=True)
-        
+
         self.logger.info(f"Optimization complete. Best metric: {results[0].performance_metrics['metric']}")
         return results
-    
+
     def _generate_parameter_combinations(self) -> Iterator[Dict[str, Any]]:
         """
         Generate combinations of parameters to try.
-        
+
         Yields:
             Dictionary mapping parameter names to values
         """
         keys = list(self.parameter_ranges.keys())
         values = list(self.parameter_ranges.values())
-        
+
         for combination in np.ndindex(*[len(v) for v in values]):
             yield {
                 key: values[i][combination[i]]
                 for i, key in enumerate(keys)
-            } 
+            }

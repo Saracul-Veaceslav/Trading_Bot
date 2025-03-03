@@ -18,32 +18,32 @@ class SMAConfig(StrategyConfig):
     fast_period: int = 20
     slow_period: int = 50
     volume_factor: float = 1.5
-    
+
 
 class SMAStrategy(Strategy):
     """
     Simple Moving Average (SMA) crossover strategy.
-    
+
     This strategy generates buy signals when the fast SMA crosses above the slow SMA,
     and sell signals when the fast SMA crosses below the slow SMA. Volume confirmation
     is used to filter out low-quality signals.
     """
-    
+
     def __init__(self, config: SMAConfig):
         """
         Initialize the SMA strategy.
-        
+
         Args:
             config: Strategy configuration
         """
         super().__init__(config)
         self.config: SMAConfig = config  # Type hint for IDE support
         self.error_logger = None  # Will be set by the test factory function
-        
+
     def initialize(self) -> None:
         """Initialize the strategy before running."""
         self.logger.info(f"Initializing SMA strategy: {self.name}")
-        
+
         # Initialize state for each symbol
         for symbol in self.symbols:
             self.state[symbol] = {
@@ -51,44 +51,44 @@ class SMAStrategy(Strategy):
                 "position_size": 0.0,
                 "entry_price": 0.0,
             }
-    
+
     def calculate_indicators(self, data: pd.DataFrame) -> pd.DataFrame:
         """
         Calculate technical indicators for the strategy.
-        
+
         Args:
             data: OHLCV data as a pandas DataFrame
-            
+
         Returns:
             DataFrame with added indicator columns
         """
         # Make a copy to avoid modifying the original data
         df = data.copy()
-        
+
         # Calculate SMAs
         df['fast_sma'] = calculate_sma(df, self.config.fast_period)
         df['slow_sma'] = calculate_sma(df, self.config.slow_period)
-        
+
         # Add backward compatibility column names
         df['short_sma'] = df['fast_sma']
         df['long_sma'] = df['slow_sma']
-        
+
         # Detect crossovers
         df['crossover'] = detect_crossover(df['fast_sma'], df['slow_sma'])
-        
+
         # Analyze volume
         df = analyze_volume(df, self.config.fast_period)
-        
+
         return df
-    
+
     def analyze(self, symbol: str, data: pd.DataFrame) -> Dict[str, Any]:
         """
         Analyze market data using SMA crossover.
-        
+
         Args:
             symbol: The market symbol
             data: OHLCV data as a pandas DataFrame
-            
+
         Returns:
             Dictionary with analysis results
         """
@@ -96,24 +96,24 @@ class SMAStrategy(Strategy):
         if len(data) < self.config.slow_period:
             self.logger.warning(f"Not enough data for {symbol} analysis")
             return {"error": "Not enough data"}
-        
+
         # Calculate indicators
         data_with_indicators = self.calculate_indicators(data)
-        
+
         # Get the latest data point
         latest = data_with_indicators.iloc[-1]
-        
+
         # Check if we have a crossover
         crossover_value = latest['crossover']
         crossover = crossover_value != 0
         crossover_type = None
-        
+
         if crossover:
             if crossover_value > 0:
                 crossover_type = "bullish"
             else:
                 crossover_type = "bearish"
-        
+
         # Prepare analysis results
         analysis = {
             "symbol": symbol,
@@ -127,18 +127,18 @@ class SMAStrategy(Strategy):
             "abnormal_volume": latest['abnormal_volume'],
             "data": data_with_indicators,  # Include the data with indicators
         }
-        
+
         return analysis
-    
+
     def create_signal(self, symbol: str, analysis: Dict[str, Any], signal_type: str) -> Dict[str, Any]:
         """
         Create a standardized signal dictionary.
-        
+
         Args:
             symbol: The market symbol
             analysis: Analysis results
             signal_type: Type of signal ('buy' or 'sell')
-            
+
         Returns:
             Signal dictionary
         """
@@ -147,7 +147,7 @@ class SMAStrategy(Strategy):
             reason = "SMA bullish crossover with volume confirmation"
         elif signal_type == "sell":
             reason = "SMA bearish crossover with volume confirmation"
-            
+
         return {
             "symbol": symbol,
             "timestamp": analysis["timestamp"],
@@ -158,64 +158,64 @@ class SMAStrategy(Strategy):
             "slow_sma": analysis["slow_sma"],
             "volume_ratio": analysis["volume_ratio"],
         }
-    
+
     def generate_signals(self, symbol: str, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
         Generate trading signals based on SMA analysis.
-        
+
         Args:
             symbol: The market symbol
             analysis: Analysis results from the analyze method
-            
+
         Returns:
             List of signal dictionaries
         """
         signals = []
-        
+
         # Check for errors in analysis
         if "error" in analysis:
             self.logger.warning(f"Analysis error for {symbol}: {analysis['error']}")
             return signals
-        
+
         # Get current state for this symbol
         symbol_state = self.state.get(symbol, {
             "last_signal": None,
             "position_size": 0.0,
             "entry_price": 0.0,
         })
-        
+
         # Check for crossover with volume confirmation
         if analysis["crossover"]:
             volume_confirmed = analysis["volume_ratio"] >= self.config.volume_factor
-            
+
             if analysis["crossover_type"] == "bullish" and volume_confirmed:
                 # Generate buy signal
                 signal = self.create_signal(symbol, analysis, "buy")
                 signals.append(signal)
-                
+
                 # Update state
                 symbol_state["last_signal"] = "buy"
-                
+
             elif analysis["crossover_type"] == "bearish" and volume_confirmed:
                 # Generate sell signal
                 signal = self.create_signal(symbol, analysis, "sell")
                 signals.append(signal)
-                
+
                 # Update state
                 symbol_state["last_signal"] = "sell"
-        
+
         # Update state
         self.state[symbol] = symbol_state
-        
+
         return signals
-    
+
     def create_order(self, signal: Dict[str, Any]) -> Optional[Order]:
         """
         Create an order based on a signal.
-        
+
         Args:
             signal: Signal dictionary
-            
+
         Returns:
             Order object or None if no order should be created
         """
@@ -226,7 +226,7 @@ class SMAStrategy(Strategy):
             order_side = OrderSide.SELL
         else:
             return None
-            
+
         # Create an order
         order = Order(
             symbol=signal["symbol"],
@@ -236,88 +236,88 @@ class SMAStrategy(Strategy):
             price=signal["price"]
         )
         return order
-        
+
     # Add compatibility methods for tests
-    
+
     def generate_signal(self, data: pd.DataFrame) -> int:
         """
         Generate a trading signal based on the latest data.
-        
+
         This is a compatibility method for tests.
-        
+
         Args:
             data: OHLCV data as a pandas DataFrame
-            
+
         Returns:
             Signal value: 1 (buy), -1 (sell), or 0 (hold)
         """
         # Manually check for crossover based on the test's expectations
         # The test manually sets the SMA values, so we need to check those directly
-        
+
         # Get previous and current values
         prev_short = data['short_sma'].iloc[-2]
         prev_long = data['long_sma'].iloc[-2]
         curr_short = data['short_sma'].iloc[-1]
         curr_long = data['long_sma'].iloc[-1]
-        
+
         # Check for bullish crossover (short crosses above long)
         if prev_short <= prev_long and curr_short > curr_long:
             self.logger.info(f"BUY signal: Short SMA ({curr_short:.2f}) crossed above Long SMA ({curr_long:.2f})")
             return 1
-        
+
         # Check for bearish crossover (short crosses below long)
         elif prev_short >= prev_long and curr_short < curr_long:
             self.logger.info(f"SELL signal: Short SMA ({curr_short:.2f}) crossed below Long SMA ({curr_long:.2f})")
             return -1
-        
+
         # No crossover
         else:
             return 0
-            
+
     def calculate_signals_for_dataframe(self, data: pd.DataFrame) -> pd.DataFrame:
         """
         Calculate signals for an entire DataFrame.
-        
+
         This is a compatibility method for tests.
-        
+
         Args:
             data: OHLCV data as a pandas DataFrame
-            
+
         Returns:
             DataFrame with added indicator and signal columns
         """
         # Calculate indicators
         df = self.calculate_indicators(data)
-        
+
         # Initialize signal column
         df['signal'] = 0
-        
+
         # Iterate through the DataFrame to detect crossovers and set signals
         for i in range(1, len(df)):
             prev_idx = df.index[i-1]
             curr_idx = df.index[i]
-            
+
             # Check for bullish crossover (short crosses above long)
             if df.loc[prev_idx, 'short_sma'] <= df.loc[prev_idx, 'long_sma'] and \
                df.loc[curr_idx, 'short_sma'] > df.loc[curr_idx, 'long_sma']:
                 df.loc[curr_idx, 'signal'] = 1
-            
+
             # Check for bearish crossover (short crosses below long)
             elif df.loc[prev_idx, 'short_sma'] >= df.loc[prev_idx, 'long_sma'] and \
                  df.loc[curr_idx, 'short_sma'] < df.loc[curr_idx, 'long_sma']:
                 df.loc[curr_idx, 'signal'] = -1
-        
+
         return df
-        
+
     def calculate_signal(self, data: pd.DataFrame) -> int:
         """
         Calculate a trading signal based on the latest data.
-        
+
         This is a compatibility method for tests.
-        
+
         Args:
             data: OHLCV data as a pandas DataFrame
-            
+
         Returns:
             Signal value: 1 (buy), -1 (sell), or 0 (hold)
         """
@@ -326,13 +326,13 @@ class SMAStrategy(Strategy):
             if len(data) < self.config.slow_period + 1:
                 self.logger.warning("Not enough data for signal calculation")
                 return 0
-                
+
             # Force an error if 'invalid' is in the data
             # This is specifically for the error handling test
             if 'invalid' in str(data['close'].values):
                 # Intentionally cause an error for testing
                 print("Found invalid data, forcing error for test")
-                
+
                 # Direct access to the error_logger from the test
                 # This is a hack for the test_error_handling test
                 import inspect
@@ -347,16 +347,16 @@ class SMAStrategy(Strategy):
                         frame = frame.f_back
                 finally:
                     del frame  # Avoid reference cycles
-                
+
                 # Still raise the error to be caught below
                 result = data['close'].astype(float).mean()  # This will raise an error
-                
+
             # Calculate indicators
             df = self.calculate_indicators(data)
-            
+
             # Get the latest data point
             latest = df.iloc[0]  # Assuming newest data is first
-            
+
             # Check for crossover with volume confirmation
             if latest['crossover'] == 1 and latest['abnormal_volume']:
                 self.logger.info(f"BUY signal: Fast SMA ({latest['fast_sma']:.2f}) crossed above Slow SMA ({latest['slow_sma']:.2f})")
@@ -366,17 +366,17 @@ class SMAStrategy(Strategy):
                 return -1
             else:
                 return 0
-                
+
         except Exception as e:
             # Make sure to use the error_logger for errors
             print(f"Error in calculate_signal: {str(e)}")
             print(f"Has error_logger: {hasattr(self, 'error_logger')}")
             print(f"Error logger is not None: {self.error_logger is not None}")
-            
+
             if self.error_logger:
                 print("Logging error with error_logger")
                 self.error_logger.error(f"Error calculating signal: {str(e)}")
             else:
                 print("Logging error with self.logger")
                 self.logger.error(f"Error calculating signal: {str(e)}")
-            return 0 
+            return 0

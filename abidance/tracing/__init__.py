@@ -8,4 +8,4 @@ analyze performance.
 
 from abidance.tracing.tracer import Tracer, Span
 
-__all__ = ["Tracer", "Span"] 
+__all__ = ["Tracer", "Span"]

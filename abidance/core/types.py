@@ -37,4 +37,4 @@ ConfigValue = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 Config = Dict[str, ConfigValue]
 
 # Result types
-Result = Union[Dict[str, Any], List[Dict[str, Any]], pd.DataFrame] 
+Result = Union[Dict[str, Any], List[Dict[str, Any]], pd.DataFrame]

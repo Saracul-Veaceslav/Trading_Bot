@@ -1,7 +1,7 @@
 """
 Trading module for executing orders and managing positions.
 
-This module handles the core trading operations, including order creation, 
+This module handles the core trading operations, including order creation,
 trade execution, and position management.
 """
 
@@ -19,4 +19,4 @@ __all__ = [
     "Trade",
     "Position",
     "TradingEngine",
-] 
+]

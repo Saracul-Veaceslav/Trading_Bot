@@ -14,4 +14,4 @@ __all__ = [
     'calculate_sharpe_ratio',
     'calculate_sortino_ratio',
     'calculate_max_drawdown',
-] 
+]

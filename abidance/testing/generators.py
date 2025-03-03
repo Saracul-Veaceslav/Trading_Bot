@@ -23,7 +23,7 @@ def generate_ohlcv_data(
 ) -> pd.DataFrame:
     """
     Generate random OHLCV data for property-based testing.
-    
+
     Args:
         draw: Hypothesis draw function
         min_length: Minimum number of candles
@@ -31,12 +31,12 @@ def generate_ohlcv_data(
         min_price: Minimum price
         max_price: Maximum price
         volatility: Price volatility factor
-        
+
     Returns:
         DataFrame with OHLCV data
     """
     length = draw(st.integers(min_length, max_length))
-    
+
     # Generate timestamps
     start_date = draw(st.datetimes(
         min_value=datetime(2010, 1, 1),
@@ -46,16 +46,16 @@ def generate_ohlcv_data(
         start_date + timedelta(hours=i)
         for i in range(length)
     ]
-    
+
     # Generate prices with random walk
     base_price = draw(st.floats(min_price, max_price))
     prices = [base_price]
-    
+
     for _ in range(length - 1):
         change = draw(st.floats(-volatility, volatility))
         new_price = max(min_price, prices[-1] * (1 + change))
         prices.append(new_price)
-        
+
     # Generate OHLCV data
     data = []
     for i, close_price in enumerate(prices):
@@ -64,7 +64,7 @@ def generate_ohlcv_data(
         high_price = max(open_price, close_price) * (1 + abs(draw(st.floats(0, 0.005))))
         low_price = min(open_price, close_price) * (1 - abs(draw(st.floats(0, 0.005))))
         volume = draw(st.floats(100, 10000))
-        
+
         data.append({
             'timestamp': timestamps[i],
             'open': open_price,
@@ -73,7 +73,7 @@ def generate_ohlcv_data(
             'close': close_price,
             'volume': volume
         })
-        
+
     return pd.DataFrame(data)
 
 
@@ -81,17 +81,17 @@ def generate_ohlcv_data(
 def generate_strategy_parameters(draw: Any) -> Dict[str, Any]:
     """
     Generate random strategy parameters for testing.
-    
+
     Args:
         draw: Hypothesis draw function
-        
+
     Returns:
         Dictionary of strategy parameters
     """
     # Generate SMA strategy parameters
     short_window = draw(st.integers(5, 20))
     long_window = draw(st.integers(short_window + 5, short_window + 50))
-    
+
     return {
         'short_window': short_window,
         'long_window': long_window
@@ -108,19 +108,19 @@ def generate_market_data(
 ) -> Dict[str, pd.DataFrame]:
     """
     Generate market data for multiple symbols.
-    
+
     Args:
         draw: Hypothesis draw function
         min_symbols: Minimum number of symbols
         max_symbols: Maximum number of symbols
         min_length: Minimum number of candles per symbol
         max_length: Maximum number of candles per symbol
-        
+
     Returns:
         Dictionary mapping symbol names to OHLCV DataFrames
     """
     num_symbols = draw(st.integers(min_symbols, max_symbols))
-    
+
     # Generate symbol names
     base_currencies = draw(st.lists(
         st.sampled_from(['BTC', 'ETH', 'XRP', 'LTC', 'ADA', 'DOT', 'SOL']),
@@ -130,7 +130,7 @@ def generate_market_data(
     ))
     quote_currency = draw(st.sampled_from(['USDT', 'USD', 'USDC']))
     symbols = [f"{base}/{quote_currency}" for base in base_currencies]
-    
+
     # Generate data for each symbol
     market_data = {}
     for symbol in symbols:
@@ -139,7 +139,7 @@ def generate_market_data(
             max_length=max_length
         ))
         market_data[symbol] = data
-    
+
     return market_data
 
 
@@ -153,37 +153,37 @@ def generate_order_book_data(
 ) -> Dict[str, List[Dict[str, float]]]:
     """
     Generate order book data for testing.
-    
+
     Args:
         draw: Hypothesis draw function
         min_depth: Minimum number of levels in the order book
         max_depth: Maximum number of levels in the order book
         min_price: Minimum price
         max_price: Maximum price
-        
+
     Returns:
         Dictionary with 'bids' and 'asks' lists
     """
     # Generate base price
     base_price = draw(st.floats(min_price, max_price))
-    
+
     # Generate depth
     depth = draw(st.integers(min_depth, max_depth))
-    
+
     # Generate bids (buy orders, below base price)
     bids = []
     for i in range(depth):
         price = base_price * (1 - 0.001 * (i + 1))
         size = draw(st.floats(0.1, 10.0))
         bids.append({'price': price, 'size': size})
-    
+
     # Generate asks (sell orders, above base price)
     asks = []
     for i in range(depth):
         price = base_price * (1 + 0.001 * (i + 1))
         size = draw(st.floats(0.1, 10.0))
         asks.append({'price': price, 'size': size})
-    
+
     return {
         'bids': sorted(bids, key=lambda x: x['price'], reverse=True),
         'asks': sorted(asks, key=lambda x: x['price'])
@@ -200,25 +200,25 @@ def generate_trade_data(
 ) -> pd.DataFrame:
     """
     Generate trade data for testing.
-    
+
     Args:
         draw: Hypothesis draw function
         min_trades: Minimum number of trades
         max_trades: Maximum number of trades
         min_price: Minimum price
         max_price: Maximum price
-        
+
     Returns:
         DataFrame with trade data
     """
     num_trades = draw(st.integers(min_trades, max_trades))
-    
+
     # Generate timestamps
     start_date = draw(st.datetimes(
         min_value=datetime(2010, 1, 1),
         max_value=datetime(2024, 1, 1)
     ))
-    
+
     # Generate trades
     trades = []
     for i in range(num_trades):
@@ -226,12 +226,12 @@ def generate_trade_data(
         price = draw(st.floats(min_price, max_price))
         size = draw(st.floats(0.001, 10.0))
         side = draw(st.sampled_from(['buy', 'sell']))
-        
+
         trades.append({
             'timestamp': timestamp,
             'price': price,
             'size': size,
             'side': side
         })
-    
-    return pd.DataFrame(trades) 
+
+    return pd.DataFrame(trades)

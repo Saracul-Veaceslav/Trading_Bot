@@ -22,10 +22,10 @@ T = TypeVar('T')
 class Event:
     """
     Event class representing an event in the system.
-    
+
     An event has a type, data, and optional metadata such as timestamp and source.
     """
-    
+
     def __init__(
         self,
         type: str,
@@ -35,7 +35,7 @@ class Event:
     ):
         """
         Initialize an event.
-        
+
         Args:
             type: Event type
             data: Event data
@@ -46,11 +46,11 @@ class Event:
         self.data = data
         self.timestamp = timestamp if timestamp is not None else time.time()
         self.source = source
-    
+
     def __str__(self) -> str:
         """Return a string representation of the event."""
         return f"Event(type={self.type}, data={self.data}, timestamp={self.timestamp}, source={self.source})"
-    
+
     def __repr__(self) -> str:
         """Return a string representation of the event."""
         return self.__str__()
@@ -59,16 +59,16 @@ class Event:
 class EventSystem:
     """
     Event system for the Abidance trading bot.
-    
+
     The event system allows components to emit events and register handlers for events.
     Handlers can be filtered to only receive events that match certain criteria.
     Events can be propagated to parent event types.
     """
-    
+
     def __init__(self):
         """Initialize the event system."""
         self._handlers: Dict[str, List[EventHandler]] = {}
-    
+
     def register_handler(
         self,
         event_type: str,
@@ -77,7 +77,7 @@ class EventSystem:
     ) -> None:
         """
         Register a handler for an event type.
-        
+
         Args:
             event_type: Type of event to handle
             handler: Function to handle the event
@@ -85,24 +85,24 @@ class EventSystem:
         """
         if event_type not in self._handlers:
             self._handlers[event_type] = []
-        
+
         # If a filter is provided, wrap the handler with the filter
         if event_filter is not None:
             original_handler = handler
-            
+
             def filtered_handler(event: Event) -> None:
                 if event_filter(event):
                     original_handler(event)
-            
+
             handler = filtered_handler
-        
+
         self._handlers[event_type].append(handler)
         logger.debug(f"Registered handler for event type: {event_type}")
-    
+
     def unregister_handler(self, event_type: str, handler: EventHandler) -> None:
         """
         Unregister a handler for an event type.
-        
+
         Args:
             event_type: Type of event
             handler: Handler to unregister
@@ -113,23 +113,23 @@ class EventSystem:
             if handler in self._handlers[event_type]:
                 self._handlers[event_type].remove(handler)
                 logger.debug(f"Unregistered handler for event type: {event_type}")
-    
+
     def clear_handlers(self, event_type: str) -> None:
         """
         Clear all handlers for an event type.
-        
+
         Args:
             event_type: Type of event
         """
         if event_type in self._handlers:
             self._handlers[event_type] = []
             logger.debug(f"Cleared all handlers for event type: {event_type}")
-    
+
     def clear_all_handlers(self) -> None:
         """Clear all handlers for all event types."""
         self._handlers = {}
         logger.debug("Cleared all handlers for all event types")
-    
+
     def emit(
         self,
         event_type: str,
@@ -140,7 +140,7 @@ class EventSystem:
     ) -> None:
         """
         Emit an event.
-        
+
         Args:
             event_type: Type of event
             event_data: Data for the event
@@ -150,19 +150,19 @@ class EventSystem:
         """
         event = Event(event_type, event_data, timestamp, source)
         logger.debug(f"Emitting event: {event}")
-        
+
         # Call handlers for this event type
         self._call_handlers(event_type, event)
-        
+
         # If propagation is enabled, call handlers for parent event types
         if propagate and '.' in event_type:
             parent_type = event_type.rsplit('.', 1)[0]
             self._call_handlers(parent_type, event)
-    
+
     def _call_handlers(self, event_type: str, event: Event) -> None:
         """
         Call all handlers for an event type.
-        
+
         Args:
             event_type: Type of event
             event: Event to handle
@@ -173,12 +173,12 @@ class EventSystem:
                     handler(event)
                 except Exception as e:
                     logger.error(f"Error in event handler for {event_type}: {e}")
-    
+
     def get_handlers(self) -> Dict[str, List[EventHandler]]:
         """
         Get all registered handlers.
-        
+
         Returns:
             Dictionary mapping event types to lists of handlers
         """
-        return self._handlers 
+        return self._handlers

@@ -1,0 +1,2448 @@
+************* Module abidance.exchange.protocols
+abidance/exchange/protocols.py:35:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:47:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:64:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:73:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:85:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:98:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:111:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:123:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:150:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/protocols.py:127:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module abidance.exchange.manager
+abidance/exchange/manager.py:140:0: C0304: Final newline missing (missing-final-newline)
+abidance/exchange/manager.py:35:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/manager.py:51:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/manager.py:53:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/exchange/manager.py:53:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/exchange/manager.py:131:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+************* Module abidance.exchange.base
+abidance/exchange/base.py:142:0: C0304: Final newline missing (missing-final-newline)
+abidance/exchange/base.py:19:0: W0613: Unused argument 'kwargs' (unused-argument)
+abidance/exchange/base.py:43:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:56:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:74:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:84:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:97:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:111:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:125:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/exchange/base.py:138:8: W0107: Unnecessary pass statement (unnecessary-pass)
+************* Module abidance.exchange.binance
+abidance/exchange/binance.py:239:0: C0304: Final newline missing (missing-final-newline)
+abidance/exchange/binance.py:38:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:66:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:92:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:126:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:179:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:202:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:225:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exchange/binance.py:8:0: W0611: Unused ExchangeError imported from exceptions (unused-import)
+************* Module abidance.core.bootstrap
+abidance/core/bootstrap.py:205:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/bootstrap.py:50:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+abidance/core/bootstrap.py:56:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:59:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:62:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:65:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:78:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:89:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:168:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:171:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:189:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:192:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/bootstrap.py:10:0: C0411: standard import "logging" should be placed before third party import "yaml" (wrong-import-order)
+abidance/core/bootstrap.py:11:0: C0411: standard import "typing.Dict" should be placed before third party import "yaml" (wrong-import-order)
+abidance/core/bootstrap.py:11:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/core/bootstrap.py:11:0: W0611: Unused cast imported from typing (unused-import)
+************* Module abidance.core.configuration
+abidance/core/configuration.py:92:0: C0301: Line too long (102/100) (line-too-long)
+abidance/core/configuration.py:153:0: C0301: Line too long (127/100) (line-too-long)
+abidance/core/configuration.py:282:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/configuration.py:62:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+abidance/core/configuration.py:68:20: W0707: Consider explicitly re-raising using 'raise ConfigurationError(f'Invalid YAML in {file_path}: {str(e)}') from e' (raise-missing-from)
+abidance/core/configuration.py:70:12: W0707: Consider explicitly re-raising using 'except FileNotFoundError as exc' and 'raise ConfigurationError(f'File not found: {file_path}') from exc' (raise-missing-from)
+abidance/core/configuration.py:83:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/core/configuration.py:92:4: R0912: Too many branches (16/12) (too-many-branches)
+abidance/core/configuration.py:201:12: W0612: Unused variable 'i' (unused-variable)
+abidance/core/configuration.py:279:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+abidance/core/configuration.py:282:12: W0707: Consider explicitly re-raising using 'raise ConfigurationError(f'Error saving configuration to {file_path}: {str(e)}') from e' (raise-missing-from)
+abidance/core/configuration.py:11:0: C0411: standard import "json" should be placed before third party import "yaml" (wrong-import-order)
+abidance/core/configuration.py:12:0: C0411: standard import "logging" should be placed before third party import "yaml" (wrong-import-order)
+abidance/core/configuration.py:13:0: C0411: standard import "typing.Dict" should be placed before third party import "yaml" (wrong-import-order)
+abidance/core/configuration.py:13:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/configuration.py:13:0: W0611: Unused Callable imported from typing (unused-import)
+************* Module abidance.core.metrics
+abidance/core/metrics.py:181:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/metrics.py:149:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/core/metrics.py:127:4: R0911: Too many return statements (9/6) (too-many-return-statements)
+abidance/core/metrics.py:8:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/metrics.py:8:0: W0611: Unused Callable imported from typing (unused-import)
+abidance/core/metrics.py:9:0: W0611: Unused timedelta imported from datetime (unused-import)
+************* Module abidance.core.collectors
+abidance/core/collectors.py:205:0: C0301: Line too long (120/100) (line-too-long)
+abidance/core/collectors.py:218:0: C0301: Line too long (152/100) (line-too-long)
+abidance/core/collectors.py:489:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/collectors.py:126:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abidance/core/collectors.py:126:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+abidance/core/collectors.py:154:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abidance/core/collectors.py:154:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+abidance/core/collectors.py:218:4: R0914: Too many local variables (23/15) (too-many-locals)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:252:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/core/collectors.py:218:4: R0912: Too many branches (48/12) (too-many-branches)
+abidance/core/collectors.py:218:4: R0915: Too many statements (120/50) (too-many-statements)
+abidance/core/collectors.py:13:0: C0411: standard import "os" should be placed before third party import "psutil" (wrong-import-order)
+abidance/core/collectors.py:14:0: C0411: standard import "functools.wraps" should be placed before third party import "psutil" (wrong-import-order)
+abidance/core/collectors.py:8:0: W0611: Unused Any imported from typing (unused-import)
+abidance/core/collectors.py:8:0: W0611: Unused List imported from typing (unused-import)
+abidance/core/collectors.py:8:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/collectors.py:8:0: W0611: Unused Callable imported from typing (unused-import)
+abidance/core/collectors.py:9:0: W0611: Unused timedelta imported from datetime (unused-import)
+abidance/core/collectors.py:16:0: W0611: Unused AggregationType imported from metrics (unused-import)
+************* Module abidance.core.domain
+abidance/core/domain.py:115:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/domain.py:60:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abidance/core/domain.py:76:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/domain.py:95:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/domain.py:99:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abidance/core/domain.py:115:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/domain.py:11:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/domain.py:15:0: W0611: Unused Position imported from abidance.trading.position as TradingPosition (unused-import)
+abidance/core/domain.py:16:0: W0611: Unused Order imported from abidance.trading.order as TradingOrder (unused-import)
+abidance/core/domain.py:17:0: W0611: Unused Trade imported from abidance.trading.trade as TradingTrade (unused-import)
+************* Module abidance.core.event_handlers
+abidance/core/event_handlers.py:91:0: C0301: Line too long (101/100) (line-too-long)
+abidance/core/event_handlers.py:194:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/event_handlers.py:59:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/event_handlers.py:76:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/event_handlers.py:91:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/event_handlers.py:94:16: R1704: Redefining argument with the local name 'event_type' (redefined-argument-from-local)
+abidance/core/event_handlers.py:9:0: W0611: Unused Type imported from typing (unused-import)
+abidance/core/event_handlers.py:9:0: W0611: Unused Generic imported from typing (unused-import)
+abidance/core/event_handlers.py:9:0: W0611: Unused Any imported from typing (unused-import)
+abidance/core/event_handlers.py:9:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/event_handlers.py:10:0: W0611: Unused field imported from dataclasses (unused-import)
+abidance/core/event_handlers.py:12:0: W0611: Unused Event imported from abidance.core.events (unused-import)
+abidance/core/event_handlers.py:12:0: W0611: Unused EventData imported from abidance.core.events (unused-import)
+************* Module abidance.core.events
+abidance/core/events.py:52:0: C0301: Line too long (109/100) (line-too-long)
+abidance/core/events.py:184:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/events.py:31:8: W0622: Redefining built-in 'type' (redefined-builtin)
+abidance/core/events.py:100:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/events.py:115:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/events.py:126:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/events.py:133:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/core/events.py:133:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/core/events.py:152:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/events.py:174:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/core/events.py:175:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/core/events.py:10:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/events.py:10:0: W0611: Unused Generic imported from typing (unused-import)
+************* Module abidance.core.validators
+abidance/core/validators.py:301:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/validators.py:15:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:52:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:96:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:151:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:207:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:254:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:265:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validators.py:9:0: W0611: Unused Dict imported from typing (unused-import)
+************* Module abidance.core.__init__
+abidance/core/__init__.py:288:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.core
+abidance/core/__init__.py:96:26: W0613: Unused argument 'config_path' (unused-argument)
+abidance/core/__init__.py:109:26: W0613: Unused argument 'config_path' (unused-argument)
+abidance/core/__init__.py:162:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/__init__.py:172:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/__init__.py:182:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/__init__.py:192:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/__init__.py:195:0: E0102: class already defined line 51 (function-redefined)
+abidance/core/__init__.py:16:0: C0411: first party import "abidance.trading.OrderSide" should be placed before local import "domain.SignalType" (wrong-import-order)
+abidance/core/__init__.py:80:0: C0411: first party import "abidance.core.metrics.MetricsCollector" should be placed before local imports "domain.SignalType", "types.Timestamp", "container.ServiceRegistry" (...) "environment.Environment", "validation.ValidationError", "validators.RequiredValidator" (wrong-import-order)
+abidance/core/__init__.py:81:0: C0411: first party import "abidance.core.collectors.PerformanceMetricsCollector" should be placed before local imports "domain.SignalType", "types.Timestamp", "container.ServiceRegistry" (...) "environment.Environment", "validation.ValidationError", "validators.RequiredValidator" (wrong-import-order)
+abidance/core/__init__.py:237:4: E0603: Undefined variable name 'EventHandler' in __all__ (undefined-all-variable)
+abidance/core/__init__.py:238:4: E0603: Undefined variable name 'EventFilter' in __all__ (undefined-all-variable)
+************* Module abidance.core.types
+abidance/core/types.py:40:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/types.py:7:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/core/types.py:10:0: W0611: Unused numpy imported as np (unused-import)
+************* Module abidance.core.container
+abidance/core/container.py:10:0: C0301: Line too long (111/100) (line-too-long)
+abidance/core/container.py:131:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/container.py:10:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/core/container.py:10:0: W0611: Unused cast imported from typing (unused-import)
+abidance/core/container.py:10:0: W0611: Unused get_type_hints imported from typing (unused-import)
+abidance/core/container.py:10:0: W0611: Unused runtime_checkable imported from typing (unused-import)
+************* Module abidance.core.environment
+abidance/core/environment.py:96:0: C0301: Line too long (107/100) (line-too-long)
+abidance/core/environment.py:124:0: C0301: Line too long (104/100) (line-too-long)
+abidance/core/environment.py:147:0: C0301: Line too long (101/100) (line-too-long)
+abidance/core/environment.py:149:0: C0301: Line too long (110/100) (line-too-long)
+abidance/core/environment.py:174:0: C0301: Line too long (107/100) (line-too-long)
+abidance/core/environment.py:206:0: C0301: Line too long (127/100) (line-too-long)
+abidance/core/environment.py:231:0: C0301: Line too long (104/100) (line-too-long)
+abidance/core/environment.py:233:0: C0301: Line too long (107/100) (line-too-long)
+abidance/core/environment.py:254:0: C0301: Line too long (118/100) (line-too-long)
+abidance/core/environment.py:278:0: C0301: Line too long (110/100) (line-too-long)
+abidance/core/environment.py:298:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/environment.py:147:12: W0707: Consider explicitly re-raising using 'except ValueError as exc' and 'raise ConfigurationError(f'Cannot convert environment variable {key}={value} to integer') from exc' (raise-missing-from)
+abidance/core/environment.py:172:12: W0707: Consider explicitly re-raising using 'except ValueError as exc' and 'raise ConfigurationError(f'Cannot convert environment variable {key}={value} to float') from exc' (raise-missing-from)
+abidance/core/environment.py:231:12: W0707: Consider explicitly re-raising using 'except Exception as exc' and 'raise ConfigurationError(f'Cannot convert environment variable {key}={value} to dictionary') from exc' (raise-missing-from)
+abidance/core/environment.py:278:12: W0707: Consider explicitly re-raising using 'except (ValueError, TypeError) as exc' and 'raise ConfigurationError(f'Cannot convert environment variable {key}={value} to {type_.__name__}') from exc' (raise-missing-from)
+abidance/core/environment.py:11:0: W0611: Unused List imported from typing (unused-import)
+abidance/core/environment.py:11:0: W0611: Unused Union imported from typing (unused-import)
+************* Module abidance.core.validation
+abidance/core/validation.py:28:0: C0301: Line too long (101/100) (line-too-long)
+abidance/core/validation.py:111:0: C0304: Final newline missing (missing-final-newline)
+abidance/core/validation.py:49:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/core/validation.py:31:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/core/validation.py:8:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/core/validation.py:8:0: W0611: Unused Type imported from typing (unused-import)
+abidance/core/validation.py:8:0: W0611: Unused Union imported from typing (unused-import)
+abidance/core/validation.py:8:0: W0611: Unused Callable imported from typing (unused-import)
+************* Module abidance.optimization.metrics
+abidance/optimization/metrics.py:40:0: C0301: Line too long (105/100) (line-too-long)
+abidance/optimization/metrics.py:81:0: C0301: Line too long (105/100) (line-too-long)
+abidance/optimization/metrics.py:129:0: C0301: Line too long (109/100) (line-too-long)
+abidance/optimization/metrics.py:203:0: C0304: Final newline missing (missing-final-newline)
+abidance/optimization/metrics.py:10:0: C0411: standard import "typing.Optional" should be placed before third party imports "numpy", "pandas" (wrong-import-order)
+abidance/optimization/metrics.py:10:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/optimization/metrics.py:10:0: W0611: Unused Union imported from typing (unused-import)
+abidance/optimization/metrics.py:10:0: W0611: Unused List imported from typing (unused-import)
+abidance/optimization/metrics.py:10:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/optimization/metrics.py:10:0: W0611: Unused Any imported from typing (unused-import)
+************* Module abidance.optimization.__init__
+abidance/optimization/__init__.py:17:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.optimization.optimizer
+abidance/optimization/optimizer.py:125:0: C0301: Line too long (107/100) (line-too-long)
+abidance/optimization/optimizer.py:142:0: C0304: Final newline missing (missing-final-newline)
+abidance/optimization/optimizer.py:57:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:68:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/optimization/optimizer.py:69:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:92:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:99:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:103:12: C0415: Import outside toplevel (multiprocessing) (import-outside-toplevel)
+abidance/optimization/optimizer.py:109:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:118:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/optimization/optimizer.py:119:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:125:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/optimization/optimizer.py:26:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/optimization/optimizer.py:10:0: C0411: standard import "dataclasses.dataclass" should be placed before third party import "numpy" (wrong-import-order)
+abidance/optimization/optimizer.py:12:0: C0411: standard import "concurrent.futures.ThreadPoolExecutor" should be placed before third party imports "numpy", "pandas" (wrong-import-order)
+abidance/optimization/optimizer.py:13:0: C0411: standard import "logging" should be placed before third party imports "numpy", "pandas" (wrong-import-order)
+abidance/optimization/optimizer.py:8:0: W0611: Unused Tuple imported from typing (unused-import)
+************* Module abidance.health.checks
+abidance/health/checks.py:64:0: C0301: Line too long (102/100) (line-too-long)
+abidance/health/checks.py:126:0: C0301: Line too long (108/100) (line-too-long)
+abidance/health/checks.py:158:0: C0304: Final newline missing (missing-final-newline)
+abidance/health/checks.py:28:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/health/checks.py:29:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:32:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:53:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/health/checks.py:54:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:57:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:80:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/health/checks.py:81:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:84:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:130:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/health/checks.py:116:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:122:12: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/health/checks.py:123:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:126:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:131:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:154:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/health/checks.py:149:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/health/checks.py:155:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/health/checks.py:5:0: C0411: standard import "time" should be placed before third party import "psutil" (wrong-import-order)
+abidance/health/checks.py:6:0: C0411: standard import "typing.Callable" should be placed before third party import "psutil" (wrong-import-order)
+abidance/health/checks.py:7:0: C0411: standard import "logging" should be placed before third party import "psutil" (wrong-import-order)
+abidance/health/checks.py:8:0: C0411: standard import "asyncio" should be placed before third party import "psutil" (wrong-import-order)
+abidance/health/checks.py:3:0: W0611: Unused import os (unused-import)
+abidance/health/checks.py:6:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/health/checks.py:6:0: W0611: Unused Any imported from typing (unused-import)
+abidance/health/checks.py:6:0: W0611: Unused Optional imported from typing (unused-import)
+************* Module abidance.health.__init__
+abidance/health/__init__.py:26:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.health.checker
+abidance/health/checker.py:71:0: C0304: Final newline missing (missing-final-newline)
+abidance/health/checker.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/health/checker.py:65:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/health/checker.py:1:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/health/checker.py:3:0: W0611: Unused import asyncio (unused-import)
+************* Module abidance.utils.__init__
+abidance/utils/__init__.py:23:0: C0301: Line too long (101/100) (line-too-long)
+abidance/utils/__init__.py:77:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.utils
+abidance/utils/__init__.py:44:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+************* Module abidance.exceptions.__init__
+abidance/exceptions/__init__.py:89:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.exceptions
+abidance/exceptions/__init__.py:58:0: W0622: Redefining built-in 'ConnectionError' (redefined-builtin)
+abidance/exceptions/__init__.py:59:0: W0622: Redefining built-in 'TimeoutError' (redefined-builtin)
+abidance/exceptions/__init__.py:65:0: C0413: Import "from .error_context import ErrorContext, error_boundary, retry" should be placed at the top of the module (wrong-import-position)
+abidance/exceptions/__init__.py:66:0: C0413: Import "from .fallback import fallback, CircuitBreaker" should be placed at the top of the module (wrong-import-position)
+************* Module abidance.exceptions.error_context
+abidance/exceptions/error_context.py:241:0: C0304: Final newline missing (missing-final-newline)
+abidance/exceptions/error_context.py:137:0: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/exceptions/error_context.py:137:0: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/exceptions/error_context.py:172:11: E0712: Catching an exception which doesn't inherit from Exception: tuple(error_types) (catching-non-exception)
+abidance/exceptions/error_context.py:186:16: E0705: Exception cause set to something which is not an exception, nor None (bad-exception-cause)
+abidance/exceptions/error_context.py:188:12: E0705: Exception cause set to something which is not an exception, nor None (bad-exception-cause)
+abidance/exceptions/error_context.py:223:23: E0712: Catching an exception which doesn't inherit from Exception: tuple(error_types) (catching-non-exception)
+************* Module abidance.exceptions.fallback
+abidance/exceptions/fallback.py:58:0: C0301: Line too long (112/100) (line-too-long)
+abidance/exceptions/fallback.py:194:0: C0301: Line too long (113/100) (line-too-long)
+abidance/exceptions/fallback.py:237:0: C0304: Final newline missing (missing-final-newline)
+abidance/exceptions/fallback.py:51:19: E0712: Catching an exception which doesn't inherit from Exception: tuple(error_types) (catching-non-exception)
+abidance/exceptions/fallback.py:61:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exceptions/fallback.py:66:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/exceptions/fallback.py:76:0: R0902: Too many instance attributes (11/7) (too-many-instance-attributes)
+abidance/exceptions/fallback.py:91:4: R0913: Too many arguments (8/5) (too-many-arguments)
+abidance/exceptions/fallback.py:91:4: R0917: Too many positional arguments (8/5) (too-many-positional-arguments)
+abidance/exceptions/fallback.py:162:8: C0415: Import outside toplevel (time) (import-outside-toplevel)
+abidance/exceptions/fallback.py:193:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exceptions/fallback.py:199:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/exceptions/fallback.py:225:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/exceptions/fallback.py:230:12: C0415: Import outside toplevel (.CircuitOpenError) (import-outside-toplevel)
+abidance/exceptions/fallback.py:10:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/exceptions/fallback.py:13:0: W0611: Unused ErrorContext imported from error_context (unused-import)
+************* Module abidance.typing.__init__
+abidance/typing/__init__.py:254:0: C0301: Line too long (103/100) (line-too-long)
+abidance/typing/__init__.py:392:0: C0301: Line too long (101/100) (line-too-long)
+abidance/typing/__init__.py:527:0: C0301: Line too long (104/100) (line-too-long)
+abidance/typing/__init__.py:606:0: C0301: Line too long (103/100) (line-too-long)
+abidance/typing/__init__.py:640:0: C0301: Line too long (101/100) (line-too-long)
+abidance/typing/__init__.py:789:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.typing
+abidance/typing/__init__.py:229:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:237:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:246:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:258:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/typing/__init__.py:288:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/typing/__init__.py:349:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:357:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:366:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:376:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:385:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:395:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/typing/__init__.py:448:8: W0719: Raising too general exception: Exception (broad-exception-raised)
+abidance/typing/__init__.py:587:12: W0719: Raising too general exception: Exception (broad-exception-raised)
+abidance/typing/__init__.py:598:12: W0719: Raising too general exception: Exception (broad-exception-raised)
+abidance/typing/__init__.py:650:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/typing/__init__.py:690:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/typing/__init__.py:706:16: W0707: Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f'Cannot parse {value} as datetime') from exc' (raise-missing-from)
+abidance/typing/__init__.py:721:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+************* Module abidance.testing.properties
+abidance/testing/properties.py:28:0: C0301: Line too long (103/100) (line-too-long)
+abidance/testing/properties.py:205:0: C0301: Line too long (111/100) (line-too-long)
+abidance/testing/properties.py:206:0: C0301: Line too long (109/100) (line-too-long)
+abidance/testing/properties.py:240:0: C0301: Line too long (111/100) (line-too-long)
+abidance/testing/properties.py:241:0: C0301: Line too long (109/100) (line-too-long)
+abidance/testing/properties.py:244:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/properties.py:17:0: R0911: Too many return statements (7/6) (too-many-return-statements)
+abidance/testing/properties.py:148:8: C0415: Import outside toplevel (pytest) (import-outside-toplevel)
+abidance/testing/properties.py:167:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/properties.py:179:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/properties.py:165:16: W0612: Unused variable 'signal' (unused-variable)
+abidance/testing/properties.py:7:0: W0611: Unused List imported from typing (unused-import)
+abidance/testing/properties.py:7:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/testing/properties.py:10:0: W0611: Unused strategies imported from hypothesis as st (unused-import)
+abidance/testing/properties.py:12:0: W0611: Unused SignalType imported from abidance.core.domain (unused-import)
+************* Module abidance.testing.mock_exchange
+abidance/testing/mock_exchange.py:251:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/mock_exchange.py:16:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+abidance/testing/mock_exchange.py:52:39: W0613: Unused argument 'timeframe' (unused-argument)
+abidance/testing/mock_exchange.py:194:49: C0201: Consider iterating the dictionary directly instead of calling .keys() (consider-iterating-dictionary)
+abidance/testing/mock_exchange.py:10:0: C0411: standard import "datetime.datetime" should be placed before third party import "pandas" (wrong-import-order)
+************* Module abidance.testing.pylon_storage
+abidance/testing/pylon_storage.py:45:0: C0301: Line too long (108/100) (line-too-long)
+abidance/testing/pylon_storage.py:209:0: C0301: Line too long (110/100) (line-too-long)
+abidance/testing/pylon_storage.py:365:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/pylon_storage.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/testing/pylon_storage.py:83:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:85:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:88:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/testing/pylon_storage.py:88:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/testing/pylon_storage.py:158:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/pylon_storage.py:159:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:163:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:202:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/pylon_storage.py:203:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:237:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:239:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:242:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:280:4: R0914: Too many local variables (17/15) (too-many-locals)
+abidance/testing/pylon_storage.py:318:18: W0612: Unused variable 'dirs' (unused-variable)
+abidance/testing/pylon_storage.py:345:8: C0415: Import outside toplevel (shutil) (import-outside-toplevel)
+abidance/testing/pylon_storage.py:363:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/pylon_storage.py:364:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/pylon_storage.py:4:0: C0411: standard import "datetime.datetime" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/pylon_storage.py:5:0: C0411: standard import "pathlib.Path" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/pylon_storage.py:6:0: C0411: standard import "json" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/pylon_storage.py:7:0: C0411: standard import "logging" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/pylon_storage.py:11:0: C0411: standard import "os" should be placed before third party imports "pandas", "numpy", "pyarrow", "pyarrow.parquet", "pyarrow.dataset" (wrong-import-order)
+abidance/testing/pylon_storage.py:1:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/testing/pylon_storage.py:1:0: W0611: Unused Union imported from typing (unused-import)
+abidance/testing/pylon_storage.py:3:0: W0611: Unused numpy imported as np (unused-import)
+abidance/testing/pylon_storage.py:4:0: W0611: Unused datetime imported from datetime (unused-import)
+abidance/testing/pylon_storage.py:4:0: W0611: Unused timedelta imported from datetime (unused-import)
+abidance/testing/pylon_storage.py:6:0: W0611: Unused import json (unused-import)
+************* Module abidance.testing.mock_data
+abidance/testing/mock_data.py:198:0: C0301: Line too long (106/100) (line-too-long)
+abidance/testing/mock_data.py:337:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/mock_data.py:13:0: R0913: Too many arguments (9/5) (too-many-arguments)
+abidance/testing/mock_data.py:13:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+abidance/testing/mock_data.py:13:0: R0914: Too many local variables (27/15) (too-many-locals)
+abidance/testing/mock_data.py:14:4: W0613: Unused argument 'symbol' (unused-argument)
+abidance/testing/mock_data.py:106:0: R0913: Too many arguments (9/5) (too-many-arguments)
+abidance/testing/mock_data.py:106:0: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+abidance/testing/mock_data.py:106:0: R0914: Too many local variables (30/15) (too-many-locals)
+abidance/testing/mock_data.py:107:4: W0613: Unused argument 'symbol' (unused-argument)
+abidance/testing/mock_data.py:219:0: R0913: Too many arguments (8/5) (too-many-arguments)
+abidance/testing/mock_data.py:219:0: R0917: Too many positional arguments (8/5) (too-many-positional-arguments)
+abidance/testing/mock_data.py:324:8: W0707: Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f'Invalid timeframe format: {timeframe}') from exc' (raise-missing-from)
+abidance/testing/mock_data.py:328:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/testing/mock_data.py:9:0: C0411: standard import "datetime.datetime" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/mock_data.py:10:0: C0411: standard import "typing.List" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+************* Module abidance.testing.data_loaders
+abidance/testing/data_loaders.py:60:0: C0301: Line too long (101/100) (line-too-long)
+abidance/testing/data_loaders.py:178:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/data_loaders.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/testing/data_loaders.py:28:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abidance/testing/data_loaders.py:28:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+abidance/testing/data_loaders.py:71:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/data_loaders.py:74:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/testing/data_loaders.py:74:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/testing/data_loaders.py:131:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abidance/testing/data_loaders.py:131:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+abidance/testing/data_loaders.py:119:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/testing/data_loaders.py:4:0: C0411: standard import "datetime.datetime" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/data_loaders.py:6:0: C0411: standard import "logging" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/data_loaders.py:7:0: C0411: standard import "pathlib.Path" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/data_loaders.py:1:0: W0611: Unused List imported from typing (unused-import)
+abidance/testing/data_loaders.py:1:0: W0611: Unused Callable imported from typing (unused-import)
+abidance/testing/data_loaders.py:3:0: W0611: Unused numpy imported as np (unused-import)
+abidance/testing/data_loaders.py:4:0: W0611: Unused timedelta imported from datetime (unused-import)
+************* Module abidance.testing.generators
+abidance/testing/generators.py:237:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/generators.py:16:0: R0914: Too many local variables (20/15) (too-many-locals)
+abidance/testing/generators.py:12:0: C0411: standard import "datetime.datetime" should be placed before third party imports "hypothesis.strategies", "hypothesis.strategies.SearchStrategy", "pandas", "numpy" (wrong-import-order)
+abidance/testing/generators.py:7:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/testing/generators.py:9:0: W0611: Unused SearchStrategy imported from hypothesis.strategies (unused-import)
+abidance/testing/generators.py:11:0: W0611: Unused numpy imported as np (unused-import)
+************* Module abidance.testing.binance_data_fetcher
+abidance/testing/binance_data_fetcher.py:86:0: C0301: Line too long (112/100) (line-too-long)
+abidance/testing/binance_data_fetcher.py:89:0: C0301: Line too long (124/100) (line-too-long)
+abidance/testing/binance_data_fetcher.py:212:0: C0301: Line too long (111/100) (line-too-long)
+abidance/testing/binance_data_fetcher.py:297:0: C0301: Line too long (101/100) (line-too-long)
+abidance/testing/binance_data_fetcher.py:378:0: C0301: Line too long (103/100) (line-too-long)
+abidance/testing/binance_data_fetcher.py:465:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/binance_data_fetcher.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/testing/binance_data_fetcher.py:16:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abidance/testing/binance_data_fetcher.py:59:4: R0913: Too many arguments (9/5) (too-many-arguments)
+abidance/testing/binance_data_fetcher.py:59:4: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+abidance/testing/binance_data_fetcher.py:59:4: R0914: Too many local variables (17/15) (too-many-locals)
+abidance/testing/binance_data_fetcher.py:86:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:89:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:130:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:131:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:144:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:59:4: R0912: Too many branches (14/12) (too-many-branches)
+abidance/testing/binance_data_fetcher.py:204:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:212:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:216:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:220:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:246:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:247:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:272:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:273:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:295:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:296:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:325:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:326:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:340:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:341:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:463:23: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/testing/binance_data_fetcher.py:464:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/testing/binance_data_fetcher.py:4:0: C0411: standard import "datetime.datetime" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/testing/binance_data_fetcher.py:6:0: C0411: standard import "logging" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/binance_data_fetcher.py:7:0: C0411: standard import "time" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/binance_data_fetcher.py:8:0: C0411: standard import "concurrent.futures" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/binance_data_fetcher.py:9:0: C0411: standard import "pathlib.Path" should be placed before third party imports "pandas", "numpy", "ccxt" (wrong-import-order)
+abidance/testing/binance_data_fetcher.py:1:0: W0611: Unused Any imported from typing (unused-import)
+abidance/testing/binance_data_fetcher.py:1:0: W0611: Unused Union imported from typing (unused-import)
+abidance/testing/binance_data_fetcher.py:1:0: W0611: Unused Tuple imported from typing (unused-import)
+abidance/testing/binance_data_fetcher.py:3:0: W0611: Unused numpy imported as np (unused-import)
+abidance/testing/binance_data_fetcher.py:9:0: W0611: Unused Path imported from pathlib (unused-import)
+************* Module abidance.testing.data_management
+abidance/testing/data_management.py:45:0: C0304: Final newline missing (missing-final-newline)
+abidance/testing/data_management.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/testing/data_management.py:3:0: C0411: standard import "datetime.datetime" should be placed before third party import "pandas" (wrong-import-order)
+abidance/testing/data_management.py:4:0: C0411: standard import "pathlib.Path" should be placed before third party import "pandas" (wrong-import-order)
+abidance/testing/data_management.py:5:0: C0411: standard import "json" should be placed before third party import "pandas" (wrong-import-order)
+abidance/testing/data_management.py:1:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/testing/data_management.py:1:0: W0611: Unused Any imported from typing (unused-import)
+abidance/testing/data_management.py:1:0: W0611: Unused List imported from typing (unused-import)
+abidance/testing/data_management.py:3:0: W0611: Unused timedelta imported from datetime (unused-import)
+abidance/testing/data_management.py:5:0: W0611: Unused import json (unused-import)
+************* Module abidance.ml.__init__
+abidance/ml/__init__.py:91:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.ml
+abidance/ml/__init__.py:9:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/ml/__init__.py:60:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module abidance.api.__init__
+abidance/api/__init__.py:84:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.api
+abidance/api/__init__.py:36:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/api/__init__.py:43:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/api/__init__.py:60:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/api/__init__.py:67:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/api/__init__.py:77:8: W0107: Unnecessary pass statement (unnecessary-pass)
+************* Module abidance.evaluation.metrics
+abidance/evaluation/metrics.py:66:0: C0304: Final newline missing (missing-final-newline)
+abidance/evaluation/metrics.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/evaluation/metrics.py:17:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/evaluation/metrics.py:4:0: C0411: standard import "dataclasses.dataclass" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/evaluation/metrics.py:1:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/evaluation/metrics.py:1:0: W0611: Unused Any imported from typing (unused-import)
+************* Module abidance.evaluation.__init__
+abidance/evaluation/__init__.py:15:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.evaluation.reporting
+abidance/evaluation/reporting.py:188:0: C0304: Final newline missing (missing-final-newline)
+abidance/evaluation/reporting.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/evaluation/reporting.py:90:13: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+abidance/evaluation/reporting.py:175:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/evaluation/reporting.py:173:4: R0911: Too many return statements (7/6) (too-many-return-statements)
+abidance/evaluation/reporting.py:5:0: C0411: standard import "pathlib.Path" should be placed before third party imports "pandas", "numpy", "matplotlib.pyplot" (wrong-import-order)
+abidance/evaluation/reporting.py:6:0: C0411: standard import "json" should be placed before third party imports "pandas", "numpy", "matplotlib.pyplot" (wrong-import-order)
+abidance/evaluation/reporting.py:7:0: C0411: standard import "datetime.datetime" should be placed before third party imports "pandas", "numpy", "matplotlib.pyplot" (wrong-import-order)
+abidance/evaluation/reporting.py:8:0: C0411: standard import "os" should be placed before third party imports "pandas", "numpy", "matplotlib.pyplot" (wrong-import-order)
+abidance/evaluation/reporting.py:1:0: W0611: Unused List imported from typing (unused-import)
+abidance/evaluation/reporting.py:5:0: W0611: Unused Path imported from pathlib (unused-import)
+************* Module abidance.type_defs.__init__
+abidance/type_defs/__init__.py:278:0: C0301: Line too long (102/100) (line-too-long)
+abidance/type_defs/__init__.py:307:0: C0301: Line too long (102/100) (line-too-long)
+abidance/type_defs/__init__.py:532:0: C0301: Line too long (104/100) (line-too-long)
+abidance/type_defs/__init__.py:623:0: C0301: Line too long (106/100) (line-too-long)
+abidance/type_defs/__init__.py:632:0: C0301: Line too long (101/100) (line-too-long)
+abidance/type_defs/__init__.py:636:0: C0301: Line too long (103/100) (line-too-long)
+abidance/type_defs/__init__.py:649:0: C0301: Line too long (101/100) (line-too-long)
+abidance/type_defs/__init__.py:757:0: C0301: Line too long (104/100) (line-too-long)
+abidance/type_defs/__init__.py:803:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.type_defs
+abidance/type_defs/__init__.py:229:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:237:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:246:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:263:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/type_defs/__init__.py:292:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/type_defs/__init__.py:353:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:361:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:370:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:380:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:389:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:400:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/type_defs/__init__.py:661:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/type_defs/__init__.py:689:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/type_defs/__init__.py:706:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/type_defs/__init__.py:710:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/type_defs/__init__.py:723:16: W0707: Consider explicitly re-raising using 'except ValueError as exc' and 'raise ValueError(f'Cannot parse {value} as datetime') from exc' (raise-missing-from)
+abidance/type_defs/__init__.py:737:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/type_defs/__init__.py:749:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+************* Module abidance.monitoring.collectors
+abidance/monitoring/collectors.py:127:0: C0304: Final newline missing (missing-final-newline)
+abidance/monitoring/collectors.py:23:4: W0246: Useless parent or super() delegation in method '__init__' (useless-parent-delegation)
+abidance/monitoring/collectors.py:63:4: W0246: Useless parent or super() delegation in method '__init__' (useless-parent-delegation)
+abidance/monitoring/collectors.py:9:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/monitoring/collectors.py:9:0: W0611: Unused Any imported from typing (unused-import)
+abidance/monitoring/collectors.py:9:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/monitoring/collectors.py:9:0: W0611: Unused List imported from typing (unused-import)
+************* Module abidance.monitoring.__init__
+abidance/monitoring/__init__.py:10:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.monitoring.performance
+abidance/monitoring/performance.py:126:0: C0304: Final newline missing (missing-final-newline)
+abidance/monitoring/performance.py:8:0: W0611: Unused Any imported from typing (unused-import)
+abidance/monitoring/performance.py:9:0: W0611: Unused datetime imported from datetime (unused-import)
+************* Module abidance.data.__init__
+abidance/data/__init__.py:20:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.data.data_manager
+abidance/data/data_manager.py:45:0: C0301: Line too long (102/100) (line-too-long)
+abidance/data/data_manager.py:340:0: C0304: Final newline missing (missing-final-newline)
+abidance/data/data_manager.py:101:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:102:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:105:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/data/data_manager.py:105:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/data/data_manager.py:150:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:151:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:180:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:181:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:218:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:219:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:251:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:252:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:272:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:273:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:292:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/data/data_manager.py:293:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:319:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/data/data_manager.py:332:8: C0415: Import outside toplevel (repositories.db.ohlcv.DBOHLCVRepository) (import-outside-toplevel)
+abidance/data/data_manager.py:333:8: C0415: Import outside toplevel (repositories.db.trade.DBTradeRepository) (import-outside-toplevel)
+abidance/data/data_manager.py:334:8: C0415: Import outside toplevel (repositories.db.strategy.DBStrategyRepository) (import-outside-toplevel)
+abidance/data/data_manager.py:7:0: W0611: Unused Union imported from typing (unused-import)
+************* Module abidance.trading.trade
+abidance/trading/trade.py:74:0: C0304: Final newline missing (missing-final-newline)
+abidance/trading/trade.py:13:0: R0902: Too many instance attributes (11/7) (too-many-instance-attributes)
+************* Module abidance.trading.order
+abidance/trading/order.py:77:0: C0304: Final newline missing (missing-final-newline)
+abidance/trading/order.py:26:0: R0902: Too many instance attributes (10/7) (too-many-instance-attributes)
+************* Module abidance.trading.__init__
+abidance/trading/__init__.py:22:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.trading.engine
+abidance/trading/engine.py:35:0: C0301: Line too long (103/100) (line-too-long)
+abidance/trading/engine.py:36:0: C0301: Line too long (104/100) (line-too-long)
+abidance/trading/engine.py:191:0: C0304: Final newline missing (missing-final-newline)
+abidance/trading/engine.py:35:4: R0913: Too many arguments (8/5) (too-many-arguments)
+abidance/trading/engine.py:35:4: R0917: Too many positional arguments (8/5) (too-many-positional-arguments)
+abidance/trading/engine.py:70:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:120:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/trading/engine.py:92:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/trading/engine.py:111:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:114:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:118:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:121:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:163:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:178:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/trading/engine.py:187:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:190:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/trading/engine.py:150:47: W0613: Unused argument 'price' (unused-argument)
+************* Module abidance.trading.position
+abidance/trading/position.py:116:0: C0304: Final newline missing (missing-final-newline)
+abidance/trading/position.py:13:0: R0902: Too many instance attributes (12/7) (too-many-instance-attributes)
+abidance/trading/position.py:48:4: R0206: Cannot have defined parameters for properties (property-with-parameters)
+abidance/trading/position.py:59:4: R0206: Cannot have defined parameters for properties (property-with-parameters)
+************* Module abidance.logging.formatters
+abidance/logging/formatters.py:125:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.logging.handlers
+abidance/logging/handlers.py:215:0: C0304: Final newline missing (missing-final-newline)
+abidance/logging/handlers.py:27:4: R0913: Too many arguments (8/5) (too-many-arguments)
+abidance/logging/handlers.py:27:4: R0917: Too many positional arguments (8/5) (too-many-positional-arguments)
+abidance/logging/handlers.py:82:19: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/logging/handlers.py:84:16: C0415: Import outside toplevel (traceback) (import-outside-toplevel)
+abidance/logging/handlers.py:102:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/logging/handlers.py:16:0: W0611: Unused import time (unused-import)
+************* Module abidance.logging.__init__
+abidance/logging/__init__.py:9:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.logging.structured
+abidance/logging/structured.py:130:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.strategy.protocols
+abidance/strategy/protocols.py:130:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/protocols.py:33:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:46:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:59:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:71:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:87:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:91:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:95:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:104:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:113:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:130:8: W2301: Unnecessary ellipsis constant (unnecessary-ellipsis)
+abidance/strategy/protocols.py:117:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abidance/strategy/protocols.py:12:0: W0611: Unused SignalType imported from abidance.core.domain (unused-import)
+************* Module abidance.strategy.registry
+abidance/strategy/registry.py:40:0: C0301: Line too long (104/100) (line-too-long)
+abidance/strategy/registry.py:130:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/registry.py:34:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/registry.py:37:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/registry.py:39:4: R0913: Too many arguments (6/5) (too-many-arguments)
+abidance/strategy/registry.py:39:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+abidance/strategy/registry.py:72:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/registry.py:112:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+************* Module abidance.strategy.__init__
+abidance/strategy/__init__.py:62:0: C0304: Final newline missing (missing-final-newline)
+************* Module abidance.strategy
+abidance/strategy/__init__.py:25:0: E0611: No name 'Indicator' in module 'abidance.strategy.indicators' (no-name-in-module)
+abidance/strategy/__init__.py:25:0: E0611: No name 'RSI' in module 'abidance.strategy.indicators' (no-name-in-module)
+abidance/strategy/__init__.py:25:0: E0611: No name 'MACD' in module 'abidance.strategy.indicators' (no-name-in-module)
+************* Module abidance.strategy.indicators
+abidance/strategy/indicators.py:246:0: C0301: Line too long (115/100) (line-too-long)
+abidance/strategy/indicators.py:271:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/indicators.py:7:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/strategy/indicators.py:10:0: W0611: Unused numpy imported as np (unused-import)
+************* Module abidance.strategy.sma
+abidance/strategy/sma.py:133:0: C0301: Line too long (103/100) (line-too-long)
+abidance/strategy/sma.py:265:0: C0301: Line too long (114/100) (line-too-long)
+abidance/strategy/sma.py:270:0: C0301: Line too long (115/100) (line-too-long)
+abidance/strategy/sma.py:342:0: C0301: Line too long (104/100) (line-too-long)
+abidance/strategy/sma.py:345:0: C0301: Line too long (111/100) (line-too-long)
+abidance/strategy/sma.py:362:0: C0301: Line too long (134/100) (line-too-long)
+abidance/strategy/sma.py:365:0: C0301: Line too long (135/100) (line-too-long)
+abidance/strategy/sma.py:382:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/sma.py:45:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:97:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:177:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:264:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/strategy/sma.py:265:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:270:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:370:15: W0718: Catching too general exception Exception (broad-exception-caught)
+abidance/strategy/sma.py:338:16: C0415: Import outside toplevel (inspect) (import-outside-toplevel)
+abidance/strategy/sma.py:324:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+abidance/strategy/sma.py:361:12: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/strategy/sma.py:362:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:365:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:381:16: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/sma.py:352:16: W0612: Unused variable 'result' (unused-variable)
+abidance/strategy/sma.py:4:0: W0611: Unused field imported from dataclasses (unused-import)
+abidance/strategy/sma.py:8:0: W0611: Unused numpy imported as np (unused-import)
+************* Module abidance.strategy.composition
+abidance/strategy/composition.py:125:0: C0301: Line too long (103/100) (line-too-long)
+abidance/strategy/composition.py:188:0: C0301: Line too long (103/100) (line-too-long)
+abidance/strategy/composition.py:239:0: C0301: Line too long (105/100) (line-too-long)
+abidance/strategy/composition.py:243:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/composition.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abidance/strategy/composition.py:178:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/strategy/composition.py:239:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abidance/strategy/composition.py:4:0: C0411: standard import "abc.ABC" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/strategy/composition.py:4:0: W0611: Unused ABC imported from abc (unused-import)
+abidance/strategy/composition.py:4:0: W0611: Unused abstractmethod imported from abc (unused-import)
+************* Module abidance.strategy.rsi
+abidance/strategy/rsi.py:82:0: C0301: Line too long (104/100) (line-too-long)
+abidance/strategy/rsi.py:157:0: C0301: Line too long (103/100) (line-too-long)
+abidance/strategy/rsi.py:258:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/rsi.py:46:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/rsi.py:111:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/rsi.py:199:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/rsi.py:4:0: W0611: Unused field imported from dataclasses (unused-import)
+abidance/strategy/rsi.py:8:0: W0611: Unused numpy imported as np (unused-import)
+abidance/strategy/rsi.py:12:0: W0611: Unused detect_threshold_crossover imported from indicators (unused-import)
+************* Module abidance.strategy.base
+abidance/strategy/base.py:298:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/base.py:24:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+abidance/strategy/base.py:59:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/strategy/base.py:73:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/strategy/base.py:87:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/strategy/base.py:89:27: W0613: Unused argument 'signal' (unused-argument)
+abidance/strategy/base.py:126:12: E1128: Assigning result of a function call, where the function returns None (assignment-from-none)
+abidance/strategy/base.py:174:4: R0914: Too many local variables (23/15) (too-many-locals)
+abidance/strategy/base.py:185:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/base.py:287:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+abidance/strategy/base.py:294:12: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+abidance/strategy/base.py:174:4: R0915: Too many statements (52/50) (too-many-statements)
+abidance/strategy/base.py:214:16: W0612: Unused variable 'cost' (unused-variable)
+abidance/strategy/base.py:7:0: W0611: Unused Union imported from typing (unused-import)
+abidance/strategy/base.py:7:0: W0611: Unused ClassVar imported from typing (unused-import)
+************* Module abidance.strategy.indicators.__init__
+abidance/strategy/indicators/__init__.py:216:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/indicators/__init__.py:12:0: C0411: standard import "sys" should be placed before local imports "base.Indicator", "momentum.RSI" (wrong-import-order)
+abidance/strategy/indicators/__init__.py:13:0: C0411: third party import "pandas" should be placed before local imports "base.Indicator", "momentum.RSI" (wrong-import-order)
+abidance/strategy/indicators/__init__.py:14:0: C0411: third party import "numpy" should be placed before local imports "base.Indicator", "momentum.RSI" (wrong-import-order)
+abidance/strategy/indicators/__init__.py:15:0: C0411: standard import "typing.Tuple" should be placed before third party imports "pandas", "numpy" and local imports "base.Indicator", "momentum.RSI" (wrong-import-order)
+************* Module abidance.strategy.indicators.momentum
+abidance/strategy/indicators/momentum.py:132:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/indicators/momentum.py:9:0: C0411: standard import "typing.Optional" should be placed before third party imports "pandas", "numpy" (wrong-import-order)
+abidance/strategy/indicators/momentum.py:9:0: W0611: Unused Optional imported from typing (unused-import)
+************* Module abidance.strategy.indicators.base
+abidance/strategy/indicators/base.py:44:0: C0304: Final newline missing (missing-final-newline)
+abidance/strategy/indicators/base.py:29:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/strategy/indicators/base.py:40:8: W0107: Unnecessary pass statement (unnecessary-pass)
+abidance/strategy/indicators/base.py:5:0: W0611: Unused Any imported from typing (unused-import)
+abidance/strategy/indicators/base.py:5:0: W0611: Unused Dict imported from typing (unused-import)
+abidance/strategy/indicators/base.py:5:0: W0611: Unused Optional imported from typing (unused-import)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[22:253]
+==abidance.typing.__init__:[22:252]
+JSON = Dict[str, Any]  # Type alias for JSON-serializable data
+Timestamp = float  # Type alias for Unix timestamp in seconds
+TimestampMS = int  # Type alias for Unix timestamp in milliseconds
+TimeRange = Tuple[Timestamp, Timestamp]  # Type alias for a time range (start, end)
+DateRange = Tuple[date, date]  # Type alias for a date range (start, end)
+Numeric = Union[int, float, np.number]  # Type alias for any numeric type
+
+
+class PriceType(str, Enum):
+    """Types of price data that can be used in trading operations."""
+    OPEN = "OPEN"
+    HIGH = "HIGH"
+    LOW = "LOW"
+    CLOSE = "CLOSE"
+    VOLUME = "VOLUME"
+    TYPICAL = "TYPICAL"  # (high + low + close) / 3
+    MEDIAN = "MEDIAN"   # (high + low) / 2
+    WEIGHTED = "WEIGHTED" # (high + low + close + close) / 4
+
+    def __str__(self) -> str:
+        """Return the string representation of the price type.
+
+        :return: The name of the price type
+        :rtype: str
+        """
+        return self.value
+
+
+# ==================================================================
+# Trading Types
+# ==================================================================
+
+class OrderType(str, Enum):
+    """Types of orders that can be placed on exchanges."""
+    MARKET = "MARKET"
+    LIMIT = "LIMIT"
+    STOP = "STOP"
+    STOP_LIMIT = "STOP_LIMIT"
+    TRAILING_STOP = "TRAILING_STOP"
+
+    def __str__(self) -> str:
+        """Return the string representation of the order type.
+
+        :return: The name of the order type
+        :rtype: str
+        """
+        return self.value
+
+
+class OrderSide(str, Enum):
+    """Sides of an order (buy or sell)."""
+    BUY = "BUY"
+    SELL = "SELL"
+
+    def __str__(self) -> str:
+        """Return the string representation of the order side.
+
+        :return: The name of the order side
+        :rtype: str
+        """
+        return self.value
+
+    def opposite(self) -> "OrderSide":
+        """Return the opposite order side.
+
+        :return: The opposite order side
+        :rtype: OrderSide
+        """
+        return OrderSide.SELL if self == OrderSide.BUY else OrderSide.BUY
+
+
+class OrderStatus(str, Enum):
+    """Status of an order."""
+    OPEN = "OPEN"
+    FILLED = "FILLED"
+    PARTIALLY_FILLED = "PARTIALLY_FILLED"
+    CANCELED = "CANCELED"
+    REJECTED = "REJECTED"
+    EXPIRED = "EXPIRED"
+
+    def __str__(self) -> str:
+        """Return the string representation of the order status.
+
+        :return: The name of the order status
+        :rtype: str
+        """
+        return self.value
+
+
+class TimeInForce(str, Enum):
+    """Time in force for orders."""
+    GTC = "GTC"  # Good Till Canceled
+    IOC = "IOC"  # Immediate Or Cancel
+    FOK = "FOK"  # Fill Or Kill
+
+    def __str__(self) -> str:
+        """Return the string representation of the time in force.
+
+        :return: The name of the time in force
+        :rtype: str
+        """
+        return self.value
+
+
+OrderId = str  # Type alias for order IDs
+
+
+class PositionSide(str, Enum):
+    """Side of a position (long or short)."""
+    LONG = "LONG"
+    SHORT = "SHORT"
+
+    def __str__(self) -> str:
+        """Return the string representation of the position side.
+
+        :return: The name of the position side
+        :rtype: str
+        """
+        return self.value
+
+    def opposite(self) -> "PositionSide":
+        """Return the opposite position side.
+
+        :return: The opposite position side
+        :rtype: PositionSide
+        """
+        return PositionSide.SHORT if self == PositionSide.LONG else PositionSide.LONG
+
+
+class PositionType(str, Enum):
+    """Type of position."""
+    SPOT = "SPOT"
+    MARGIN = "MARGIN"
+    FUTURES = "FUTURES"
+
+    def __str__(self) -> str:
+        """Return the string representation of the position type.
+
+        :return: The name of the position type
+        :rtype: str
+        """
+        return self.value
+
+
+PositionId = str  # Type alias for position IDs
+
+
+# Type definition for a position
+Position = Dict[str, Any]  # Fully typed would be more complex, defined minimally for now
+
+
+# ==================================================================
+# Data Types
+# ==================================================================
+
+# Type for OHLCV data tuple (timestamp, open, high, low, close, volume)
+OHLCV = Tuple[Timestamp, float, float, float, float, float]
+
+# Type for a list of OHLCV tuples
+OHLCVData = List[OHLCV]
+
+# Type for a price bar represented as a dictionary
+PriceBar = Dict[str, Union[Timestamp, float]]
+
+# Type for a pandas DataFrame with OHLCV data
+OHLCVDataFrame = pd.DataFrame  # With expected columns: timestamp, open, high, low, close, volume
+
+
+# ==================================================================
+# Strategy Types
+# ==================================================================
+
+class SignalType(str, Enum):
+    """Types of trading signals."""
+    BUY = "BUY"
+    SELL = "SELL"
+    HOLD = "HOLD"
+
+    def __str__(self) -> str:
+        """Return the string representation of the signal type.
+
+        :return: The name of the signal type
+        :rtype: str
+        """
+        return self.value
+
+
+SignalStrength = float  # Type alias for signal strength (0.0 to 1.0)
+
+# Type definition for a signal
+Signal = Dict[str, Any]  # Fully typed would be more complex, defined minimally for now
+
+StrategyId = str  # Type alias for strategy IDs
+
+
+class Strategy(Protocol):
+    """Protocol defining the interface for a trading strategy."""
+
+    def generate_signal(self, data: OHLCVDataFrame) -> Signal:
+        """Generate a trading signal based on the provided data.
+
+        :param data: The OHLCV data to analyze
+        :type data: OHLCVDataFrame
+        :return: The generated trading signal
+        :rtype: Signal
+        """
+        ...
+
+    def get_parameters(self) -> "ParamDict":
+        """Get the current parameters of the strategy.
+
+        :return: A dictionary of parameter names and values
+        :rtype: ParamDict
+        """
+        ...
+
+    def set_parameters(self, params: "ParamDict") -> None:
+        """Set the parameters of the strategy.
+
+        :param params: A dictionary of parameter names and values
+        :type params: ParamDict
+        :return: None
+        """
+        ...
+
+
+# ==================================================================
+# Parameter Types
+# ==================================================================
+
+# Type variable for generic parameter types (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[762:803]
+==abidance.typing.__init__:[748:789]
+    raise TypeError(f"Cannot convert {type(value)} to timedelta")
+
+
+# Define what's available when doing "from abidance.typing import *"
+__all__ = [
+    # Basic type aliases
+    "JSON",
+    "Timestamp",
+    "TimestampMS",
+    "TimeRange",
+    "DateRange",
+    "Numeric",
+
+    # Enums
+    "PriceType",
+    "OrderType",
+    "OrderSide",
+    "OrderStatus",
+    "TimeInForce",
+    "PositionSide",
+    "PositionType",
+    "SignalType",
+    "ResultType",
+
+    # Protocols
+    "Strategy",
+    "Result",
+
+    # Classes
+    "BoundedFloat",
+    "BoundedInt",
+    "Success",
+    "Failure",
+    "Either",
+
+    # Functions
+    "to_timestamp",
+    "from_timestamp",
+    "ensure_datetime",
+    "ensure_timedelta",
+] (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.rsi:[220:258]
+==abidance.strategy.sma:[200:257]
+            signal = self.create_signal(symbol, analysis, "sell")
+            signals.append(signal)
+
+            # Update state
+            symbol_state["last_signal"] = "sell"
+
+        # Update state
+        self.state[symbol] = symbol_state
+
+        return signals
+
+    def create_order(self, signal: Dict[str, Any]) -> Optional[Order]:
+        """
+        Create an order based on a signal.
+
+        Args:
+            signal: Signal dictionary
+
+        Returns:
+            Order object or None if no order should be created
+        """
+        order_side = None
+        if signal["type"] == "buy":
+            order_side = OrderSide.BUY
+        elif signal["type"] == "sell":
+            order_side = OrderSide.SELL
+        else:
+            return None
+
+        # Create an order
+        order = Order(
+            symbol=signal["symbol"],
+            side=order_side,
+            order_type=OrderType.MARKET,
+            quantity=1.0,  # This would be calculated based on position sizing
+            price=signal["price"]
+        )
+        return order (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.indicators.__init__:[130:200]
+==abidance.strategy.indicators:[150:230]
+    above = series1 > series2
+
+    # Previous relationship
+    prev_above = above.shift(1)
+
+    # Ensure boolean type to avoid issues with unary ~ operator
+    above = above.astype(bool)
+    # Use infer_objects before astype to avoid downcasting warnings
+    prev_above = prev_above.fillna(False).infer_objects(copy=False).astype(bool)
+
+    # Detect crossovers
+    crossover = pd.Series(0, index=series1.index)
+    crossover.loc[(~prev_above) & above] = 1    # Bullish crossover
+    crossover.loc[prev_above & (~above)] = -1   # Bearish crossover
+
+    return crossover
+
+
+def detect_threshold_crossover(series: pd.Series, threshold: float) -> pd.Series:
+    """
+    Detect when a series crosses above or below a threshold value.
+
+    Args:
+        series: The data series
+        threshold: The threshold value
+
+    Returns:
+        Series with values:
+         1: series crosses above threshold
+        -1: series crosses below threshold
+         0: No crossover
+    """
+    # Current relationship
+    above = series > threshold
+
+    # Previous relationship
+    prev_above = above.shift(1)
+
+    # Detect crossovers
+    crossover = pd.Series(0, index=series.index)
+    crossover.loc[(~prev_above) & above] = 1    # Crosses above threshold
+    crossover.loc[prev_above & (~above)] = -1   # Crosses below threshold
+
+    return crossover
+
+
+def analyze_volume(data: pd.DataFrame, period: int = 20) -> pd.DataFrame:
+    """
+    Analyze volume data using SMA to detect unusual volume activity.
+
+    Args:
+        data: OHLCV data as a pandas DataFrame
+        period: Period for volume SMA calculation
+
+    Returns:
+        DataFrame with added volume analysis columns
+    """
+    # Calculate volume SMA
+    data = data.copy()
+    data['volume_sma'] = calculate_sma(data, period, 'volume')
+
+    # Calculate volume ratio (current volume / average volume)
+    data['volume_ratio'] = data['volume'] / data['volume_sma']
+
+    # Detect abnormal volume (> 1.5x average)
+    data['abnormal_volume'] = data['volume_ratio'] > 1.5
+
+    return data
+
+ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[329:452]
+==abidance.typing.__init__:[325:447]
+class ResultType(str, Enum):
+    """Types of results."""
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+
+    def __str__(self) -> str:
+        """Return the string representation of the result type.
+
+        :return: The name of the result type
+        :rtype: str
+        """
+        return self.value
+
+
+class Result(Protocol[T]):
+    """Protocol for a result type that can be either a success or a failure."""
+
+    def is_success(self) -> bool:
+        """Check if the result is a success.
+
+        :return: True if the result is a success, False otherwise
+        :rtype: bool
+        """
+        ...
+
+    def is_failure(self) -> bool:
+        """Check if the result is a failure.
+
+        :return: True if the result is a failure, False otherwise
+        :rtype: bool
+        """
+        ...
+
+    def unwrap(self) -> T:
+        """Unwrap the result to get the value.
+
+        :return: The value if the result is a success
+        :rtype: T
+        :raises Exception: If the result is a failure
+        """
+        ...
+
+    def unwrap_or(self, default: T) -> T:
+        """Unwrap the result to get the value, or return a default value if it's a failure.
+
+        :param default: The default value to return if the result is a failure
+        :type default: T
+        :return: The value if the result is a success, or the default value if it's a failure
+        :rtype: T
+        """
+        ...
+
+    def unwrap_error(self) -> Exception:
+        """Unwrap the result to get the error.
+
+        :return: The error if the result is a failure
+        :rtype: Exception
+        :raises ValueError: If the result is a success
+        """
+        ...
+
+    def map(self, f: Callable[[T], T]) -> "Result[T]":
+        """Apply a function to the value if the result is a success.
+
+        :param f: The function to apply
+        :type f: Callable[[T], T]
+        :return: A new result with the function applied to the value if the result is a success,
+                 or the same failure if the result is a failure
+        :rtype: Result[T]
+        """
+        ...
+
+
+class Success(Result[T]):
+    """A successful result containing a value."""
+
+    def __init__(self, value: T):
+        """Initialize a successful result.
+
+        :param value: The value
+        :type value: T
+        """
+        self.value = value
+
+    def is_success(self) -> bool:
+        """Check if the result is a success.
+
+        :return: True
+        :rtype: bool
+        """
+        return True
+
+    def is_failure(self) -> bool:
+        """Check if the result is a failure.
+
+        :return: False
+        :rtype: bool
+        """
+        return False
+
+    def unwrap(self) -> T:
+        """Unwrap the result to get the value.
+
+        :return: The value
+        :rtype: T
+        """
+        return self.value
+
+    def unwrap_or(self, default: T) -> T:
+        """Unwrap the result to get the value, or return a default value if it's a failure.
+
+        :param default: The default value to return if the result is a failure
+        :type default: T
+        :return: The value
+        :rtype: T
+        """
+        return self.value
+
+    def unwrap_error(self) -> Exception:
+        """Unwrap the result to get the error.
+
+        :raises ValueError: Always, because the result is a success
+        """ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[462:543]
+==abidance.typing.__init__:[457:536]
+        return Success(f(self.value))
+
+
+class Failure(Result[T]):
+    """A failure result."""
+
+    def __init__(self, error: Exception):
+        """Initialize a failure result.
+
+        :param error: The error that caused the failure
+        :type error: Exception
+        """
+        self.error = error
+
+    def is_success(self) -> bool:
+        """Check if the result is a success.
+
+        :return: Always False for a Failure
+        :rtype: bool
+        """
+        return False
+
+    def is_failure(self) -> bool:
+        """Check if the result is a failure.
+
+        :return: Always True for a Failure
+        :rtype: bool
+        """
+        return True
+
+    def unwrap(self) -> T:
+        """Get the success value (not applicable for Failure).
+
+        :raises Exception: Always raises the stored error for a Failure
+        """
+        raise self.error
+
+    def unwrap_or(self, default: T) -> T:
+        """Get a default value.
+
+        :param default: The default value to return
+        :type default: T
+        :return: The default value
+        :rtype: T
+        """
+        return default
+
+    def unwrap_error(self) -> Exception:
+        """Get the error.
+
+        :return: The error that caused the failure
+        :rtype: Exception
+        """
+        return self.error
+
+    def map(self, f: Callable[[T], T]) -> "Result[T]":
+        """Apply a function to the success value (not applicable for Failure).
+
+        :param f: The function to apply (ignored for Failure)
+        :type f: Callable[[T], T]
+        :return: The same Failure
+        :rtype: Result[T]
+        """
+        return self
+
+
+class Either:
+    """An Either monad that can be either a left (error) or right (success) value."""
+
+    def __init__(self, is_right: bool, right_value: Optional[T] = None, left_value: Optional[E] = None):
+        """Initialize an Either monad.
+
+        :param is_right: Whether this is a right (success) value
+        :type is_right: bool
+        :param right_value: The right (success) value
+        :type right_value: Optional[T]
+        :param left_value: The left (error) value
+        :type left_value: Optional[E]
+        """ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.rsi:[181:209]
+==abidance.strategy.sma:[159:187]
+        }
+
+    def generate_signals(self, symbol: str, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Generate trading signals based on SMA analysis.
+
+        Args:
+            symbol: The market symbol
+            analysis: Analysis results from the analyze method
+
+        Returns:
+            List of signal dictionaries
+        """
+        signals = []
+
+        # Check for errors in analysis
+        if "error" in analysis:
+            self.logger.warning(f"Analysis error for {symbol}: {analysis['error']}")
+            return signals
+
+        # Get current state for this symbol
+        symbol_state = self.state.get(symbol, {
+            "last_signal": None,
+            "position_size": 0.0,
+            "entry_price": 0.0,
+        })
+
+        # Check for crossover with volume confirmation (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[724:746]
+==abidance.typing.__init__:[707:728]
+        raise TypeError(f"Cannot convert {type(value)} to datetime")
+
+
+def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -> timedelta:
+    """Ensure that a value is a timedelta.
+
+    :param value: The value to convert
+    :type value: Union[timedelta, int, float, Dict[str, int], str]
+    :return: The timedelta
+    :rtype: timedelta
+    :raises ValueError: If the value cannot be converted to a timedelta
+    """
+    if isinstance(value, timedelta):
+        return value
+    elif isinstance(value, (int, float)):
+        # Assume seconds
+        return timedelta(seconds=value)
+    elif isinstance(value, dict):
+        # Assume a dict with keys like 'days', 'seconds', etc.
+        return timedelta(**value)
+    elif isinstance(value, str):
+        # Try to parse as a string like '1d2h3m4s' (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[42:141]
+==abidance.exchange.protocols:[34:125]
+        pass
+
+    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get current ticker data for a symbol.
+
+        Args:
+            symbol: The market symbol (e.g., 'BTC/USDT')
+
+        Returns:
+            Dictionary with ticker data
+        """
+        pass
+
+    def get_ohlcv(self, symbol: str, timeframe: str = '1h',
+                 since: Optional[Union[datetime, int]] = None,
+                 limit: Optional[int] = None) -> List[List[float]]:
+        """
+        Get OHLCV (Open, High, Low, Close, Volume) data.
+
+        Args:
+            symbol: The market symbol
+            timeframe: Timeframe interval (e.g., '1m', '1h', '1d')
+            since: Starting time
+            limit: Maximum number of candles to retrieve
+
+        Returns:
+            List of OHLCV candles as lists [timestamp, open, high, low, close, volume]
+        """
+        pass
+
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """
+        pass
+
+    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get all open orders.
+
+        Args:
+            symbol: Filter by market symbol, or None for all
+
+        Returns:
+            List of open order dictionaries
+        """
+        pass
+
+ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[42:137]
+==abidance.exchange.protocols:[46:125]
+        pass
+
+    @abstractmethod
+    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get current ticker data for a symbol.
+
+        Args:
+            symbol: The market symbol (e.g., 'BTC/USDT')
+
+        Returns:
+            Dictionary with ticker data
+        """
+        pass
+
+    @abstractmethod
+    def get_ohlcv(self, symbol: str, timeframe: str = '1h',
+                   since: Optional[Union[datetime, int]] = None,
+                   limit: Optional[int] = None) -> List[List[float]]:
+        """
+        Get OHLCV (Open, High, Low, Close, Volume) data.
+
+        Args:
+            symbol: The market symbol
+            timeframe: Timeframe interval (e.g., '1m', '1h', '1d')
+            since: Starting time
+            limit: Maximum number of candles to retrieve
+
+        Returns:
+            List of OHLCV candles as lists [timestamp, open, high, low, close, volume]
+        """
+        pass
+
+    @abstractmethod
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    @abstractmethod
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    @abstractmethod
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    @abstractmethod
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """
+        pass
+
+    @abstractmethod
+    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get all open orders.
+
+        Args:
+            symbol: Filter by market symbol, or None for all
+
+        Returns:
+            List of open order dictionaries
+        """ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[55:141]
+==abidance.exchange.protocols:[34:122]
+        pass
+
+    @abstractmethod
+    def get_ohlcv(self, symbol: str, timeframe: str = '1h',
+                   since: Optional[Union[datetime, int]] = None,
+                   limit: Optional[int] = None) -> List[List[float]]:
+        """
+        Get OHLCV (Open, High, Low, Close, Volume) data.
+
+        Args:
+            symbol: The market symbol
+            timeframe: Timeframe interval (e.g., '1m', '1h', '1d')
+            since: Starting time
+            limit: Maximum number of candles to retrieve
+
+        Returns:
+            List of OHLCV candles as lists [timestamp, open, high, low, close, volume]
+        """
+        pass
+
+    @abstractmethod
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    @abstractmethod
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    @abstractmethod
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    @abstractmethod
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """
+        pass
+
+    @abstractmethod
+    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get all open orders.
+
+        Args:
+            symbol: Filter by market symbol, or None for all
+
+        Returns:
+            List of open order dictionaries
+        """
+        pass
+
+    def __str__(self) -> str:
+        """String representation of the exchange.""" (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.rsi:[174:180]
+==abidance.strategy.sma:[150:156]
+        return {
+            "symbol": symbol,
+            "timestamp": analysis["timestamp"],
+            "type": signal_type,
+            "price": analysis["close"],
+            "reason": reason, (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[278:306]
+==abidance.typing.__init__:[274:302]
+        self.min_value = min_value
+        self.max_value = max_value
+        self.value = value
+
+    def __repr__(self) -> str:
+        """Return the string representation of the bounded float.
+
+        :return: String representation
+        :rtype: str
+        """
+        return f"BoundedFloat({self.min_value}, {self.max_value}, {self.value})"
+
+
+class BoundedInt:
+    """An integer value with a minimum and maximum bound."""
+
+    def __init__(self, min_value: int, max_value: int, value: int):
+        """Initialize a bounded integer.
+
+        :param min_value: The minimum allowed value
+        :type min_value: int
+        :param max_value: The maximum allowed value
+        :type max_value: int
+        :param value: The initial value
+        :type value: int
+        :raises ValueError: If the value is outside the allowed range
+        """
+        if not min_value <= value <= max_value: (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[42:124]
+==abidance.exchange.protocols:[63:125]
+        pass
+
+    @abstractmethod
+    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get current ticker data for a symbol.
+
+        Args:
+            symbol: The market symbol (e.g., 'BTC/USDT')
+
+        Returns:
+            Dictionary with ticker data
+        """
+        pass
+
+    @abstractmethod
+    def get_ohlcv(self, symbol: str, timeframe: str = '1h',
+                   since: Optional[Union[datetime, int]] = None,
+                   limit: Optional[int] = None) -> List[List[float]]:
+        """
+        Get OHLCV (Open, High, Low, Close, Volume) data.
+
+        Args:
+            symbol: The market symbol
+            timeframe: Timeframe interval (e.g., '1m', '1h', '1d')
+            since: Starting time
+            limit: Maximum number of candles to retrieve
+
+        Returns:
+            List of OHLCV candles as lists [timestamp, open, high, low, close, volume]
+        """
+        pass
+
+    @abstractmethod
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    @abstractmethod
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    @abstractmethod
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    @abstractmethod
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[73:141]
+==abidance.exchange.protocols:[34:110]
+        pass
+
+    @abstractmethod
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    @abstractmethod
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    @abstractmethod
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    @abstractmethod
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """
+        pass
+
+    @abstractmethod
+    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get all open orders.
+
+        Args:
+            symbol: Filter by market symbol, or None for all
+
+        Returns:
+            List of open order dictionaries
+        """
+        pass
+
+    def __str__(self) -> str:
+        """String representation of the exchange.""" (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.rsi:[48:53]
+==abidance.strategy.sma:[47:52]
+        for symbol in self.symbols:
+            self.state[symbol] = {
+                "last_signal": None,
+                "position_size": 0.0,
+                "entry_price": 0.0, (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.strategy.indicators.__init__:[111:130]
+==abidance.strategy.indicators:[95:125]
+    middle_band = calculate_sma(data, period, column)
+    std_dev = data[column].rolling(window=period).std()
+
+    upper_band = middle_band + (std_dev * deviations)
+    lower_band = middle_band - (std_dev * deviations)
+
+    return middle_band, upper_band, lower_band
+
+
+def detect_crossover(series1: pd.Series, series2: pd.Series) -> pd.Series:
+    """
+    Detect when series1 crosses above or below series2.
+
+    Returns a Series with values:
+         1: series1 crosses above series2 (bullish)
+        -1: series1 crosses below series2 (bearish)
+         0: No crossover
+    """
+    # Current relationship (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.testing.data_loaders:[110:118]
+==abidance.testing.data_management:[29:43]
+        if start_date:
+            data = data[data.index >= start_date]
+        if end_date:
+            data = data[data.index <= end_date]
+
+        return data
+
+    def _get_ohlcv_path(self, symbol: str, timeframe: str) -> Path:
+        """
+        Get file path for OHLCV data.
+
+        Replaces forward slashes in symbol with underscores to avoid directory issues.
+        """
+        # Replace forward slashes with underscores to avoid directory issues (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[713:720]
+==abidance.typing.__init__:[696:703]
+    elif isinstance(value, str):
+        # Try parsing as ISO format first
+        try:
+            return datetime.fromisoformat(value)
+        except ValueError:
+            # Try parsing as timestamp
+            try: (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.type_defs.__init__:[307:326]
+==abidance.typing.__init__:[304:322]
+        self.min_value = min_value
+        self.max_value = max_value
+        self.value = value
+
+    def __repr__(self) -> str:
+        """Return a string representation of the bounded integer.
+
+        :return: A string representation
+        :rtype: str
+        """
+        return f"BoundedInt({self.min_value}, {self.max_value}, {self.value})"
+
+
+# ==================================================================
+# Result Types
+# ==================================================================
+
+# Type variable for generic result types
+T = TypeVar('T') (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.core.domain:[78:86]
+==abidance.trading.order:[24:35]
+@dataclass
+class Order:
+    """
+    Represents a trading order.
+
+    An order is an instruction to buy or sell a specific amount of an asset
+    at a specific price or market conditions.
+    """
+    symbol: str
+    side: OrderSide
+    order_type: OrderType (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[42:110]
+==abidance.exchange.protocols:[72:125]
+        pass
+
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """
+        pass
+
+    def get_order_status(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get the status of an order.
+
+        Args:
+            order_id: ID of the order to check
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with order status information
+        """
+        pass
+
+    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Get all open orders.
+
+        Args:
+            symbol: Filter by market symbol, or None for all
+
+        Returns:
+            List of open order dictionaries
+        """
+        pass
+
+ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0801: Similar lines in 2 files
+==abidance.exchange.base:[83:141]
+==abidance.exchange.protocols:[34:97]
+        pass
+
+    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+        """
+        Get current ticker data for a symbol.
+
+        Args:
+            symbol: The market symbol (e.g., 'BTC/USDT')
+
+        Returns:
+            Dictionary with ticker data
+        """
+        pass
+
+    def get_ohlcv(self, symbol: str, timeframe: str = '1h',
+                 since: Optional[Union[datetime, int]] = None,
+                 limit: Optional[int] = None) -> List[List[float]]:
+        """
+        Get OHLCV (Open, High, Low, Close, Volume) data.
+
+        Args:
+            symbol: The market symbol
+            timeframe: Timeframe interval (e.g., '1m', '1h', '1d')
+            since: Starting time
+            limit: Maximum number of candles to retrieve
+
+        Returns:
+            List of OHLCV candles as lists [timestamp, open, high, low, close, volume]
+        """
+        pass
+
+    def get_balance(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get account balances.
+
+        Returns:
+            Dictionary of asset balances
+        """
+        pass
+
+    def place_order(self, order: Order) -> Dict[str, Any]:
+        """
+        Place an order on the exchange.
+
+        Args:
+            order: Order object with trade parameters
+
+        Returns:
+            Dictionary with order result information
+        """
+        pass
+
+    def cancel_order(self, order_id: str, symbol: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Cancel an existing order.
+
+        Args:
+            order_id: ID of the order to cancel
+            symbol: Market symbol (may be required by some exchanges)
+
+        Returns:
+            Dictionary with cancellation result
+        """ (duplicate-code)
+abidance/strategy/indicators/base.py:1:0: R0401: Cyclic import (abidance.exceptions -> abidance.exceptions.error_context) (cyclic-import)
+abidance/strategy/indicators/base.py:1:0: R0401: Cyclic import (abidance.exceptions -> abidance.exceptions.fallback) (cyclic-import)
+
+
+Report
+======
+4461 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |75     |NC         |NC         |89.33       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |163    |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |484    |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |81     |NC         |NC         |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    abidance 
+      \-core 
+      | \-domain (abidance.strategy.composition,abidance.strategy.protocols,abidance.testing.mock_exchange,abidance.testing.properties)
+      \-evaluation 
+      | \-metrics (abidance.testing.benchmarks,abidance.testing.performance)
+      \-exceptions (abidance.core.configuration,abidance.core.environment,abidance.exchange.binance,abidance.exchange.manager,abidance.strategy.registry,abidance.trading.engine)
+      \-exchange 
+      | \-protocols (abidance.testing.mock_exchange)
+      \-strategy (abidance.testing.properties)
+      | \-base (abidance.optimization.optimizer,abidance.testing.benchmarks,abidance.testing.performance)
+      \-trading (abidance.core)
+        \-Order (abidance.core)
+        \-Position (abidance.core)
+        \-Trade (abidance.core)
+        \-order (abidance.core.domain,abidance.exchange.base,abidance.exchange.binance,abidance.exchange.protocols,abidance.strategy.base,abidance.strategy.protocols,abidance.strategy.rsi,abidance.strategy.sma,abidance.testing.mock_exchange)
+        \-position (abidance.core.domain)
+        \-trade (abidance.core.domain,abidance.data.data_manager)
+    aiohttp (abidance.health.checks)
+    ccxt (abidance.testing.binance_data_fetcher,abidance.testing.data_loaders)
+    dotenv (abidance.core.environment)
+    hypothesis (abidance.testing.properties)
+      \-strategies (abidance.testing.generators,abidance.testing.properties)
+    matplotlib 
+      \-pyplot (abidance.evaluation.reporting,abidance.testing.benchmarks)
+    numpy (abidance.core.types,abidance.evaluation.metrics,abidance.evaluation.reporting,abidance.optimization.metrics,abidance.optimization.optimizer,abidance.strategy.composition,abidance.strategy.indicators,abidance.strategy.indicators.momentum,abidance.strategy.rsi,abidance.strategy.sma,abidance.testing.binance_data_fetcher,abidance.testing.data_loaders,abidance.testing.generators,abidance.testing.mock_data,abidance.testing.performance,abidance.testing.properties,abidance.testing.pylon_storage,abidance.type_defs,abidance.typing)
+    pandas (abidance.core.types,abidance.data.data_manager,abidance.evaluation.metrics,abidance.evaluation.reporting,abidance.optimization.metrics,abidance.optimization.optimizer,abidance.strategy.base,abidance.strategy.composition,abidance.strategy.indicators,abidance.strategy.indicators.base,abidance.strategy.indicators.momentum,abidance.strategy.protocols,abidance.strategy.rsi,abidance.strategy.sma,abidance.testing.benchmarks,abidance.testing.binance_data_fetcher,abidance.testing.data_loaders,abidance.testing.data_management,abidance.testing.generators,abidance.testing.mock_data,abidance.testing.mock_exchange,abidance.testing.performance,abidance.testing.properties,abidance.testing.pylon_storage,abidance.type_defs,abidance.typing,abidance.utils)
+    psutil (abidance.core.collectors,abidance.health.checks,abidance.testing.performance)
+    pyarrow (abidance.testing.pylon_storage)
+      \-dataset (abidance.testing.pylon_storage)
+      \-parquet (abidance.testing.pylon_storage)
+    pytest (abidance.testing.properties)
+    yaml (abidance.core.bootstrap,abidance.core.configuration)
+
+
+
+13381 lines have been analyzed
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |5524   |41.28 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|docstring |5348   |39.97 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|comment   |702    |5.25  |NC       |NC         |
++----------+-------+------+---------+-----------+
+|empty     |1807   |13.50 |NC       |NC         |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |NC       |NC         |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |NC       |NC         |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |207    |NC       |NC         |
++-----------+-------+---------+-----------+
+|refactor   |142    |NC       |NC         |
++-----------+-------+---------+-----------+
+|warning    |342    |NC       |NC         |
++-----------+-------+---------+-----------+
+|error      |12     |NC       |NC         |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++--------------------------------------+------+--------+---------+-----------+
+|module                                |error |warning |refactor |convention |
++======================================+======+========+=========+===========+
+|abidance.exceptions.error_context     |33.33 |0.00    |1.41     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.__init__                |25.00 |1.75    |0.00     |1.93       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.__init__            |25.00 |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.base                |8.33  |2.63    |2.82     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exceptions.fallback          |8.33  |1.46    |3.52     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.binance_data_fetcher |0.00  |7.60    |3.52     |5.80       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.pylon_storage        |0.00  |5.56    |2.11     |4.83       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.health.checks                |0.00  |4.97    |3.52     |3.38       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.data.data_manager            |0.00  |4.68    |1.41     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.typing.__init__              |0.00  |3.80    |3.52     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.bootstrap               |0.00  |3.80    |0.00     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.sma                 |0.00  |3.51    |2.11     |4.35       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.protocols           |0.00  |3.22    |0.70     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.type_defs.__init__           |0.00  |2.92    |5.63     |4.35       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.trading.engine               |0.00  |2.92    |2.82     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.optimization.optimizer       |0.00  |2.92    |0.70     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.event_handlers          |0.00  |2.92    |0.70     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.events                  |0.00  |2.63    |1.41     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exchange.protocols           |0.00  |2.63    |0.70     |0.00       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exchange.base                |0.00  |2.63    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.configuration           |0.00  |2.34    |1.41     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exchange.binance             |0.00  |2.34    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.domain                  |0.00  |2.05    |1.41     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.properties           |0.00  |2.05    |0.70     |3.38       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.collectors              |0.00  |1.75    |9.15     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.environment             |0.00  |1.75    |0.00     |5.31       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.rsi                 |0.00  |1.75    |0.00     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.monitoring.collectors        |0.00  |1.75    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.indicators.base     |0.00  |1.46    |17.61    |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.data_loaders         |0.00  |1.46    |4.93     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.validation              |0.00  |1.46    |0.70     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.data_management      |0.00  |1.46    |0.00     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.optimization.metrics         |0.00  |1.46    |0.00     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.api.__init__                 |0.00  |1.46    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.registry            |0.00  |1.17    |1.41     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.container               |0.00  |1.17    |0.00     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.mock_data            |0.00  |0.88    |6.34     |1.93       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.evaluation.reporting         |0.00  |0.88    |1.41     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.logging.handlers             |0.00  |0.88    |1.41     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exchange.manager             |0.00  |0.88    |1.41     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.metrics                 |0.00  |0.88    |1.41     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.generators           |0.00  |0.88    |0.70     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.health.checker               |0.00  |0.88    |0.00     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.composition         |0.00  |0.58    |1.41     |2.90       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.evaluation.metrics           |0.00  |0.58    |0.70     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.exceptions.__init__          |0.00  |0.58    |0.00     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.indicators          |0.00  |0.58    |0.00     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.monitoring.performance       |0.00  |0.58    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.types                   |0.00  |0.58    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.core.validators              |0.00  |0.29    |4.93     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.testing.mock_exchange        |0.00  |0.29    |0.70     |1.45       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.indicators.momentum |0.00  |0.29    |0.00     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.trading.position             |0.00  |0.00    |2.11     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.ml.__init__                  |0.00  |0.00    |1.41     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.utils.__init__               |0.00  |0.00    |0.70     |0.97       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.trading.trade                |0.00  |0.00    |0.70     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.trading.order                |0.00  |0.00    |0.70     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.strategy.indicators.__init__ |0.00  |0.00    |0.00     |2.42       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.trading.__init__             |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.optimization.__init__        |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.monitoring.__init__          |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.logging.structured           |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.logging.formatters           |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.logging.__init__             |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.health.__init__              |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.evaluation.__init__          |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+|abidance.data.__init__                |0.00  |0.00    |0.00     |0.48       |
++--------------------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++------------------------------+------------+
+|message id                    |occurrences |
++==============================+============+
+|unused-import                 |109         |
++------------------------------+------------+
+|logging-fstring-interpolation |106         |
++------------------------------+------------+
+|line-too-long                 |71          |
++------------------------------+------------+
+|missing-final-newline         |66          |
++------------------------------+------------+
+|wrong-import-order            |49          |
++------------------------------+------------+
+|unnecessary-pass              |35          |
++------------------------------+------------+
+|broad-exception-caught        |29          |
++------------------------------+------------+
+|unnecessary-ellipsis          |28          |
++------------------------------+------------+
+|no-else-return                |28          |
++------------------------------+------------+
+|duplicate-code                |23          |
++------------------------------+------------+
+|too-few-public-methods        |19          |
++------------------------------+------------+
+|too-many-positional-arguments |18          |
++------------------------------+------------+
+|too-many-arguments            |18          |
++------------------------------+------------+
+|raise-missing-from            |10          |
++------------------------------+------------+
+|import-outside-toplevel       |10          |
++------------------------------+------------+
+|too-many-instance-attributes  |9           |
++------------------------------+------------+
+|unused-argument               |8           |
++------------------------------+------------+
+|missing-module-docstring      |8           |
++------------------------------+------------+
+|too-many-nested-blocks        |7           |
++------------------------------+------------+
+|too-many-locals               |7           |
++------------------------------+------------+
+|unused-variable               |5           |
++------------------------------+------------+
+|unspecified-encoding          |4           |
++------------------------------+------------+
+|too-many-return-statements    |3           |
++------------------------------+------------+
+|too-many-branches             |3           |
++------------------------------+------------+
+|redefined-builtin             |3           |
++------------------------------+------------+
+|no-name-in-module             |3           |
++------------------------------+------------+
+|catching-non-exception        |3           |
++------------------------------+------------+
+|broad-exception-raised        |3           |
++------------------------------+------------+
+|wrong-import-position         |2           |
++------------------------------+------------+
+|useless-parent-delegation     |2           |
++------------------------------+------------+
+|undefined-all-variable        |2           |
++------------------------------+------------+
+|too-many-statements           |2           |
++------------------------------+------------+
+|property-with-parameters      |2           |
++------------------------------+------------+
+|cyclic-import                 |2           |
++------------------------------+------------+
+|bad-exception-cause           |2           |
++------------------------------+------------+
+|redefined-argument-from-local |1           |
++------------------------------+------------+
+|function-redefined            |1           |
++------------------------------+------------+
+|consider-iterating-dictionary |1           |
++------------------------------+------------+
+|assignment-from-none          |1           |
++------------------------------+------------+
+
+
+
+
+-----------------------------------
+Your code has been rated at 8.32/10
+
