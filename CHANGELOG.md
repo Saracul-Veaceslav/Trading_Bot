@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Mock Exchange Framework for deterministic testing of trading strategies
+  - MockExchange class implementing the Exchange protocol
+  - Mock data generation utilities for creating synthetic OHLCV data
+  - Support for different market patterns and trends
+  - Comprehensive test suite for the mock exchange
 - Data analysis script (analyze_data.py) for visualizing and analyzing historical data with technical indicators
 - Command-line script (fetch_historical_data.py) for fetching historical data from Binance
 - Strategy Composition Framework with CompositeStrategy and VotingStrategy classes

@@ -37,6 +37,10 @@ The Abidance Trading Bot is organized into the following core components:
   - **testing**: Testing infrastructure and utilities
     - **data_management.py**: HistoricalDataManager for storing and retrieving OHLCV data
     - **data_loaders.py**: Data loaders for fetching data from exchanges and loading from CSV files
+    - **mock_exchange.py**: Mock exchange implementation for deterministic testing
+    - **mock_data.py**: Utilities for generating synthetic market data
+    - **pylon_storage.py**: Storage utilities for testing
+    - **binance_data_fetcher.py**: Binance data fetching utilities for testing
 
 ## Module Structure
 
