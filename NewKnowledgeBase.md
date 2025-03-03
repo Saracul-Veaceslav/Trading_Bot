@@ -21,6 +21,9 @@ The Abidance Trading Bot is organized into the following core components:
       - **trainer.py**: ModelTrainer class for training and evaluating models
     - **selection**: Model selection and evaluation framework
       - **evaluator.py**: ModelEvaluator class for evaluating and selecting the best models
+    - **online**: Online learning system for continuous model updating
+      - **learner.py**: OnlineLearner class for monitoring model performance and triggering retraining
+      - **buffer.py**: DataBuffer class for efficient data storage with FIFO behavior
   - **optimization**: Strategy parameter optimization and performance metrics
     - **optimizer.py**: StrategyOptimizer class for parameter grid search
     - **metrics.py**: Performance metric calculations (Sharpe, Sortino, etc.)
@@ -440,3 +443,33 @@ if registry.has(Logger):
     logger = registry.get(Logger)
     logger.info("Service retrieved from registry")
 ```
+
+## Testing Strategies
+
+## Machine Learning Components
+
+### Online Learning System
+
+The online learning system enables models to adapt to changing market conditions over time. Key components include:
+
+1. **OnlineLearner**: Monitors model performance and triggers retraining when performance degrades
+   - Uses a sliding window approach to compare recent performance against baseline
+   - Maintains a performance history to detect degradation patterns
+   - Automatically retrains models when performance falls below a threshold
+
+2. **DataBuffer**: Provides efficient data storage with FIFO (First-In-First-Out) behavior
+   - Maintains a fixed-size buffer of recent market data
+   - Automatically removes oldest data when buffer is full
+   - Supports batch and single record additions
+   - Provides conversion to pandas DataFrame for analysis
+
+3. **Testing Approach**:
+   - Extensive use of mocking to isolate components during testing
+   - Tests for buffer management, performance tracking, and update triggering
+   - Comprehensive test coverage for all public methods
+
+4. **Implementation Insights**:
+   - Using deque from collections provides efficient FIFO operations
+   - F1 score is used as the performance metric for binary classification tasks
+   - Performance degradation is detected by comparing recent vs. historical metrics
+   - The system requires sufficient history before making update decisions
