@@ -8,6 +8,9 @@ The Abidance Trading Bot is organized into the following core components:
   - **trading**: Core trading functionality, engine, and order management
   - **exchange**: Exchange adapters and API integration
   - **strategy**: Trading strategies and technical indicators
+    - **indicators**: Object-oriented technical indicators with a consistent interface
+      - **base.py**: Base Indicator abstract class defining the common interface
+      - **momentum.py**: Momentum indicators like RSI and MACD
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
   - **typing**: Alternative type definitions (to be consolidated with type_defs)
@@ -1170,3 +1173,47 @@ async def check_system_health():
 - **Extensibility**: Easily add custom health checks for specific components
 
 This health checking system provides a robust foundation for monitoring the health of the Abidance Trading Bot and its dependencies, enabling proactive issue detection and resolution.
+
+## Technical Indicators
+
+The Abidance Trading Bot now features an object-oriented approach to technical indicators, providing a consistent interface for all indicator implementations.
+
+### Indicator Base Class
+
+All indicators inherit from the `Indicator` abstract base class, which defines the common interface:
+
+```python
+class Indicator(ABC):
+    @abstractmethod
+    def calculate(self, data: pd.DataFrame) -> Union[pd.Series, pd.DataFrame]:
+        """Calculate the indicator values."""
+        pass
+    
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Get the name of the indicator."""
+        pass
+```
+
+### Momentum Indicators
+
+The `momentum.py` module implements momentum-based indicators:
+
+1. **RSI (Relative Strength Index)**
+   - Measures the speed and change of price movements
+   - Returns values between 0 and 100
+   - Values above 70 typically indicate overbought conditions
+   - Values below 30 typically indicate oversold conditions
+
+2. **MACD (Moving Average Convergence Divergence)**
+   - Trend-following momentum indicator
+   - Shows the relationship between two moving averages of a security's price
+   - Components:
+     - MACD line: Difference between fast and slow EMAs
+     - Signal line: EMA of the MACD line
+     - Histogram: Difference between MACD and signal lines
+
+### Backward Compatibility
+
+The indicators package maintains backward compatibility with the previous functional approach through re-exported functions in the `__init__.py` file. This allows existing code to continue working while new code can take advantage of the object-oriented approach.

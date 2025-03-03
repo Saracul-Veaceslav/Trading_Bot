@@ -20,6 +20,9 @@ from .indicators import (
     detect_crossover
 )
 
+# Import indicators package
+from .indicators import Indicator, RSI, MACD
+
 # Define what's available when doing "from abidance.strategy import *"
 __all__ = [
     # Base classes
@@ -46,4 +49,9 @@ __all__ = [
     "calculate_bollinger_bands",
     "calculate_macd",
     "detect_crossover",
+    
+    # Indicator classes
+    "Indicator",
+    "RSI",
+    "MACD",
 ] 

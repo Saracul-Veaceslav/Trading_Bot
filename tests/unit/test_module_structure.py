@@ -89,6 +89,11 @@ def test_strategy_module_exports():
     assert hasattr(strategy, "calculate_macd")
     assert hasattr(strategy, "detect_crossover")
     
+    # Check that indicator classes are exported
+    assert hasattr(strategy, "Indicator")
+    assert hasattr(strategy, "RSI")
+    assert hasattr(strategy, "MACD")
+    
     # Check that __all__ is defined correctly
     expected_all = [
         "Strategy",
@@ -106,6 +111,9 @@ def test_strategy_module_exports():
         "calculate_bollinger_bands",
         "calculate_macd",
         "detect_crossover",
+        "Indicator",
+        "RSI",
+        "MACD",
     ]
     assert set(strategy.__all__) == set(expected_all)
 
