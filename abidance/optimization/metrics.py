@@ -5,9 +5,11 @@ This module provides functions for calculating various performance metrics
 from trading results, which can be used to evaluate and compare strategies.
 """
 
+from typing import Optional, Union, List, Dict, Any
+
 import numpy as np
 import pandas as pd
-from typing import Optional, Union, List, Dict, Any
+
 
 
 def calculate_sharpe_ratio(trades: pd.DataFrame,

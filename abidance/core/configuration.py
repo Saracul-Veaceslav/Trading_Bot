@@ -6,11 +6,13 @@ configuration settings from various sources including YAML files and
 environment variables.
 """
 
-import os
-import yaml
+from typing import Dict, Any, Optional, List, Type, Union, Callable, TypeVar
 import json
 import logging
-from typing import Dict, Any, Optional, List, Type, Union, Callable, TypeVar
+import os
+
+import yaml
+
 
 from abidance.exceptions import ConfigurationError
 
@@ -82,11 +84,11 @@ class Configuration:
         """
         if target_type == bool:
             return value.lower() in ('true', 'yes', '1', 'y')
-        elif target_type == int:
+        if target_type == int:
             return int(value)
-        elif target_type == float:
+        if target_type == float:
             return float(value)
-        else:
+        
             return value
 
     def load_from_env(self, prefix: str = '', type_mapping: Optional[Dict[str, Type]] = None) -> None:

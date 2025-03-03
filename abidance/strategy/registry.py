@@ -1,8 +1,9 @@
 """
 Strategy registry module for managing strategy implementations.
 """
-import logging
 from typing import Any, Dict, List, Optional, Type
+import logging
+
 
 from ..exceptions import StrategyError
 from .base import Strategy
@@ -31,10 +32,10 @@ class StrategyRegistry:
             strategy_class: Strategy class to register
         """
         if strategy_id in self.strategy_classes:
-            self.logger.warning(f"Overwriting existing strategy class: {strategy_id}")
+            self.logger.warning("Overwriting existing strategy class: %s", strategy_id)
 
         self.strategy_classes[strategy_id] = strategy_class
-        self.logger.debug(f"Registered strategy class: {strategy_id}")
+        self.logger.debug("Registered strategy class: %s", strategy_id)
 
     def create_strategy(self, strategy_id: str, name: str, symbols: List[str],
                         timeframe: str = '1h', parameters: Optional[Dict[str, Any]] = None) -> Strategy:
@@ -69,7 +70,7 @@ class StrategyRegistry:
         instance_id = f"{strategy_id}_{name}"
         self.strategy_instances[instance_id] = strategy
 
-        self.logger.info(f"Created strategy instance: {instance_id}")
+        self.logger.info("Created strategy instance: %s", instance_id)
         return strategy
 
     def get_strategy(self, instance_id: str) -> Strategy:
@@ -109,7 +110,7 @@ class StrategyRegistry:
             strategy.stop()
 
         del self.strategy_instances[instance_id]
-        self.logger.info(f"Removed strategy instance: {instance_id}")
+        self.logger.info("Removed strategy instance: %s", instance_id)
 
     def get_all_strategies(self) -> List[Strategy]:
         """

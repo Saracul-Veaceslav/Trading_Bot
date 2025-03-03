@@ -5,11 +5,13 @@ This module provides a structured logger that outputs logs in JSON format,
 making them easier to parse and analyze with log management tools.
 """
 
-from typing import Any, Dict, Optional
-import logging
-import json
 from datetime import datetime
+from typing import Any, Dict, Optional
+import json
+import logging
+
 from contextvars import ContextVar
+
 
 # Context variable for request ID
 request_id: ContextVar[str] = ContextVar('request_id', default='')

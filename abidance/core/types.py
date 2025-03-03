@@ -4,10 +4,12 @@ Core type definitions for the Abidance trading bot.
 This module defines common type aliases and custom types used throughout the application.
 """
 
-from typing import Dict, List, Union, Any, TypeVar, Callable, Optional, Tuple
 from decimal import Decimal
-import pandas as pd
+from typing import Dict, List, Union, Any, TypeVar, Callable, Optional, Tuple
+
 import numpy as np
+import pandas as pd
+
 
 # Type aliases for common types
 Timestamp = Union[int, float]  # Unix timestamp

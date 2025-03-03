@@ -5,8 +5,9 @@ This module contains implementations of momentum-based technical indicators
 such as RSI and MACD that can be used across different trading strategies.
 """
 # Third-party imports
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 # Local imports
 from .base import Indicator

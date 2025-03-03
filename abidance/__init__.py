@@ -9,6 +9,7 @@ __version__ = "0.1.0"
 
 # Import key modules to make them available at the package level
 from . import trading
+
 from . import exchange
 from . import strategy
 from . import data

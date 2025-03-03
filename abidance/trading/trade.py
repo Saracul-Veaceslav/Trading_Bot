@@ -1,10 +1,12 @@
 """
 Trade module for tracking executed trades.
 """
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 from uuid import uuid4
+
+from dataclasses import dataclass
+
 
 from .order import OrderSide
 

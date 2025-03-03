@@ -4,10 +4,12 @@ Mock data generation utilities for testing.
 This module provides utilities for generating synthetic market data
 that can be used for testing trading strategies with the MockExchange.
 """
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
+
+import numpy as np
+import pandas as pd
+
 
 
 def generate_random_ohlcv(
@@ -327,11 +329,11 @@ def _parse_timeframe(timeframe: str) -> timedelta:
 
     if unit == 'm':
         return timedelta(minutes=amount)
-    elif unit == 'h':
+    if unit == 'h':
         return timedelta(hours=amount)
-    elif unit == 'd':
+    if unit == 'd':
         return timedelta(days=amount)
-    elif unit == 'w':
+    if unit == 'w':
         return timedelta(weeks=amount)
-    else:
-        raise ValueError(f"Unsupported timeframe unit: {unit}")
+    
+    raise ValueError(f"Unsupported timeframe unit: {unit}")

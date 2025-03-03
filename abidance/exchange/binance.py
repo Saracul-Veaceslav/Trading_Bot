@@ -1,9 +1,10 @@
 """
 Binance exchange implementation.
 """
-import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
+import logging
+
 
 from ..exceptions import ExchangeError
 from ..trading.order import Order, OrderSide, OrderType
@@ -35,7 +36,7 @@ class BinanceExchange(Exchange):
 
         # In a real implementation, this would initialize the Binance client
         self.client = None
-        self.logger.info(f"Initialized Binance exchange (testnet: {testnet})")
+        self.logger.info("Initialized Binance exchange (testnet: %s)", testnet)
 
     def get_markets(self) -> List[Dict[str, Any]]:
         """
@@ -63,7 +64,7 @@ class BinanceExchange(Exchange):
             Dictionary with ticker data
         """
         # Stub implementation
-        self.logger.debug(f"Getting ticker for {symbol} from Binance")
+        self.logger.debug("Getting ticker for %s from Binance", symbol)
         return {
             "symbol": symbol,
             "bid": 50000.0,
@@ -89,7 +90,7 @@ class BinanceExchange(Exchange):
             List of OHLCV candles
         """
         # Stub implementation
-        self.logger.debug(f"Getting OHLCV for {symbol} ({timeframe}) from Binance")
+        self.logger.debug("Getting OHLCV for %s (%s) from Binance", symbol, timeframe)
         now = datetime.now(timezone.utc).timestamp() * 1000
         return [
             [now - 3600000, 50000.0, 50100.0, 49900.0, 50050.0, 100.0],
@@ -123,7 +124,7 @@ class BinanceExchange(Exchange):
             Dictionary with order result
         """
         # Stub implementation
-        self.logger.info(f"Placing order on Binance: {order}")
+        self.logger.info("Placing order on Binance: %s", order)
 
         # Convert order type to Binance format
         order_type_map = {
@@ -176,7 +177,7 @@ class BinanceExchange(Exchange):
         if not symbol:
             return {"success": False, "error": "Symbol is required for Binance"}
 
-        self.logger.info(f"Cancelling order {order_id} for {symbol} on Binance")
+        self.logger.info("Cancelling order %s for %s on Binance", order_id, symbol)
         return {
             "success": True,
             "order_id": order_id,
@@ -199,7 +200,7 @@ class BinanceExchange(Exchange):
         if not symbol:
             return {"success": False, "error": "Symbol is required for Binance"}
 
-        self.logger.debug(f"Getting order status for {order_id} ({symbol}) from Binance")
+        self.logger.debug("Getting order status for %s (%s) from Binance", order_id, symbol)
         return {
             "order_id": order_id,
             "symbol": symbol,
@@ -222,7 +223,7 @@ class BinanceExchange(Exchange):
             List of open order dictionaries
         """
         # Stub implementation
-        self.logger.debug(f"Getting open orders{' for ' + symbol if symbol else ''} from Binance")
+        self.logger.debug("Getting open orders%s from Binance", ' for ' + symbol if symbol else '')
         return [
             {
                 "order_id": "123456789",

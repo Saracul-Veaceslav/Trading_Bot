@@ -6,6 +6,7 @@ based on configuration parameters.
 """
 from typing import Any, Dict
 
+
 from .base import Exchange
 from .binance import BinanceExchange
 

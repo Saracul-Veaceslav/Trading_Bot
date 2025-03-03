@@ -1,8 +1,9 @@
 """
 Exchange manager module for handling multiple exchange connections.
 """
-import logging
 from typing import Dict, List, Optional, Type
+import logging
+
 
 from ..exceptions import ExchangeError
 from .base import Exchange
@@ -32,7 +33,7 @@ class ExchangeManager:
             exchange_class: Exchange class to register
         """
         self._exchange_registry[exchange_id] = exchange_class
-        self.logger.debug(f"Registered exchange class: {exchange_id}")
+        self.logger.debug("Registered exchange class: %s", exchange_id)
 
     def add_exchange(self, exchange: Exchange, is_default: bool = False) -> None:
         """
@@ -48,7 +49,7 @@ class ExchangeManager:
         if is_default or self.default_exchange_id is None:
             self.default_exchange_id = exchange_id
 
-        self.logger.info(f"Added exchange: {exchange_id} (default: {is_default})")
+        self.logger.info("Added exchange: %s (default: %s)", exchange_id, is_default)
 
     def create_exchange(self, exchange_id: str, api_key: Optional[str] = None,
                         api_secret: Optional[str] = None, testnet: bool = False,
@@ -128,7 +129,7 @@ class ExchangeManager:
             self.default_exchange_id = next(iter(self.exchanges.keys())) if self.exchanges else None
 
         del self.exchanges[exchange_id]
-        self.logger.info(f"Removed exchange: {exchange_id}")
+        self.logger.info("Removed exchange: %s", exchange_id)
 
     def get_all_exchanges(self) -> List[Exchange]:
         """

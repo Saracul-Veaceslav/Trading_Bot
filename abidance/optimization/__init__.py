@@ -6,6 +6,7 @@ through backtesting and performance evaluation.
 """
 
 from .optimizer import StrategyOptimizer, OptimizationResult
+
 from .metrics import calculate_sharpe_ratio, calculate_sortino_ratio, calculate_max_drawdown
 
 __all__ = [

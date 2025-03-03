@@ -6,6 +6,7 @@ used in trading strategies.
 """
 from abc import ABC, abstractmethod
 
+
 import pandas as pd
 
 

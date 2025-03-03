@@ -5,10 +5,11 @@ This module provides a centralized way to manage environment variables in the ap
 It supports loading from .env files, type conversion, and validation.
 """
 
-import os
-import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union, cast
+import json
+import os
+
 
 from dotenv import load_dotenv
 
@@ -198,7 +199,7 @@ class Environment:
             try:
                 return json.loads(value)
             except json.JSONDecodeError:
-                pass
+                pass  # Continue to the next parsing method
 
         # Fall back to comma-separated string
         return [item.strip() for item in value.split(',')]

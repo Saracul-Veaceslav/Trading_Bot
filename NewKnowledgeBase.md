@@ -868,7 +868,7 @@ report_path = report_generator.save_report(report_data)
 print(f"Report saved to: {report_path}")
 
 # Plot equity curve
-fig, ax = report_generator.plot_equity_curve(trades, save_path="reports/equity_curve.png")
+report_generator.plot_equity_curve(report_data)
 ```
 
 ### Benefits
@@ -997,109 +997,56 @@ This Historical Data Management system provides a solid foundation for backtesti
 
 ## Property-Based Testing Framework
 
-The Abidance Trading Bot implements a comprehensive Property-Based Testing Framework that enables thorough testing of trading strategies under various market conditions. This framework consists of two main components:
+The Abidance Trading Bot includes a comprehensive property-based testing framework that helps ensure trading strategies behave correctly under various market conditions. This framework is particularly valuable for discovering edge cases and validating strategy invariants.
 
-1. **Data Generators (testing/generators.py)**: A collection of generators for creating test data:
-   - **generate_ohlcv_data**: Generates realistic OHLCV data with proper price relationships
-   - **generate_strategy_parameters**: Generates valid parameters for different strategy types
-   - **generate_market_data**: Generates market data for multiple symbols
-   - **generate_order_book_data**: Generates order book data with bids and asks
-   - **generate_trade_data**: Generates trade data with timestamps, prices, and sides
+### Key Components
 
-2. **Property Validators (testing/properties.py)**: Utilities for testing strategy properties:
-   - **validate_ohlcv_data**: Validates that OHLCV data satisfies basic properties
-   - **test_strategy_signal_invariants**: Tests that strategy signals satisfy basic invariants
-   - **test_strategy_consistency**: Tests that strategy signals are consistent when run multiple times
-   - **test_strategy_edge_cases**: Tests strategy behavior with edge cases like NaN values
-   - **create_trending_market**: Creates a trending market from base data
-   - **create_sideways_market**: Creates a sideways market from base data
+- **Data Generators**: Functions that generate realistic test data
+  - `generate_ohlcv_data`: Creates random OHLCV data with realistic price movements
+  - `generate_strategy_parameters`: Creates random parameters for strategies
+  - `generate_market_data`: Creates market data for multiple symbols
+  - `generate_order_book_data`: Creates order book data with bids and asks
+  - `generate_trade_data`: Creates trade data with timestamps, prices, and sides
 
-### Key Features
+- **Property Validators**: Functions that validate properties of data and strategies
+  - `validate_ohlcv_data`: Ensures OHLCV data satisfies basic properties
+  - `test_strategy_signal_invariants`: Tests that strategy signals are valid
+  - `test_strategy_consistency`: Tests that strategies produce consistent results
+  - `test_strategy_edge_cases`: Tests strategy behavior with edge cases
 
-- **Hypothesis Integration**: Built on the Hypothesis property-based testing library
-- **Realistic Data Generation**: Generates realistic market data with proper price relationships
-- **Strategy Invariant Testing**: Tests properties that should hold for all strategies
-- **Market Scenario Testing**: Tests strategy behavior in different market conditions
-- **Edge Case Handling**: Tests strategy robustness with problematic data
-- **Customizable Parameters**: Allows fine-tuning of data generation parameters
+- **Market Scenario Generators**: Functions that create specific market conditions
+  - `create_trending_market`: Creates a trending market (up or down)
+  - `create_sideways_market`: Creates a sideways market with mean reversion
 
-### Usage Examples
-
-#### Basic Property Testing
-
-```python
-from hypothesis import given, settings, HealthCheck
-from abidance.testing.generators import generate_ohlcv_data
-from abidance.strategy import SMAStrategy, SMAConfig
-
-@given(data=generate_ohlcv_data())
-@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
-def test_sma_strategy_signals(data):
-    # Create strategy
-    config = SMAConfig(
-        name="SMA Test",
-        symbols=["BTC/USDT"],
-        fast_period=10,
-        slow_period=30
-    )
-    strategy = SMAStrategy(config)
-    
-    # Calculate signal
-    signal = strategy.calculate_signal(data)
-    
-    # Check that the signal is valid
-    assert signal in [1, 0, -1]  # 1=BUY, 0=HOLD, -1=SELL
-```
-
-#### Testing with Market Scenarios
-
-```python
-from hypothesis import given, settings, HealthCheck
-from abidance.testing.generators import generate_ohlcv_data
-from abidance.testing.properties import create_trending_market
-from abidance.strategy import SMAStrategy, SMAConfig
-
-@given(data=generate_ohlcv_data())
-@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
-def test_strategy_in_trending_market(data):
-    # Create strategy
-    config = SMAConfig(
-        name="SMA Test",
-        symbols=["BTC/USDT"],
-        fast_period=10,
-        slow_period=30
-    )
-    strategy = SMAStrategy(config)
-    
-    # Create a trending market
-    trending_data = create_trending_market(data, trend_factor=0.01)
-    
-    # Calculate signal
-    signal = strategy.calculate_signal(trending_data)
-    
-    # In a strong uptrend, we might expect a buy signal
-    # (but this isn't guaranteed, so we don't assert it)
-    print(f"Signal in uptrend: {signal}")
-```
-
-#### Using the Property Test Helpers
+### Usage Example
 
 ```python
 from abidance.testing.properties import test_strategy_signal_invariants
 from abidance.strategy import SMAStrategy, SMAConfig
 
-# Create a test function for SMA strategy
+# Create a test function for the SMA strategy
 test_sma_signals = test_strategy_signal_invariants(
     strategy_class=SMAStrategy,
     config_class=SMAConfig,
-    config_params={'fast_period': 10, 'slow_period': 30}
+    config_params={
+        'fast_period': 10,
+        'slow_period': 30,
+        'volume_factor': 1.5
+    }
 )
 
 # Run the test
 test_sma_signals()
 ```
 
-This Property-Based Testing Framework provides a powerful approach to testing trading strategies by generating a wide range of test cases and verifying that important properties hold across all of them. This helps identify edge cases and ensures that strategies behave correctly under various market conditions.
+### Benefits
+
+- **Automated Edge Case Discovery**: The framework automatically generates diverse test cases, including edge cases that might be missed in manual testing.
+- **Invariant Validation**: Ensures that key properties always hold true, regardless of input data.
+- **Realistic Market Scenarios**: Tests strategies under different market conditions to ensure robust performance.
+- **Consistency Checking**: Verifies that strategies produce consistent results when run multiple times on the same data.
+
+This property-based testing approach complements traditional unit tests and helps build more reliable trading strategies by systematically exploring the input space and validating core properties.
 
 ## Pylon Storage System
 
@@ -1308,45 +1255,16 @@ result_path = benchmark.save_results()
 print(f"Benchmark results saved to: {result_path}")
 ```
 
-## Code Quality
+## Code Quality and Testing
 
-### Pylint Analysis
+## Common Issues and Solutions
 
-The project has been analyzed with Pylint (version 3.3.4) to identify code quality issues. Key findings include:
-
-1. **Common Issues**:
-   - Trailing whitespace in many files
-   - Missing final newlines
-   - Lines exceeding maximum length (100 characters)
-   - Unused imports in several modules
-   - Broad exception catching (catching Exception)
-   - Improper logging format strings (using f-strings instead of % formatting)
-   - Unspecified encoding when opening files
-
-2. **Duplicate Code**:
-   - Significant code duplication between `abidance.type_defs.__init__` and `abidance.typing.__init__`
-   - Duplicate strategy code patterns in RSI and SMA strategy implementations
-   - Duplicate indicator calculation code
-
-3. **Cyclic Imports**:
-   - Cyclic imports detected in the exceptions module
-
-4. **Overall Rating**:
-   - The codebase received a rating of 5.35/10 from Pylint
-
-These findings provide opportunities for code quality improvements, particularly in reducing duplication, fixing import issues, and addressing style inconsistencies.
-
-## Test Suite
-
-The Abidance Trading Bot has a comprehensive test suite with 633 passing tests and 17 skipped tests. The test suite covers various aspects of the trading bot, including:
-
-- Unit tests for core components
-- Integration tests for exchange interactions
-- Property-based tests for trading strategies
-- Performance tests for data storage and retrieval
-- Mock exchange tests for deterministic strategy testing
-
-The test suite is organized to mirror the structure of the source code, making it easy to locate tests for specific components. The tests are designed to be fast, reliable, and independent, ensuring that they can be run in any order without affecting each other.
+- When using string formatting with decimal precision, use f-strings instead of the old-style formatting to avoid invalid decimal literal syntax errors. For example, use `f"Value: {number:.2f}"` instead of `"Value: %s:.2f" % number`.
+- Pay attention to indentation in functions, especially after conditional statements and exception handling. Incorrect indentation can lead to unexpected behavior where functions return None instead of the expected value.
+- Health check functions should always return a HealthStatus value, even in error cases. Ensure proper indentation of return statements to avoid returning None by mistake.
+- When implementing functions that should raise exceptions for invalid inputs, ensure the raise statement is properly indented and not accidentally placed outside the function's scope.
+- The fallback decorator in error handling requires proper indentation to ensure it returns the correct value from the decorated function or the fallback value when an exception occurs.
+- Type utility functions like from_timestamp, ensure_datetime, and ensure_timedelta need proper indentation for their error handling to work correctly.
 
 ## Code Quality
 
@@ -1456,46 +1374,28 @@ Cyclic imports in the exceptions module were resolved by applying the following 
 
 1. **Identify the Cycle**: The cycle involved `abidance.exceptions`, `abidance.exceptions.fallback`, and `abidance.exceptions.error_context`.
 
-2. **Extract Base Class**: The `AbidanceError` base class was moved from `__init__.py` to a new `base.py` file.
+2. **Extract Base Class**: The `
 
-3. **Update Import Statements**: Import statements in `fallback.py` and `error_context.py` were updated to import `AbidanceError` from `base.py` instead of from `__init__.py`.
+## Indentation and String Formatting Issues
 
-4. **Ensure Proper Module Structure**: The `__init__.py` file was updated to import and re-export the `AbidanceError` class from `base.py`.
+During code quality improvements, several common issues were identified and fixed:
 
-This approach breaks the import cycle by creating a clear hierarchy:
-- `base.py` defines the fundamental exception class and has no dependencies on other exception modules
-- `fallback.py` and `error_context.py` depend on `base.py` but not on each other
-- `__init__.py` imports from all modules but is not imported by them
+1. **F-string Formatting**: 
+   - When using string formatting with decimal precision, use f-strings instead of the old-style formatting to avoid invalid decimal literal syntax errors. 
+   - Example: Use `f"Value: {number:.2f}"` instead of `"Value: %s:.2f" % number`.
+   - This issue was particularly common in logger statements in the health check module.
 
-The result is a cleaner, more maintainable exception hierarchy that avoids cyclic imports while maintaining the same public API.
+2. **Indentation in Functions**:
+   - Pay attention to indentation in functions, especially after conditional statements and exception handling.
+   - Incorrect indentation can lead to unexpected behavior where functions return None instead of the expected value.
+   - Health check functions should always return a HealthStatus value, even in error cases. Ensure proper indentation of return statements to avoid returning None by mistake.
 
-Example implementation:
+3. **Exception Handling**:
+   - When implementing functions that should raise exceptions for invalid inputs, ensure the raise statement is properly indented and not accidentally placed outside the function's scope.
+   - The fallback decorator in error handling requires proper indentation to ensure it returns the correct value from the decorated function or the fallback value when an exception occurs.
 
-```python
-# base.py
-"""Base exception classes for the Abidance trading bot."""
+4. **Type Utility Functions**:
+   - Type utility functions like from_timestamp, ensure_datetime, and ensure_timedelta need proper indentation for their error handling to work correctly.
+   - These functions are critical for type conversion and validation throughout the codebase.
 
-class AbidanceError(Exception):
-    """Base exception for all Abidance-related errors."""
-    pass
-
-# __init__.py
-"""Exception classes for the Abidance trading bot."""
-
-from .base import AbidanceError
-# Import other exception classes...
-
-# fallback.py
-"""Fallback strategies for error recovery."""
-
-from .base import AbidanceError
-# Rest of the module...
-
-# error_context.py
-"""Error context for enhanced error reporting."""
-
-from .base import AbidanceError
-# Rest of the module...
-```
-
-This pattern can be applied to resolve cyclic imports in other parts of the codebase as well.
+Fixing these issues resulted in all tests passing successfully, improving the reliability and correctness of the codebase.

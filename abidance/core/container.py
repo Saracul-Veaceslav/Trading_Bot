@@ -9,6 +9,7 @@ singleton behavior.
 
 from typing import Dict, Any, Type, TypeVar, Callable, Optional, Union, cast, get_type_hints, runtime_checkable
 
+
 T = TypeVar('T')
 ServiceKey = Union[Type[T], str]
 ServiceFactory = Callable[[], T]

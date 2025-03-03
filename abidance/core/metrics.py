@@ -5,12 +5,14 @@ This module provides a framework for collecting, storing, and retrieving
 metrics about the application's performance and behavior.
 """
 
-from typing import Dict, Any, Optional, List, Union, Callable
-from datetime import datetime, timedelta
-import threading
 from collections import defaultdict
-import statistics
+from datetime import datetime, timedelta
 from enum import Enum, auto
+from typing import Dict, Any, Optional, List, Union, Callable
+import threading
+
+import statistics
+
 
 
 class AggregationType(Enum):
@@ -148,18 +150,18 @@ class MetricsCollector:
 
         if aggregation_type == AggregationType.SUM:
             return sum(values)
-        elif aggregation_type == AggregationType.AVG:
+        if aggregation_type == AggregationType.AVG:
             return statistics.mean(values)
-        elif aggregation_type == AggregationType.MIN:
+        if aggregation_type == AggregationType.MIN:
             return min(values)
-        elif aggregation_type == AggregationType.MAX:
+        if aggregation_type == AggregationType.MAX:
             return max(values)
-        elif aggregation_type == AggregationType.COUNT:
+        if aggregation_type == AggregationType.COUNT:
             return len(values)
-        elif aggregation_type == AggregationType.LAST:
+        if aggregation_type == AggregationType.LAST:
             latest_ts = max(data.keys())
             return data[latest_ts]
-        elif aggregation_type == AggregationType.FIRST:
+        if aggregation_type == AggregationType.FIRST:
             earliest_ts = min(data.keys())
             return data[earliest_ts]
 

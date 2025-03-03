@@ -1,8 +1,10 @@
 """
 Simple Moving Average (SMA) strategy implementation.
 """
-from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
+
+from dataclasses import dataclass, field
+
 
 import pandas as pd
 import numpy as np
@@ -42,7 +44,7 @@ class SMAStrategy(Strategy):
 
     def initialize(self) -> None:
         """Initialize the strategy before running."""
-        self.logger.info(f"Initializing SMA strategy: {self.name}")
+        self.logger.info("Initializing SMA strategy: %s", self.name)
 
         # Initialize state for each symbol
         for symbol in self.symbols:
@@ -94,7 +96,7 @@ class SMAStrategy(Strategy):
         """
         # Ensure we have enough data
         if len(data) < self.config.slow_period:
-            self.logger.warning(f"Not enough data for {symbol} analysis")
+            self.logger.warning("Not enough data for %s analysis", symbol)
             return {"error": "Not enough data"}
 
         # Calculate indicators
@@ -174,7 +176,7 @@ class SMAStrategy(Strategy):
 
         # Check for errors in analysis
         if "error" in analysis:
-            self.logger.warning(f"Analysis error for {symbol}: {analysis['error']}")
+            self.logger.warning("Analysis error for %s: %s", symbol, analysis['error'])
             return signals
 
         # Get current state for this symbol
@@ -335,7 +337,7 @@ class SMAStrategy(Strategy):
             # Get the last values
             fast_sma_last = df[f'sma_{self.config.fast_period}'].iloc[-1]
             slow_sma_last = df[f'sma_{self.config.slow_period}'].iloc[-1]
-            
+
             # Get the previous values
             fast_sma_prev = df[f'sma_{self.config.fast_period}'].iloc[-2]
             slow_sma_prev = df[f'sma_{self.config.slow_period}'].iloc[-2]
@@ -344,16 +346,16 @@ class SMAStrategy(Strategy):
             if fast_sma_prev < slow_sma_prev and fast_sma_last > slow_sma_last:
                 # Bullish crossover (fast crosses above slow)
                 return 1
-            elif fast_sma_prev > slow_sma_prev and fast_sma_last < slow_sma_last:
+            if fast_sma_prev > slow_sma_prev and fast_sma_last < slow_sma_last:
                 # Bearish crossover (fast crosses below slow)
                 return -1
-            else:
+            
                 # No crossover
                 return 0
         except Exception as e:
-            self.logger.error(f"Error calculating signal: {str(e)}")
+            self.logger.error("Error calculating signal: %s", str(e))
             return 0
-            
+
     def _handle_test_invalid_data(self) -> None:
         """
         Handle the test-specific invalid data case.

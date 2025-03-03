@@ -1,12 +1,14 @@
 """Common health checks for the Abidance trading bot."""
 
-import os
-import psutil
-import time
 from typing import Callable, Dict, Any, Optional
-import logging
 import asyncio
+import logging
+import os
+import time
+
 import aiohttp
+import psutil
+
 from .checker import HealthStatus
 
 logger = logging.getLogger(__name__)
@@ -28,11 +30,11 @@ def create_memory_check(threshold_mb: int = 500) -> Callable[[], HealthStatus]:
         if available_memory < threshold_mb / 2:
             logger.warning(f"Available memory critically low: {available_memory:.2f}MB")
             return HealthStatus.UNHEALTHY
-        elif available_memory < threshold_mb:
+        if available_memory < threshold_mb:
             logger.info(f"Available memory low: {available_memory:.2f}MB")
             return HealthStatus.DEGRADED
-        else:
-            return HealthStatus.HEALTHY
+        
+        return HealthStatus.HEALTHY
 
     return check
 
@@ -53,11 +55,11 @@ def create_cpu_check(threshold_percent: float = 80.0) -> Callable[[], HealthStat
         if cpu_percent > threshold_percent + 10:
             logger.warning(f"CPU usage critically high: {cpu_percent:.2f}%")
             return HealthStatus.UNHEALTHY
-        elif cpu_percent > threshold_percent:
+        if cpu_percent > threshold_percent:
             logger.info(f"CPU usage high: {cpu_percent:.2f}%")
             return HealthStatus.DEGRADED
-        else:
-            return HealthStatus.HEALTHY
+        
+        return HealthStatus.HEALTHY
 
     return check
 
@@ -80,11 +82,11 @@ def create_disk_space_check(path: str = ".", threshold_gb: float = 1.0) -> Calla
         if free_space_gb < threshold_gb / 2:
             logger.warning(f"Available disk space critically low: {free_space_gb:.2f}GB")
             return HealthStatus.UNHEALTHY
-        elif free_space_gb < threshold_gb:
+        if free_space_gb < threshold_gb:
             logger.info(f"Available disk space low: {free_space_gb:.2f}GB")
             return HealthStatus.DEGRADED
-        else:
-            return HealthStatus.HEALTHY
+        
+        return HealthStatus.HEALTHY
 
     return check
 
@@ -113,22 +115,22 @@ def create_api_health_check(url: str, timeout: float = 5.0) -> Callable[[], Heal
             try:
                 status_code = asyncio.run(fetch())
             except (asyncio.CancelledError, asyncio.TimeoutError):
-                logger.warning(f"API endpoint {url} timed out after {timeout} seconds")
+                logger.warning("API endpoint %s timed out after %s seconds", url, timeout)
                 return HealthStatus.UNHEALTHY
 
             response_time = time.time() - start_time
 
             # Check the status code and response time
             if status_code >= 500:
-                logger.warning(f"API endpoint {url} returned server error: {status_code}")
+                logger.warning("API endpoint %s returned server error: %s", url, status_code)
                 return HealthStatus.UNHEALTHY
-            elif status_code >= 400 or response_time > timeout * 0.8:
+            if status_code >= 400 or response_time > timeout * 0.8:
                 logger.info(f"API endpoint {url} degraded: status={status_code}, time={response_time:.2f}s")
                 return HealthStatus.DEGRADED
-            else:
-                return HealthStatus.HEALTHY
+            
+            return HealthStatus.HEALTHY
         except Exception as e:
-            logger.error(f"API endpoint {url} health check failed: {str(e)}")
+            logger.error("API endpoint %s health check failed: %s", url, str(e))
             return HealthStatus.UNHEALTHY
 
     return check
@@ -148,11 +150,11 @@ def create_database_check(check_connection_func: Callable[[], bool]) -> Callable
         try:
             if check_connection_func():
                 return HealthStatus.HEALTHY
-            else:
-                logger.warning("Database connection check failed")
-                return HealthStatus.UNHEALTHY
+            
+            logger.warning("Database connection check failed")
+            return HealthStatus.UNHEALTHY
         except Exception as e:
-            logger.error(f"Database health check failed: {str(e)}")
+            logger.error("Database health check failed: %s", str(e))
             return HealthStatus.UNHEALTHY
 
     return check

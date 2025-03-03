@@ -1,7 +1,9 @@
-from typing import List, Dict, Any
-import pandas as pd
-import numpy as np
 from abc import ABC, abstractmethod
+from typing import List, Dict, Any
+
+import numpy as np
+import pandas as pd
+
 from .base import Strategy, StrategyConfig
 from ..core.domain import SignalType
 
@@ -177,7 +179,7 @@ class CompositeStrategy(Strategy):
         # Convert back to SignalType based on threshold
         if weighted_signal >= 0.5:  # Changed from > to >= for consistency with test
             return SignalType.BUY
-        elif weighted_signal <= -0.5:  # Changed from < to <= for consistency
+        if weighted_signal <= -0.5:  # Changed from < to <= for consistency
             return SignalType.SELL
         return SignalType.HOLD
 
@@ -238,6 +240,6 @@ class VotingStrategy(CompositeStrategy):
         # Make decision
         if buy_score > sell_score and buy_score >= 0.5:  # Changed from > to >= for consistency with test
             return SignalType.BUY
-        elif sell_score > buy_score and sell_score >= 0.5:  # Changed from > to >= for consistency
+        if sell_score > buy_score and sell_score >= 0.5:  # Changed from > to >= for consistency
             return SignalType.SELL
         return SignalType.HOLD

@@ -4,10 +4,11 @@ Benchmarking utilities for trading strategies.
 This module provides tools for benchmarking trading strategies agains
 standard datasets and comparing performance across different strategies.
 """
-import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Type, Any, Optional
+import json
+
 
 import pandas as pd
 # Import matplotlib conditionally to avoid dependency for users who don't need plotting

@@ -5,9 +5,11 @@ This module provides a validation framework for ensuring data integrity
 and consistent validation across the application.
 """
 
-from typing import Any, Dict, List, Optional, Type, Union, Callable
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional, Type, Union, Callable
+
+from dataclasses import dataclass
+
 
 @dataclass
 class ValidationError:

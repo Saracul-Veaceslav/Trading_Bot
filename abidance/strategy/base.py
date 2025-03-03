@@ -2,9 +2,11 @@
 Base strategy module defining the abstract Strategy interface.
 """
 from abc import ABC, abstractmethod
-import logging
-from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union, ClassVar
+import logging
+
+from dataclasses import dataclass, field
+
 
 import pandas as pd
 
@@ -182,7 +184,7 @@ class Strategy(ABC):
         Returns:
             DataFrame with trade results
         """
-        self.logger.info(f"Starting backtest for {self.name} strategy")
+        self.logger.info("Starting backtest for %s strategy", self.name)
 
         # Initialize backtest variables
         equity = initial_capital
@@ -291,8 +293,8 @@ class Strategy(ABC):
             # Calculate cumulative returns
             trades_df['cumulative_returns'] = (1 + trades_df['returns']).cumprod()
 
-            self.logger.info(f"Backtest completed with {len(trades_df)} trades")
+            self.logger.info("Backtest completed with %s trades", len(trades_df))
             return trades_df
-        else:
+        
             self.logger.warning("No trades were generated during backtest")
             return pd.DataFrame()

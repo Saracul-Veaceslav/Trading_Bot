@@ -1,8 +1,9 @@
 """
 Trading engine module for executing orders and managing positions.
 """
-import logging
 from typing import Dict, List, Optional, Tuple, Union
+import logging
+
 
 from ..exceptions import ExchangeError
 from .order import Order, OrderSide, OrderType
@@ -67,7 +68,7 @@ class TradingEngine:
             exchange_id=exchange_id
         )
 
-        self.logger.info(f"Created order: {order}")
+        self.logger.info("Created order: %s", order)
         return order
 
     def execute_order(self, order: Order) -> Tuple[bool, Optional[Trade]]:
@@ -108,17 +109,17 @@ class TradingEngine:
                 if self.data_manager:
                     self.data_manager.store_trade(trade)
 
-                self.logger.info(f"Executed order successfully: {order.exchange_order_id}")
+                self.logger.info("Executed order successfully: %s", order.exchange_order_id)
                 return True, trade
-            else:
+            
                 self.logger.error(f"Failed to execute order: {result.get('error')}")
                 return False, None
 
         except ExchangeError as e:
-            self.logger.error(f"Exchange error executing order: {e}")
+            self.logger.error("Exchange error executing order: %s", e)
             return False, None
         except Exception as e:
-            self.logger.error(f"Unexpected error executing order: {e}")
+            self.logger.error("Unexpected error executing order: %s", e)
             return False, None
 
     def get_open_positions(self, symbol: Optional[str] = None) -> List[Position]:
@@ -160,7 +161,7 @@ class TradingEngine:
         """
         position = self.open_positions.get(position_id)
         if not position or not position.is_open:
-            self.logger.warning(f"Cannot close position {position_id}: not found or already closed")
+            self.logger.warning("Cannot close position %s: not found or already closed", position_id)
             return False
 
         # Create an order to close the position
@@ -184,8 +185,8 @@ class TradingEngine:
             if self.data_manager:
                 self.data_manager.update_position(position)
 
-            self.logger.info(f"Closed position {position_id} at price {trade.price}")
+            self.logger.info("Closed position %s at price %s", position_id, trade.price)
             return True
-        else:
-            self.logger.error(f"Failed to close position {position_id}")
+        
+            self.logger.error("Failed to close position %s", position_id)
             return False

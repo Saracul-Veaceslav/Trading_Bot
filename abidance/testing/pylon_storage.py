@@ -1,14 +1,16 @@
-from typing import Dict, Any, Optional, List, Union
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Dict, Any, Optional, List, Union
 import json
 import logging
-import pyarrow as pa
-import pyarrow.parquet as pq
-import pyarrow.dataset as ds
 import os
+
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.dataset as ds
+import pyarrow.parquet as pq
+
 
 logger = logging.getLogger(__name__)
 
@@ -80,9 +82,9 @@ class PylonStorage:
                 compression='snappy'
             )
 
-            logger.info(f"Successfully stored {len(df)} rows for {symbol} {timeframe}")
+            logger.info("Successfully stored %s rows for %s %s", len(df), symbol, timeframe)
         except Exception as e:
-            logger.error(f"Error storing data: {e}")
+            logger.error("Error storing data: %s", e)
             raise
 
     def load_dataframe(self, symbol, timeframe, start_date=None, end_date=None, columns=None):
@@ -156,11 +158,11 @@ class PylonStorage:
                     if inferred_freq is None or inferred_freq == freq:
                         df.index.freq = pd.tseries.frequencies.to_offset(freq)
             except Exception as e:
-                logger.warning(f"Could not set frequency for {symbol} {timeframe}: {e}")
+                logger.warning("Could not set frequency for %s %s: %s", symbol, timeframe, e)
 
             return df
         except Exception as e:
-            logger.error(f"Error loading data from Pylon: {e}")
+            logger.error("Error loading data from Pylon: %s", e)
             raise
 
     def append_dataframe(self, df, symbol, timeframe):
@@ -200,7 +202,7 @@ class PylonStorage:
                     table = pq.read_table(str(dataset_path))
                     existing_df = table.to_pandas()
                 except Exception as e:
-                    logger.error(f"Error loading existing data for append: {e}")
+                    logger.error("Error loading existing data for append: %s", e)
                     # If we can't load existing data, just store the new data
                     self.store_dataframe(df, symbol, timeframe)
                     return
@@ -234,12 +236,12 @@ class PylonStorage:
                     compression='snappy'
                 )
 
-                logger.info(f"Successfully appended data for {symbol} {timeframe}")
+                logger.info("Successfully appended data for %s %s", symbol, timeframe)
             except Exception as e:
-                logger.error(f"Error appending data: {e}")
+                logger.error("Error appending data: %s", e)
                 raise
         except Exception as e:
-            logger.error(f"Error in append_dataframe: {e}")
+            logger.error("Error in append_dataframe: %s", e)
             raise
 
     def list_available_symbols(self) -> List[str]:
@@ -361,5 +363,5 @@ class PylonStorage:
             return True
 
         except Exception as e:
-            logger.error(f"Error deleting dataset: {e}")
+            logger.error("Error deleting dataset: %s", e)
             return False

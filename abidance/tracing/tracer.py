@@ -5,11 +5,13 @@ This module provides the core tracing functionality, including the Span class
 for representing individual operations and the Tracer class for managing spans.
 """
 
-from typing import Dict, Any, Optional, List
-from datetime import datetime
-import uuid
 from contextlib import contextmanager
+from datetime import datetime
+from typing import Dict, Any, Optional, List
+import uuid
+
 from dataclasses import dataclass, field
+
 
 
 @dataclass

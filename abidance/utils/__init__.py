@@ -5,7 +5,9 @@ This module provides utility functions used throughout the application.
 """
 
 import datetime as dt
+
 import pandas as pd
+
 
 
 def format_timestamp(timestamp, format_str="%Y-%m-%d %H:%M:%S"):
@@ -43,9 +45,9 @@ def calculate_roi(entry_price, exit_price, position_type="long"):
     """
     if position_type.lower() == "long":
         return ((exit_price - entry_price) / entry_price) * 100
-    elif position_type.lower() == "short":
+    if position_type.lower() == "short":
         return ((entry_price - exit_price) / entry_price) * 100
-    else:
+    
         raise ValueError(f"Unsupported position type: {position_type}")
 
 

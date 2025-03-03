@@ -1,8 +1,10 @@
 """
 Relative Strength Index (RSI) strategy implementation.
 """
-from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
+
+from dataclasses import dataclass, field
+
 
 import pandas as pd
 import numpy as np
@@ -43,7 +45,7 @@ class RSIStrategy(Strategy):
 
     def initialize(self) -> None:
         """Initialize the strategy before running."""
-        self.logger.info(f"Initializing RSI strategy: {self.name}")
+        self.logger.info("Initializing RSI strategy: %s", self.name)
 
         # Initialize state for each symbol
         for symbol in self.symbols:
@@ -108,7 +110,7 @@ class RSIStrategy(Strategy):
         """
         # Ensure we have enough data
         if len(data) < self.config.rsi_period + 1:
-            self.logger.warning(f"Not enough data for {symbol} RSI analysis")
+            self.logger.warning("Not enough data for %s RSI analysis", symbol)
             return {"error": "Not enough data"}
 
         # Calculate indicators
@@ -196,7 +198,7 @@ class RSIStrategy(Strategy):
 
         # Check for errors in analysis
         if "error" in analysis:
-            self.logger.warning(f"Analysis error for {symbol}: {analysis['error']}")
+            self.logger.warning("Analysis error for %s: %s", symbol, analysis['error'])
             return signals
 
         # Get current state

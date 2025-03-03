@@ -8,6 +8,7 @@ for trading strategies.
 from abidance.evaluation.metrics import PerformanceMetrics, StrategyEvaluator
 from abidance.evaluation.reporting import PerformanceReport
 
+
 __all__ = [
     'PerformanceMetrics',
     'StrategyEvaluator',

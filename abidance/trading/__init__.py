@@ -7,6 +7,7 @@ trade execution, and position management.
 
 # Import key classes to make them available at the module level
 from .order import Order, OrderSide, OrderType
+
 from .trade import Trade
 from .position import Position
 from .engine import TradingEngine

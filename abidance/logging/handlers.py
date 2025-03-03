@@ -5,15 +5,17 @@ This module provides custom handlers for logging to different destinations,
 such as rotating files, syslog, and more.
 """
 
+from typing import Optional, Dict, Any
 import logging
 import logging.handlers
 import os
-from typing import Optional, Dict, Any
 import socket
-import atexit
-import queue
 import threading
 import time
+
+import atexit
+import queue
+
 
 
 class AsyncRotatingFileHandler(logging.handlers.RotatingFileHandler):
@@ -100,7 +102,7 @@ class AsyncRotatingFileHandler(logging.handlers.RotatingFileHandler):
                 super().emit(record)
                 self.queue.task_done()
         except Exception:
-            pass
+            pass  # Silently ignore exceptions during flush
 
         # Wait for queue to empty with a timeout
         try:

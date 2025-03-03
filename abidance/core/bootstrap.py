@@ -6,9 +6,11 @@ including loading configuration, registering components, and initializing
 the application.
 """
 
-import yaml
-import logging
 from typing import Dict, Any, Callable, Optional, TypeVar, cast
+import logging
+
+import yaml
+
 
 from .container import ServiceRegistry
 
@@ -53,16 +55,16 @@ class ApplicationBootstrap:
             if config is None:
                 config = {}
 
-            logger.info(f"Configuration loaded from {config_path}")
+            logger.info("Configuration loaded from %s", config_path)
             return config
         except FileNotFoundError:
-            logger.error(f"Configuration file not found: {config_path}")
+            logger.error("Configuration file not found: %s", config_path)
             raise
         except yaml.YAMLError as e:
-            logger.error(f"Invalid YAML in configuration file: {e}")
+            logger.error("Invalid YAML in configuration file: %s", e)
             raise
         except Exception as e:
-            logger.error(f"Error loading configuration: {e}")
+            logger.error("Error loading configuration: %s", e)
             raise
 
     def register_component(self, name: str, component: Any) -> None:
@@ -75,7 +77,7 @@ class ApplicationBootstrap:
         """
         self._components[name] = component
         self._service_registry.register(name, component)
-        logger.debug(f"Component registered: {name}")
+        logger.debug("Component registered: %s", name)
 
     def register_component_factory(self, name: str, factory: ComponentFactory) -> None:
         """
@@ -86,7 +88,7 @@ class ApplicationBootstrap:
             factory: Factory function for creating the component
         """
         self._component_factories[name] = factory
-        logger.debug(f"Component factory registered: {name}")
+        logger.debug("Component factory registered: %s", name)
 
     def has_component(self, name: str) -> bool:
         """
@@ -165,10 +167,10 @@ class ApplicationBootstrap:
         for name, component in self._components.items():
             if hasattr(component, 'initialize') and callable(getattr(component, 'initialize')):
                 try:
-                    logger.info(f"Initializing component: {name}")
+                    logger.info("Initializing component: %s", name)
                     component.initialize()
                 except Exception as e:
-                    logger.error(f"Error initializing component {name}: {e}")
+                    logger.error("Error initializing component %s: %s", name, e)
                     raise
 
     def initialize_application(self, config: Dict[str, Any]) -> None:
@@ -186,10 +188,10 @@ class ApplicationBootstrap:
         for name, component_config in components_config.items():
             if self.has_component_factory(name):
                 try:
-                    logger.info(f"Creating component: {name}")
+                    logger.info("Creating component: %s", name)
                     self.create_component(name, component_config)
                 except Exception as e:
-                    logger.error(f"Error creating component {name}: {e}")
+                    logger.error("Error creating component %s: %s", name, e)
                     raise
 
         # Initialize all components

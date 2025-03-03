@@ -5,9 +5,10 @@ This module provides common validator implementations that can be used
 with the validation framework.
 """
 
-import re
-from typing import Any, Dict, List, Optional, Type, Union, Callable, Pattern
 from decimal import Decimal
+from typing import Any, Dict, List, Optional, Type, Union, Callable, Pattern
+import re
+
 
 from .validation import Validator, ValidationError
 

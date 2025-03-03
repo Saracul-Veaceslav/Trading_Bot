@@ -5,13 +5,15 @@ This module provides specialized metric collectors for different aspects
 of the application, such as performance, trading, and system metrics.
 """
 
-from typing import Dict, Any, Optional, List, Union, Callable
 from datetime import datetime, timedelta
-import time
-import threading
-import psutil
-import os
 from functools import wraps
+from typing import Dict, Any, Optional, List, Union, Callable
+import os
+import threading
+import time
+
+import psutil
+
 
 from .metrics import MetricsCollector, AggregationType
 
@@ -259,7 +261,7 @@ class TradingMetricsCollector(MetricsCollector):
     def _process_symbol_metrics(self, summary: Dict[str, float], symbol: str, since: Optional[datetime], until: Optional[datetime]) -> None:
         """
         Process metrics for a specific symbol.
-        
+
         Args:
             summary: Dictionary to update with metrics
             symbol: Symbol to process metrics for
@@ -267,41 +269,41 @@ class TradingMetricsCollector(MetricsCollector):
             until: Optional end time for filtering
         """
         symbol_part = f".{symbol}"
-        
+
         # Process order metrics
         self._update_metric_sum(summary, "order_count_buy", f"order_count{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "order_count_sell", f"order_count{symbol_part}.sell", since, until)
         summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
-        
+
         self._update_metric_sum(summary, "order_volume_buy", f"order_volume{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "order_volume_sell", f"order_volume{symbol_part}.sell", since, until)
         summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
-        
+
         self._update_metric_sum(summary, "order_value_buy", f"order_value{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "order_value_sell", f"order_value{symbol_part}.sell", since, until)
         summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
-        
+
         # Process trade metrics
         self._update_metric_sum(summary, "trade_count_buy", f"trade_count{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "trade_count_sell", f"trade_count{symbol_part}.sell", since, until)
         summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
-        
+
         self._update_metric_sum(summary, "trade_volume_buy", f"trade_volume{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "trade_volume_sell", f"trade_volume{symbol_part}.sell", since, until)
         summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
-        
+
         self._update_metric_sum(summary, "trade_value_buy", f"trade_value{symbol_part}.buy", since, until)
         self._update_metric_sum(summary, "trade_value_sell", f"trade_value{symbol_part}.sell", since, until)
         summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
-        
+
         # Calculate total fee
         self._update_metric_sum(summary, "fee", f"trade_fee{symbol_part}", since, until)
-    
-    def _update_metric_sum(self, summary: Dict[str, float], summary_key: str, metric_name: str, 
+
+    def _update_metric_sum(self, summary: Dict[str, float], summary_key: str, metric_name: str,
                           since: Optional[datetime], until: Optional[datetime]) -> None:
         """
         Update a summary value with the sum of a metric's values.
-        
+
         Args:
             summary: Dictionary to update
             summary_key: Key in the summary dictionary to update
@@ -312,11 +314,11 @@ class TradingMetricsCollector(MetricsCollector):
         values = self.get_metric(metric_name, since, until)
         if values:
             summary[summary_key] = sum(values.values())
-    
+
     def _process_all_symbols_metrics(self, summary: Dict[str, float], since: Optional[datetime], until: Optional[datetime]) -> None:
         """
         Process metrics for all symbols.
-        
+
         Args:
             summary: Dictionary to update with metrics
             since: Optional start time for filtering
@@ -325,7 +327,7 @@ class TradingMetricsCollector(MetricsCollector):
         # Find all metrics that match our patterns
         for metric_name in list(self._metrics.keys()):
             parts = metric_name.split(".")
-            
+
             # Process order metrics
             if metric_name.startswith("order_count.") and len(parts) >= 3:
                 self._process_metric_by_side(summary, metric_name, parts, "order_count", since, until)
@@ -333,7 +335,7 @@ class TradingMetricsCollector(MetricsCollector):
                 self._process_metric_by_side(summary, metric_name, parts, "order_volume", since, until)
             elif metric_name.startswith("order_value.") and len(parts) >= 3:
                 self._process_metric_by_side(summary, metric_name, parts, "order_value", since, until)
-            
+
             # Process trade metrics
             elif metric_name.startswith("trade_count.") and len(parts) >= 3:
                 self._process_metric_by_side(summary, metric_name, parts, "trade_count", since, until)
@@ -345,7 +347,7 @@ class TradingMetricsCollector(MetricsCollector):
                 values = self.get_metric(metric_name, since, until)
                 if values:
                     summary["fee"] += sum(values.values())
-        
+
         # Calculate totals
         summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
         summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
@@ -353,12 +355,12 @@ class TradingMetricsCollector(MetricsCollector):
         summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
         summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
         summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
-    
-    def _process_metric_by_side(self, summary: Dict[str, float], metric_name: str, parts: List[str], 
+
+    def _process_metric_by_side(self, summary: Dict[str, float], metric_name: str, parts: List[str],
                                metric_type: str, since: Optional[datetime], until: Optional[datetime]) -> None:
         """
         Process a metric by its side (buy/sell).
-        
+
         Args:
             summary: Dictionary to update
             metric_name: Name of the metric

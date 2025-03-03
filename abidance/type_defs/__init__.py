@@ -5,6 +5,7 @@ This module defines all the core types used throughout the trading bot,
 providing a consistent type system for all components.
 """
 from typing import (
+
     Any, Callable, Dict, List, Literal, Optional, Protocol, Tuple,
     TypeVar, Union, cast, overload
 )
@@ -226,7 +227,7 @@ class Strategy(Protocol):
         :return: The generated trading signal
         :rtype: Signal
         """
-        ...
+        pass
 
     def get_parameters(self) -> "ParamDict":
         """Get the current parameters of the strategy.
@@ -234,7 +235,7 @@ class Strategy(Protocol):
         :return: A dictionary of parameter names and values
         :rtype: ParamDict
         """
-        ...
+        pass
 
     def set_parameters(self, params: "ParamDict") -> None:
         """Set the parameters of the strategy.
@@ -243,7 +244,7 @@ class Strategy(Protocol):
         :type params: ParamDict
         :return: None
         """
-        ...
+        pass
 
 
 # ==================================================================
@@ -350,7 +351,7 @@ class Result(Protocol[T]):
         :return: True if the result is a success, False otherwise
         :rtype: bool
         """
-        ...
+        pass
 
     def is_failure(self) -> bool:
         """Check if the result is a failure.
@@ -358,7 +359,7 @@ class Result(Protocol[T]):
         :return: True if the result is a failure, False otherwise
         :rtype: bool
         """
-        ...
+        pass
 
     def unwrap(self) -> T:
         """Unwrap the result to get the value.
@@ -367,7 +368,7 @@ class Result(Protocol[T]):
         :rtype: T
         :raises Exception: If the result is a failure
         """
-        ...
+        pass
 
     def unwrap_or(self, default: T) -> T:
         """Unwrap the result to get the value, or return a default value if it's a failure.
@@ -377,7 +378,7 @@ class Result(Protocol[T]):
         :return: The value if the result is a success, or the default value if it's a failure
         :rtype: T
         """
-        ...
+        pass
 
     def unwrap_error(self) -> Exception:
         """Unwrap the result to get the error.
@@ -386,7 +387,7 @@ class Result(Protocol[T]):
         :rtype: Exception
         :raises ValueError: If the result is a success
         """
-        ...
+        pass
 
     def map(self, f: Callable[[T], T]) -> "Result[T]":
         """Apply a function to the value if the result is a success.
@@ -397,7 +398,7 @@ class Result(Protocol[T]):
                  or the same failure if the result is a failure
         :rtype: Result[T]
         """
-        ...
+        pass
 
 
 class Success(Result[T]):
@@ -660,15 +661,14 @@ def to_timestamp(value: Union[datetime, date, Timestamp, TimestampMS], unit: str
     if isinstance(value, (int, float)):
         if unit == 's':
             return float(value)
-        elif unit == 'ms':
+        if unit == 'ms':
             return float(value) / 1000.0
-        else:
-            raise ValueError(f"Invalid unit: {unit}")
+        
     elif isinstance(value, datetime):
         return value.timestamp()
-    elif isinstance(value, date):
+    if isinstance(value, date):
         return datetime.combine(value, datetime.min.time()).timestamp()
-    else:
+    
         raise TypeError(f"Cannot convert {type(value)} to timestamp")
 
 
@@ -688,10 +688,10 @@ def from_timestamp(value: Union[Timestamp, TimestampMS, str], unit: str = 's') -
 
     if unit == 's':
         return datetime.fromtimestamp(value)
-    elif unit == 'ms':
+    if unit == 'ms':
         return datetime.fromtimestamp(value / 1000.0)
-    else:
-        raise ValueError(f"Invalid unit: {unit}")
+    
+    raise ValueError(f"Invalid unit: {unit}")
 
 
 def ensure_datetime(value: Union[datetime, Timestamp, TimestampMS, str]) -> datetime:
@@ -705,13 +705,13 @@ def ensure_datetime(value: Union[datetime, Timestamp, TimestampMS, str]) -> date
     """
     if isinstance(value, datetime):
         return value
-    elif isinstance(value, (int, float)):
+    if isinstance(value, (int, float)):
         # Heuristic: if the value is greater than 1e10, it's probably milliseconds
         if value > 1e10:
             return from_timestamp(value, 'ms')
-        else:
-            return from_timestamp(value, 's')
-    elif isinstance(value, str):
+        
+        return from_timestamp(value, 's')
+    if isinstance(value, str):
         # Try to parse as ISO format
         try:
             return datetime.fromisoformat(value)
@@ -736,13 +736,13 @@ def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -
     """
     if isinstance(value, timedelta):
         return value
-    elif isinstance(value, (int, float)):
+    if isinstance(value, (int, float)):
         # Assume seconds
         return timedelta(seconds=value)
-    elif isinstance(value, dict):
+    if isinstance(value, dict):
         # Assume a dict with keys like 'days', 'seconds', etc.
         return timedelta(**value)
-    elif isinstance(value, str):
+    if isinstance(value, str):
         # Try to parse as a string like '1d2h3m4s'
         pattern = r'(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?'
         match = re.match(pattern, value)
@@ -757,8 +757,8 @@ def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -
                 raise ValueError(f"Cannot parse '{value}' as timedelta: no valid time components found")
 
             return timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
-        else:
-            raise ValueError(f"Cannot parse '{value}' as timedelta")
+        
+        raise ValueError(f"Cannot parse '{value}' as timedelta")
     else:
         raise TypeError(f"Cannot convert {type(value)} to timedelta")
 

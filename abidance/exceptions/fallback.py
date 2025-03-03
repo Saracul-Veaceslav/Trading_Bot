@@ -5,9 +5,10 @@ This module provides utilities for implementing fallback strategies
 when operations fail, allowing the application to gracefully handle failures.
 """
 
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
 import functools
 import logging
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
+
 
 from .base import AbidanceError
 from .circuit_errors import CircuitOpenError
@@ -65,8 +66,8 @@ def fallback(
 
                 if fallback_function:
                     return fallback_function(*args, **kwargs)
-                else:
-                    return default_value
+                
+                return default_value
 
         return cast(F, wrapper)
 
@@ -190,13 +191,11 @@ class CircuitBreaker:
 
             # Log the failure with a safe function name
             func_name = getattr(func, '__name__', str(func))
-            self.logger.warning(
-                f"Circuit breaker failure {self.failure_count}/{self.failure_threshold} in {func_name}: {str(e)}"
-            )
+            self.logger.warning("Circuit breaker failure %s/%s in %s: %s", self.failure_count, self.failure_threshold, func_name, str(e))
 
             # If we've reached the threshold, open the circuit
             if self.state != self.OPEN and self.failure_count >= self.failure_threshold:
-                self.logger.error(f"Circuit opened after {self.failure_count} failures")
+                self.logger.error("Circuit opened after %s failures", self.failure_count)
                 self.state = self.OPEN
                 if self.on_open:
                     self.on_open()
@@ -224,10 +223,10 @@ class CircuitBreaker:
         """
         if self.fallback_function:
             return self.fallback_function(*args, **kwargs)
-        elif self.fallback_value is not None:
+        if self.fallback_value is not None:
             return self.fallback_value
-        else:
-            raise CircuitOpenError("Circuit is open and no fallback was provided")
+        
+        raise CircuitOpenError("Circuit is open and no fallback was provided")
 
     def _reset(self) -> None:
         """Reset the circuit breaker to closed state."""

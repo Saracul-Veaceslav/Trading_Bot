@@ -5,6 +5,7 @@ This module defines all the core types used throughout the trading bot,
 providing a consistent type system for all components.
 """
 from typing import (
+
     Any, Callable, Dict, List, Literal, Optional, Protocol, Tuple,
     TypeVar, Union, cast, overload
 )
@@ -226,7 +227,7 @@ class Strategy(Protocol):
         :return: The generated trading signal
         :rtype: Signal
         """
-        ...
+        pass
 
     def get_parameters(self) -> "ParamDict":
         """Get the current parameters of the strategy.
@@ -234,7 +235,7 @@ class Strategy(Protocol):
         :return: A dictionary of parameter names and values
         :rtype: ParamDict
         """
-        ...
+        pass
 
     def set_parameters(self, params: "ParamDict") -> None:
         """Set the parameters of the strategy.
@@ -243,7 +244,7 @@ class Strategy(Protocol):
         :type params: ParamDict
         :return: None
         """
-        ...
+        pass
 
 
 # ==================================================================
@@ -346,7 +347,7 @@ class Result(Protocol[T]):
         :return: True if the result is a success, False otherwise
         :rtype: bool
         """
-        ...
+        pass
 
     def is_failure(self) -> bool:
         """Check if the result is a failure.
@@ -354,7 +355,7 @@ class Result(Protocol[T]):
         :return: True if the result is a failure, False otherwise
         :rtype: bool
         """
-        ...
+        pass
 
     def unwrap(self) -> T:
         """Get the value if the result is a success.
@@ -363,7 +364,7 @@ class Result(Protocol[T]):
         :rtype: T
         :raises Exception: If the result is a failure
         """
-        ...
+        pass
 
     def unwrap_or(self, default: T) -> T:
         """Get the value if the result is a success, or a default value if it's a failure.
@@ -373,7 +374,7 @@ class Result(Protocol[T]):
         :return: The success value or the default value
         :rtype: T
         """
-        ...
+        pass
 
     def unwrap_error(self) -> Exception:
         """Get the error if the result is a failure.
@@ -382,7 +383,7 @@ class Result(Protocol[T]):
         :rtype: Exception
         :raises Exception: If the result is a success
         """
-        ...
+        pass
 
     def map(self, f: Callable[[T], T]) -> "Result[T]":
         """Apply a function to the success value.
@@ -392,7 +393,7 @@ class Result(Protocol[T]):
         :return: A new result with the function applied to the success value, or the original failure
         :rtype: Result[T]
         """
-        ...
+        pass
 
 
 class Success(Result[T]):
@@ -649,9 +650,9 @@ def to_timestamp(value: Union[datetime, date, Timestamp, TimestampMS], unit: str
     """
     if isinstance(value, datetime):
         return value.timestamp()
-    elif isinstance(value, date):
+    if isinstance(value, date):
         return datetime.combine(value, datetime.min.time()).timestamp()
-    elif isinstance(value, (int, float)):
+    if isinstance(value, (int, float)):
         if unit == 'ms':
             return value / 1000.0
         return value
@@ -689,12 +690,12 @@ def ensure_datetime(value: Union[datetime, Timestamp, TimestampMS, str]) -> date
     """
     if isinstance(value, datetime):
         return value
-    elif isinstance(value, (int, float)):
+    if isinstance(value, (int, float)):
         # Determine if it's a timestamp in seconds or milliseconds
         if value > 1e10:  # If it's larger than 10 billion, it's probably in milliseconds
             return from_timestamp(value, unit='ms')
         return from_timestamp(value)
-    elif isinstance(value, str):
+    if isinstance(value, str):
         # Try parsing as ISO format first
         try:
             return datetime.fromisoformat(value)
@@ -720,11 +721,11 @@ def ensure_timedelta(value: Union[timedelta, int, float, Dict[str, int], str]) -
     """
     if isinstance(value, timedelta):
         return value
-    elif isinstance(value, (int, float)):
+    if isinstance(value, (int, float)):
         return timedelta(seconds=value)
-    elif isinstance(value, dict):
+    if isinstance(value, dict):
         return timedelta(**value)
-    elif isinstance(value, str):
+    if isinstance(value, str):
         # Parse string like "1d 2h 3m 4s"
         pattern = r'(?:(\d+)([dhms]))'
         matches = re.findall(pattern, value)

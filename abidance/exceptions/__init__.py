@@ -7,6 +7,7 @@ All exceptions inherit from AbidanceError.
 
 # Import the base exception class
 from .base import AbidanceError
+
 # Import the ErrorContext and error handling utilities
 from .error_context import ErrorContext, error_boundary, retry
 from .fallback import fallback, CircuitBreaker

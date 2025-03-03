@@ -6,6 +6,7 @@ that can be used across different trading strategies.
 """
 from typing import Optional, Tuple, Dict, Any
 
+
 import pandas as pd
 import numpy as np
 

@@ -7,7 +7,9 @@ modules to depend on abstractions rather than concrete implementations.
 """
 
 from typing import Protocol, runtime_checkable, Dict, List, Any, Optional
+
 import pandas as pd
+
 
 from abidance.core.domain import SignalType
 from abidance.trading.order import Order
@@ -30,7 +32,7 @@ class Strategy(Protocol):
         This method is called once before the strategy starts running.
         It should set up any resources or state needed by the strategy.
         """
-        ...
+        pass
 
     def analyze(self, symbol: str, data: pd.DataFrame) -> Dict[str, Any]:
         """
@@ -43,7 +45,7 @@ class Strategy(Protocol):
         Returns:
             Dictionary with analysis results
         """
-        ...
+        pass
 
     def generate_signals(self, symbol: str, analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
@@ -56,7 +58,7 @@ class Strategy(Protocol):
         Returns:
             List of signal dictionaries
         """
-        ...
+        pass
 
     def create_order(self, signal: Dict[str, Any]) -> Optional[Order]:
         """
@@ -68,7 +70,7 @@ class Strategy(Protocol):
         Returns:
             Order object or None if no order should be created
         """
-        ...
+        pass
 
     def update(self, symbol: str, data: pd.DataFrame) -> List[Order]:
         """
@@ -84,15 +86,15 @@ class Strategy(Protocol):
         Returns:
             List of orders to execute
         """
-        ...
+        pass
 
     def start(self) -> None:
         """Start the strategy."""
-        ...
+        pass
 
     def stop(self) -> None:
         """Stop the strategy."""
-        ...
+        pass
 
     def get_state(self) -> Dict[str, Any]:
         """
@@ -101,7 +103,7 @@ class Strategy(Protocol):
         Returns:
             Dictionary with the current state
         """
-        ...
+        pass
 
     def set_state(self, state: Dict[str, Any]) -> None:
         """
@@ -110,7 +112,7 @@ class Strategy(Protocol):
         Args:
             state: Dictionary with the state to set
         """
-        ...
+        pass
 
 
 @runtime_checkable
@@ -127,4 +129,4 @@ class StrategyFactory(Protocol):
         Returns:
             Strategy instance
         """
-        ...
+        pass

@@ -5,10 +5,12 @@ This module defines the core domain entities used throughout the application,
 including order types, positions, signals, and market data structures.
 """
 
-from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from typing import Optional, Dict, Any, Union
+
+from dataclasses import dataclass
+
 
 # Import trading domain entities from trading module
 from abidance.trading.order import OrderSide, OrderType

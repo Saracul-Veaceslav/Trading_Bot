@@ -5,11 +5,12 @@ This module provides utilities for enriching exceptions with context information
 and implementing standardized error handling patterns.
 """
 
+from contextlib import contextmanager
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
 import functools
 import time
 import traceback
-from contextlib import contextmanager
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
+
 
 from .base import AbidanceError
 

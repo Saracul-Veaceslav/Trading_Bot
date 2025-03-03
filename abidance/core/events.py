@@ -5,9 +5,10 @@ This module provides event handling functionality for the Abidance trading bot,
 including event emission, event handling, and event filtering.
 """
 
-import time
-import logging
 from typing import Any, Dict, List, Callable, Optional, Union, TypeVar, Generic
+import logging
+import time
+
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +98,7 @@ class EventSystem:
             handler = filtered_handler
 
         self._handlers[event_type].append(handler)
-        logger.debug(f"Registered handler for event type: {event_type}")
+        logger.debug("Registered handler for event type: %s", event_type)
 
     def unregister_handler(self, event_type: str, handler: EventHandler) -> None:
         """
@@ -112,7 +113,7 @@ class EventSystem:
             # Note: This might not work for wrapped handlers with filters
             if handler in self._handlers[event_type]:
                 self._handlers[event_type].remove(handler)
-                logger.debug(f"Unregistered handler for event type: {event_type}")
+                logger.debug("Unregistered handler for event type: %s", event_type)
 
     def clear_handlers(self, event_type: str) -> None:
         """
@@ -123,7 +124,7 @@ class EventSystem:
         """
         if event_type in self._handlers:
             self._handlers[event_type] = []
-            logger.debug(f"Cleared all handlers for event type: {event_type}")
+            logger.debug("Cleared all handlers for event type: %s", event_type)
 
     def clear_all_handlers(self) -> None:
         """Clear all handlers for all event types."""
@@ -149,7 +150,7 @@ class EventSystem:
             propagate: Whether to propagate the event to parent event types
         """
         event = Event(event_type, event_data, timestamp, source)
-        logger.debug(f"Emitting event: {event}")
+        logger.debug("Emitting event: %s", event)
 
         # Call handlers for this event type
         self._call_handlers(event_type, event)
@@ -172,7 +173,7 @@ class EventSystem:
                 try:
                     handler(event)
                 except Exception as e:
-                    logger.error(f"Error in event handler for {event_type}: {e}")
+                    logger.error("Error in event handler for %s: %s", event_type, e)
 
     def get_handlers(self) -> Dict[str, List[EventHandler]]:
         """

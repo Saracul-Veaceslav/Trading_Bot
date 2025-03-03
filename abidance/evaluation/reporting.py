@@ -1,11 +1,13 @@
-from typing import Dict, Any, Optional, List, Tuple
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from pathlib import Path
-import json
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any, Optional, List, Tuple
+import json
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
 
 from abidance.evaluation.metrics import PerformanceMetrics, StrategyEvaluator
 
@@ -174,15 +176,15 @@ class PerformanceReport:
         """Convert non-serializable objects to serializable format."""
         if isinstance(obj, dict):
             return {k: self._make_serializable(v) for k, v in obj.items()}
-        elif isinstance(obj, list):
+        if isinstance(obj, list):
             return [self._make_serializable(item) for item in obj]
-        elif isinstance(obj, (pd.DataFrame, pd.Series)):
+        if isinstance(obj, (pd.DataFrame, pd.Series)):
             return obj.to_dict()
-        elif isinstance(obj, np.ndarray):
+        if isinstance(obj, np.ndarray):
             return obj.tolist()
-        elif isinstance(obj, (np.int64, np.float64)):
+        if isinstance(obj, (np.int64, np.float64)):
             return float(obj)
-        elif isinstance(obj, datetime):
+        if isinstance(obj, datetime):
             return obj.isoformat()
-        else:
-            return obj
+        
+        return obj

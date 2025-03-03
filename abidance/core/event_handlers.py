@@ -5,9 +5,11 @@ This module provides specialized event handlers and handler registration utiliti
 that work with the event system defined in the events module.
 """
 
-import logging
 from typing import Dict, List, Callable, Optional, Type, TypeVar, Generic, Any, Union
+import logging
+
 from dataclasses import dataclass, field
+
 
 from abidance.core.events import Event, EventSystem, EventHandler, EventFilter, EventData
 
@@ -56,7 +58,7 @@ class EventHandlerRegistry:
             self._registered_handlers[event_type] = []
         self._registered_handlers[event_type].append(handler)
 
-        logger.debug(f"Registered handler for event type: {event_type} in registry")
+        logger.debug("Registered handler for event type: %s in registry", event_type)
 
     def unregister(self, event_type: str, handler: EventHandler) -> None:
         """
@@ -73,7 +75,7 @@ class EventHandlerRegistry:
         if event_type in self._registered_handlers:
             if handler in self._registered_handlers[event_type]:
                 self._registered_handlers[event_type].remove(handler)
-                logger.debug(f"Unregistered handler for event type: {event_type} from registry")
+                logger.debug("Unregistered handler for event type: %s from registry", event_type)
 
     def unregister_all(self, event_type: Optional[str] = None) -> None:
         """
@@ -88,7 +90,7 @@ class EventHandlerRegistry:
                 for handler in self._registered_handlers[event_type]:
                     self._event_system.unregister_handler(event_type, handler)
                 self._registered_handlers[event_type] = []
-                logger.debug(f"Unregistered all handlers for event type: {event_type} from registry")
+                logger.debug("Unregistered all handlers for event type: %s from registry", event_type)
         else:
             # Unregister all handlers for all event types
             for event_type, handlers in self._registered_handlers.items():

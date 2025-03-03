@@ -11,6 +11,7 @@ class FeatureEngineering:
     Class for creating and transforming features for machine learning models.
     """
     def __init__(self):
+        """Initialize the feature engineering class."""
         pass
 
     def create_features(self, data):
@@ -84,6 +85,7 @@ class PredictionService:
 
 
 # Define what's available when doing "from abidance.ml import *"
+
 __all__ = [
     "FeatureEngineering",
     "ModelRegistry",

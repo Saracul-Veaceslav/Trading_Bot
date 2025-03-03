@@ -1,10 +1,12 @@
-from typing import Dict, Any, Optional, List, Union, Callable
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
-import ccxt
-import logging
 from pathlib import Path
+from typing import Dict, Any, Optional, List, Union, Callable
+import logging
+
+import ccxt
+import numpy as np
+import pandas as pd
+
 
 from abidance.testing.data_management import HistoricalDataManager
 
@@ -68,7 +70,7 @@ class ExchangeDataLoader:
             return df
 
         except Exception as e:
-            logger.error(f"Error fetching OHLCV data: {e}")
+            logger.error("Error fetching OHLCV data: %s", e)
             raise
 
     def load_or_fetch_ohlcv(self,

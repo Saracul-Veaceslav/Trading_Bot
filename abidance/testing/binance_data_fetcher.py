@@ -1,12 +1,14 @@
-from typing import Dict, Any, Optional, List, Union, Tuple
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
-import ccxt
+from pathlib import Path
+from typing import Dict, Any, Optional, List, Union, Tuple
+import concurrent.futures
 import logging
 import time
-import concurrent.futures
-from pathlib import Path
+
+import ccxt
+import numpy as np
+import pandas as pd
+
 
 from abidance.testing.data_management import HistoricalDataManager
 from abidance.testing.pylon_storage import PylonStorage
@@ -83,10 +85,10 @@ class BinanceDataFetcher:
         """
         # Validate inputs
         if symbol not in self.supported_symbols:
-            logger.warning(f"Symbol {symbol} is not in the list of supported symbols: {self.supported_symbols}")
+            logger.warning("Symbol %s is not in the list of supported symbols: %s", symbol, self.supported_symbols)
 
         if timeframe not in self.supported_timeframes:
-            logger.warning(f"Timeframe {timeframe} is not in the list of supported timeframes: {self.supported_timeframes}")
+            logger.warning("Timeframe %s is not in the list of supported timeframes: %s", timeframe, self.supported_timeframes)
 
         # Convert start_date to millisecond timestamp for CCXT
         since = None
@@ -128,7 +130,7 @@ class BinanceDataFetcher:
                     time.sleep(0.2)
 
                 except Exception as e:
-                    logger.error(f"Error fetching data with pagination: {e}")
+                    logger.error("Error fetching data with pagination: %s", e)
                     break
         else:
             # Fetch data in a single request
@@ -141,7 +143,7 @@ class BinanceDataFetcher:
 
         # Convert to DataFrame
         if not all_candles:
-            logger.warning(f"No data returned for {symbol} {timeframe}")
+            logger.warning("No data returned for %s %s", symbol, timeframe)
             return pd.DataFrame(columns=['open', 'high', 'low', 'close', 'volume'])
 
         df = pd.DataFrame(
@@ -201,7 +203,7 @@ class BinanceDataFetcher:
             except ccxt.RateLimitExceeded as e:
                 retry_count += 1
                 if retry_count >= self.max_retries:
-                    logger.error(f"Max retries exceeded for {symbol} {timeframe}: {e}")
+                    logger.error("Max retries exceeded for %s %s: %s", symbol, timeframe, e)
                     raise
 
                 # Calculate delay with exponential backoff if enabled
@@ -209,15 +211,15 @@ class BinanceDataFetcher:
                 if self.exponential_backoff:
                     delay = self.retry_delay * (2 ** (retry_count - 1))
 
-                logger.warning(f"Rate limit exceeded, retrying in {delay}s ({retry_count}/{self.max_retries})")
+                logger.warning("Rate limit exceeded, retrying in %ss (%s/%s)", delay, retry_count, self.max_retries)
                 time.sleep(delay)
 
             except (ccxt.NetworkError, ccxt.ExchangeError) as e:
-                logger.error(f"Error fetching data for {symbol} {timeframe}: {e}")
+                logger.error("Error fetching data for %s %s: %s", symbol, timeframe, e)
                 raise
 
             except Exception as e:
-                logger.error(f"Unexpected error: {e}")
+                logger.error("Unexpected error: %s", e)
                 raise
 
         # If we get here, all retries failed
@@ -244,7 +246,7 @@ class BinanceDataFetcher:
                 df = self.fetch_historical_data(symbol, timeframe, **kwargs)
                 results[symbol] = df
             except Exception as e:
-                logger.error(f"Error fetching data for {symbol}: {e}")
+                logger.error("Error fetching data for %s: %s", symbol, e)
                 results[symbol] = pd.DataFrame()  # Empty DataFrame for failed fetches
 
         return results
@@ -270,7 +272,7 @@ class BinanceDataFetcher:
                 df = self.fetch_historical_data(symbol, timeframe, **kwargs)
                 results[timeframe] = df
             except Exception as e:
-                logger.error(f"Error fetching data for {timeframe}: {e}")
+                logger.error("Error fetching data for %s: %s", timeframe, e)
                 results[timeframe] = pd.DataFrame()  # Empty DataFrame for failed fetches
 
         return results
@@ -293,7 +295,7 @@ class BinanceDataFetcher:
                     df = self.fetch_historical_data(symbol, timeframe, **kwargs)
                     results[symbol][timeframe] = df
                 except Exception as e:
-                    logger.error(f"Error fetching data for {symbol} {timeframe}: {e}")
+                    logger.error("Error fetching data for %s %s: %s", symbol, timeframe, e)
                     results[symbol][timeframe] = pd.DataFrame()  # Empty DataFrame for failed fetches
 
         return results
@@ -323,7 +325,7 @@ class BinanceDataFetcher:
                 df = self.fetch_historical_data(symbol, timeframe, **kwargs)
                 return symbol, df
             except Exception as e:
-                logger.error(f"Error fetching data for {symbol}: {e}")
+                logger.error("Error fetching data for %s: %s", symbol, e)
                 return symbol, pd.DataFrame()
 
         # Use ThreadPoolExecutor for parallel fetching
@@ -338,7 +340,7 @@ class BinanceDataFetcher:
                     symbol, df = future.result()
                     results[symbol] = df
                 except Exception as e:
-                    logger.error(f"Error processing result: {e}")
+                    logger.error("Error processing result: %s", e)
         finally:
             # Make sure to shut down the executor
             executor.shutdown(wait=False)
@@ -461,5 +463,5 @@ class BinanceDataFetcher:
                         )
                     results[symbol][timeframe] = df
                 except Exception as e:
-                    logger.error(f"Error updating data for {symbol} {timeframe}: {e}")
+                    logger.error("Error updating data for %s %s: %s", symbol, timeframe, e)
                     results[symbol][timeframe] = pd.DataFrame()

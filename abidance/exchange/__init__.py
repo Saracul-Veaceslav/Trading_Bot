@@ -7,6 +7,7 @@ interacting with various cryptocurrency exchanges.
 
 # Import key classes to make them available at the module level
 from .base import Exchange as ExchangeBase
+
 from .manager import ExchangeManager
 from .binance import BinanceExchange
 from .protocols import Exchange, ExchangeFactory

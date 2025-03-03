@@ -6,8 +6,9 @@ that can be used across different trading strategies.
 """
 
 # Standard library imports
-import sys
 from typing import Tuple, Dict, Any
+import sys
+
 
 # Third-party imports
 import pandas as pd

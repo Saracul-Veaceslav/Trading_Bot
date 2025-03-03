@@ -6,10 +6,12 @@ PerformanceMetrics class to provide domain-specific monitoring for different
 parts of the trading system.
 """
 
+from functools import wraps
 from typing import Dict, Any, Optional, List, Callable
 import time
-from functools import wraps
+
 from abidance.monitoring.performance import PerformanceMetrics
+
 
 
 class ExchangeMetrics(PerformanceMetrics):

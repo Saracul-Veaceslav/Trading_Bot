@@ -1,10 +1,12 @@
 """
 Position module for tracking open positions.
 """
-from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 from uuid import uuid4
+
+from dataclasses import dataclass
+
 
 from .trade import Trade
 

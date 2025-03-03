@@ -5,8 +5,9 @@ This module provides Protocol classes that define the interfaces that exchange
 implementations must satisfy. Using Protocol classes (structural typing) enables
 interface extraction without modifying existing implementations.
 """
-from typing import Any, Dict, List, Optional, Union, Protocol, runtime_checkable
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union, Protocol, runtime_checkable
+
 
 from ..trading.order import Order
 

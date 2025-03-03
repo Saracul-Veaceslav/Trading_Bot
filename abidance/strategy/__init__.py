@@ -7,6 +7,7 @@ trading strategies based on market data and signals.
 
 # Import key classes to make them available at the module level
 from .base import Strategy, StrategyConfig
+
 from .registry import StrategyRegistry
 from .protocols import Strategy as StrategyProtocol, StrategyFactory
 
@@ -14,7 +15,7 @@ from .protocols import Strategy as StrategyProtocol, StrategyFactory
 from .indicators import (
     # Indicator classes
     Indicator, RSI, MACD,
-    
+
     # Indicator functions
     calculate_sma,
     calculate_ema,

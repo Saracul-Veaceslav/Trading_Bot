@@ -5,12 +5,14 @@ This module provides tools for optimizing trading strategy parameters
 through backtesting and performance evaluation.
 """
 
-from typing import Dict, Any, List, Tuple, Callable, Iterator, Type
-import numpy as np
-from dataclasses import dataclass
-import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
+from typing import Dict, Any, List, Tuple, Callable, Iterator, Type
 import logging
+
+from dataclasses import dataclass
+import numpy as np
+import pandas as pd
+
 
 from abidance.strategy.base import Strategy
 
@@ -54,7 +56,7 @@ class StrategyOptimizer:
         Returns:
             OptimizationResult with performance metrics
         """
-        self.logger.debug(f"Evaluating parameters: {params}")
+        self.logger.debug("Evaluating parameters: %s", params)
         try:
             strategy = self.strategy_class(**params)
             trades = strategy.backtest(data)
@@ -66,7 +68,7 @@ class StrategyOptimizer:
                 trades=trades
             )
         except Exception as e:
-            self.logger.error(f"Error evaluating parameters {params}: {str(e)}")
+            self.logger.error("Error evaluating parameters %s: %s", params, str(e))
             # Return a result with very poor performance to indicate failure
             return OptimizationResult(
                 parameters=params,
@@ -89,14 +91,14 @@ class StrategyOptimizer:
             List of optimization results sorted by performance
         """
         # Generate parameter combinations
-        self.logger.info(f"Starting optimization with max {max_iterations} iterations")
+        self.logger.info("Starting optimization with max %s iterations", max_iterations)
         param_combinations = []
         for params in self._generate_parameter_combinations():
             param_combinations.append(params)
             if len(param_combinations) >= max_iterations:
                 break
 
-        self.logger.info(f"Generated {len(param_combinations)} parameter combinations")
+        self.logger.info("Generated %s parameter combinations", len(param_combinations))
 
         # Determine number of workers
         if n_jobs <= 0:
@@ -106,7 +108,7 @@ class StrategyOptimizer:
         # Evaluate parameters in parallel
         results = []
         with ThreadPoolExecutor(max_workers=n_jobs) as executor:
-            self.logger.info(f"Evaluating parameters using {n_jobs} workers")
+            self.logger.info("Evaluating parameters using %s workers", n_jobs)
             futures = [
                 executor.submit(self._evaluate_parameters, params, data)
                 for params in param_combinations
@@ -116,13 +118,13 @@ class StrategyOptimizer:
                 try:
                     results.append(future.result())
                 except Exception as e:
-                    self.logger.error(f"Error in parameter evaluation: {str(e)}")
+                    self.logger.error("Error in parameter evaluation: %s", str(e))
 
         # Sort by performance
         results.sort(key=lambda x: x.performance_metrics['metric'],
                     reverse=True)
 
-        self.logger.info(f"Optimization complete. Best metric: {results[0].performance_metrics['metric']}")
+        self.logger.info("Optimization complete. Best metric: %s", results[0].performance_metrics['metric'])
         return results
 
     def _generate_parameter_combinations(self) -> Iterator[Dict[str, Any]]:

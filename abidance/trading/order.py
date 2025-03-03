@@ -1,10 +1,12 @@
 """
 Order module for creating and managing trading orders.
 """
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
+
+from dataclasses import dataclass
+
 
 
 class OrderType(Enum):

@@ -5,10 +5,11 @@ This module provides tools for measuring and benchmarking the performance
 of trading strategies, including execution time, memory usage, and parallel
 execution capabilities.
 """
-import os
-import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Optional, Type
+import os
+import time
+
 
 import numpy as np
 import pandas as pd
