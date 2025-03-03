@@ -8,6 +8,7 @@ from typing import Dict, Set, Any, Optional, Callable, List
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import json
 from datetime import datetime
+from ..core.events import EventSystem, Event
 
 class WebSocketManager:
     """Manager for WebSocket connections."""
@@ -76,16 +77,23 @@ class WebSocketServer:
     This class provides real-time communication capabilities for the trading bot.
     """
     
-    def __init__(self, app: FastAPI):
+    def __init__(self, app: FastAPI, use_event_system: bool = False):
         """
         Initialize the WebSocket server.
         
         Args:
             app: FastAPI application instance
+            use_event_system: Whether to integrate with the event system
         """
         self.app = app
         self.manager = WebSocketManager()
         self.event_handlers: Dict[str, List[Callable]] = {}
+        self.use_event_system = use_event_system
+        
+        # Initialize event system integration if requested
+        if use_event_system:
+            self.event_system = EventSystem()
+            self._setup_event_handlers()
         
         # Register WebSocket endpoint
         @app.websocket("/ws/{client_id}")
@@ -97,6 +105,20 @@ class WebSocketServer:
                     await self._handle_message(data, client_id)
             except WebSocketDisconnect:
                 await self.manager.disconnect(websocket, client_id)
+    
+    def _setup_event_handlers(self) -> None:
+        """Set up handlers for events from the event system."""
+        async def event_handler(event: Event) -> None:
+            # Convert event to WebSocket message and broadcast
+            await self.broadcast(event.type, event.data)
+        
+        # Register handler for common event types
+        event_types = [
+            "trade", "order", "position", "balance", "error", 
+            "strategy", "market", "system", "test_event"
+        ]
+        for event_type in event_types:
+            self.event_system.register_handler(event_type, event_handler)
     
     async def _handle_message(self, data: Dict[str, Any], client_id: str) -> None:
         """

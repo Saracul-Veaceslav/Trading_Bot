@@ -613,3 +613,118 @@ Testing API components requires special considerations:
 4. **Module Naming**: Ensuring unique module names to avoid test collection conflicts
    - Rename test files with similar names to avoid pytest collection issues
    - Use descriptive module names in docstrings to clarify test purposes
+
+## WebSocket-Event System Integration
+
+The Abidance Trading Bot implements a real-time communication system using WebSockets integrated with the core event system. This integration allows for efficient propagation of trading events, market data, and system notifications to connected clients.
+
+### WebSocketManager
+
+The `WebSocketManager` class in `abidance.api.websocket` manages WebSocket connections:
+
+- **connect**: Adds a new WebSocket connection to the manager
+- **disconnect**: Removes a WebSocket connection from the manager
+- **broadcast**: Sends a message to all connected clients
+  - Handles client disconnections gracefully during broadcasts
+  - Returns a list of successfully delivered messages
+
+Key implementation details:
+```python
+async def broadcast(self, message: str) -> List[bool]:
+    """
+    Broadcast a message to all connected clients.
+    
+    Args:
+        message: The message to broadcast
+        
+    Returns:
+        List of booleans indicating success/failure for each client
+    """
+    results = []
+    disconnected_clients = []
+    
+    for client in self.active_connections:
+        try:
+            await client.send_text(message)
+            results.append(True)
+        except Exception as e:
+            self.logger.error(f"Error broadcasting to client: {e}")
+            results.append(False)
+            disconnected_clients.append(client)
+    
+    # Clean up disconnected clients
+    for client in disconnected_clients:
+        await self.disconnect(client)
+    
+    return results
+```
+
+### WebSocketServer
+
+The `WebSocketServer` class in `abidance.api.websocket` handles WebSocket connections and integrates with the event system:
+
+- **handle_message**: Processes incoming messages from clients
+- **broadcast**: Broadcasts a message to all connected clients
+- **event_handler**: Handles events from the core event system and broadcasts them to clients
+
+Key implementation details for event integration:
+```python
+def register_event_handlers(self, event_system: EventSystem) -> None:
+    """
+    Register event handlers with the event system.
+    
+    Args:
+        event_system: The event system to register with
+    """
+    self.event_system = event_system
+    
+    # Register handlers for different event types
+    self.event_system.register_handler(EventType.TRADE, self.event_handler)
+    self.event_system.register_handler(EventType.SIGNAL, self.event_handler)
+    self.event_system.register_handler(EventType.ORDER, self.event_handler)
+    self.event_system.register_handler(EventType.MARKET_DATA, self.event_handler)
+    self.event_system.register_handler(EventType.SYSTEM, self.event_handler)
+
+async def event_handler(self, event: Event) -> None:
+    """
+    Handle events from the event system and broadcast them to clients.
+    
+    Args:
+        event: The event to handle
+    """
+    # Convert event to JSON
+    event_data = {
+        "type": event.type.name,
+        "timestamp": event.timestamp,
+        "data": event.data
+    }
+    
+    # Broadcast to all clients
+    await self.broadcast(json.dumps(event_data))
+```
+
+## Test File Naming Considerations
+
+When organizing test files in a large project, it's important to avoid naming conflicts that can cause import errors during test collection. Here are some key considerations:
+
+1. **Unique Test File Names**: Ensure test files have unique names across the entire project, even if they're in different directories. Python's import system can get confused if there are multiple modules with the same name.
+
+2. **Module-Specific Prefixes**: Consider using module-specific prefixes for test files to avoid conflicts, e.g., `test_ml_validation.py` instead of just `test_validation.py`.
+
+3. **Import Conflicts**: Be aware that pytest's collection process can encounter import conflicts when two test files have the same name, even if they're in different directories. This happens because pytest imports all test modules during collection.
+
+4. **Clearing Cache**: If you encounter import conflicts, clearing Python's cache files (`__pycache__` directories) can sometimes resolve the issue:
+   ```bash
+   find . -name "__pycache__" -type d -exec rm -rf {} +
+   ```
+
+5. **Test Organization**: Organize tests to mirror the structure of the source code they're testing, but ensure file names are unique across the entire test suite.
+
+Example of a naming conflict resolution:
+- Instead of having both:
+  - `tests/unit/core/test_validation.py`
+  - `tests/unit/ml/pipeline/test_validation.py`
+- Rename the second file to be more specific:
+  - `tests/unit/ml/pipeline/test_ml_validation.py`
+
+This approach ensures that pytest can correctly collect and run all tests without import conflicts.

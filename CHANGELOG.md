@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - WebSocketManager for handling client connections
   - Support for broadcasting events to connected clients
   - Event handler registration system
+  - Integration with the core event system for real-time updates
+  - Comprehensive test suite with proper async testing
+  - Async event handlers for efficient event propagation
+  - Error handling for client disconnections during broadcasts
 - API server implementation for serving the RESTful API
   - Configurable host and port settings
   - Integration with FastAPI application
@@ -140,6 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed transaction handling in BaseRepository to properly rollback on exceptions
 - Fixed date range filtering in repositories to handle timezone-aware datetime objects
 - Fixed JSON parameter filtering in StrategyRepository to correctly identify strategies with specific parameters
+- Fixed file naming conflicts in test files to prevent import errors during test collection
 
 ### Removed
 
