@@ -9,8 +9,8 @@ import functools
 import logging
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
 
-from . import AbidanceError
-from .error_context import ErrorContext
+from .base import AbidanceError
+from .circuit_errors import CircuitOpenError
 
 # Type variables for function signatures
 T = TypeVar('T')
@@ -227,7 +227,6 @@ class CircuitBreaker:
         elif self.fallback_value is not None:
             return self.fallback_value
         else:
-            from . import CircuitOpenError
             raise CircuitOpenError("Circuit is open and no fallback was provided")
 
     def _reset(self) -> None:

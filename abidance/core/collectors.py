@@ -217,7 +217,7 @@ class TradingMetricsCollector(MetricsCollector):
 
     def get_trading_summary(self, symbol: Optional[str] = None, since: Optional[datetime] = None, until: Optional[datetime] = None) -> Dict[str, float]:
         """
-        Get a summary of trading activity.
+        Get a summary of trading metrics.
 
         Args:
             symbol: Optional symbol to filter by
@@ -225,7 +225,7 @@ class TradingMetricsCollector(MetricsCollector):
             until: Optional end time for filtering
 
         Returns:
-            Dictionary with trading summary metrics
+            Dictionary with trading metrics summary
         """
         summary = {
             "order_count_buy": 0,
@@ -250,162 +250,129 @@ class TradingMetricsCollector(MetricsCollector):
         }
 
         if symbol:
-            # For a specific symbol
-            symbol_part = f".{symbol}"
-
-            # Process order metrics
-            buy_order_count = self.get_metric(f"order_count{symbol_part}.buy", since, until)
-            if buy_order_count:
-                summary["order_count_buy"] = sum(buy_order_count.values())
-
-            sell_order_count = self.get_metric(f"order_count{symbol_part}.sell", since, until)
-            if sell_order_count:
-                summary["order_count_sell"] = sum(sell_order_count.values())
-
-            summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
-
-            buy_volume = self.get_metric(f"order_volume{symbol_part}.buy", since, until)
-            if buy_volume:
-                summary["order_volume_buy"] = sum(buy_volume.values())
-
-            sell_volume = self.get_metric(f"order_volume{symbol_part}.sell", since, until)
-            if sell_volume:
-                summary["order_volume_sell"] = sum(sell_volume.values())
-
-            summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
-
-            buy_value = self.get_metric(f"order_value{symbol_part}.buy", since, until)
-            if buy_value:
-                summary["order_value_buy"] = sum(buy_value.values())
-
-            sell_value = self.get_metric(f"order_value{symbol_part}.sell", since, until)
-            if sell_value:
-                summary["order_value_sell"] = sum(sell_value.values())
-
-            summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
-
-            # Process trade metrics
-            buy_trades = self.get_metric(f"trade_count{symbol_part}.buy", since, until)
-            if buy_trades:
-                summary["trade_count_buy"] = sum(buy_trades.values())
-
-            sell_trades = self.get_metric(f"trade_count{symbol_part}.sell", since, until)
-            if sell_trades:
-                summary["trade_count_sell"] = sum(sell_trades.values())
-
-            summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
-
-            buy_trade_volume = self.get_metric(f"trade_volume{symbol_part}.buy", since, until)
-            if buy_trade_volume:
-                summary["trade_volume_buy"] = sum(buy_trade_volume.values())
-
-            sell_trade_volume = self.get_metric(f"trade_volume{symbol_part}.sell", since, until)
-            if sell_trade_volume:
-                summary["trade_volume_sell"] = sum(sell_trade_volume.values())
-
-            summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
-
-            buy_trade_value = self.get_metric(f"trade_value{symbol_part}.buy", since, until)
-            if buy_trade_value:
-                summary["trade_value_buy"] = sum(buy_trade_value.values())
-
-            sell_trade_value = self.get_metric(f"trade_value{symbol_part}.sell", since, until)
-            if sell_trade_value:
-                summary["trade_value_sell"] = sum(sell_trade_value.values())
-
-            summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
-
-            # Calculate total fee
-            fee = self.get_metric(f"trade_fee{symbol_part}", since, until)
-            if fee:
-                summary["fee"] = sum(fee.values())
+            self._process_symbol_metrics(summary, symbol, since, until)
         else:
-            # For all symbols, aggregate metrics across all symbols
-            # Find all metrics that match our patterns
-            for metric_name in list(self._metrics.keys()):
-                # Process order metrics
-                if metric_name.startswith("order_count."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["order_count_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["order_count_sell"] += sum(values.values())
-
-                elif metric_name.startswith("order_volume."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["order_volume_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["order_volume_sell"] += sum(values.values())
-
-                elif metric_name.startswith("order_value."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["order_value_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["order_value_sell"] += sum(values.values())
-
-                # Process trade metrics
-                elif metric_name.startswith("trade_count."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["trade_count_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["trade_count_sell"] += sum(values.values())
-
-                elif metric_name.startswith("trade_volume."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["trade_volume_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["trade_volume_sell"] += sum(values.values())
-
-                elif metric_name.startswith("trade_value."):
-                    parts = metric_name.split(".")
-                    if len(parts) >= 3 and parts[-1] in ["buy", "sell"]:
-                        side = parts[-1]
-                        values = self.get_metric(metric_name, since, until)
-                        if values:
-                            if side == "buy":
-                                summary["trade_value_buy"] += sum(values.values())
-                            elif side == "sell":
-                                summary["trade_value_sell"] += sum(values.values())
-
-                # Process fee metrics
-                elif metric_name.startswith("trade_fee."):
-                    values = self.get_metric(metric_name, since, until)
-                    if values:
-                        summary["fee"] += sum(values.values())
-
-            # Calculate totals
-            summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
-            summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
-            summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
-            summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
-            summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
-            summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
+            self._process_all_symbols_metrics(summary, since, until)
 
         return summary
+
+    def _process_symbol_metrics(self, summary: Dict[str, float], symbol: str, since: Optional[datetime], until: Optional[datetime]) -> None:
+        """
+        Process metrics for a specific symbol.
+        
+        Args:
+            summary: Dictionary to update with metrics
+            symbol: Symbol to process metrics for
+            since: Optional start time for filtering
+            until: Optional end time for filtering
+        """
+        symbol_part = f".{symbol}"
+        
+        # Process order metrics
+        self._update_metric_sum(summary, "order_count_buy", f"order_count{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "order_count_sell", f"order_count{symbol_part}.sell", since, until)
+        summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
+        
+        self._update_metric_sum(summary, "order_volume_buy", f"order_volume{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "order_volume_sell", f"order_volume{symbol_part}.sell", since, until)
+        summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
+        
+        self._update_metric_sum(summary, "order_value_buy", f"order_value{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "order_value_sell", f"order_value{symbol_part}.sell", since, until)
+        summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
+        
+        # Process trade metrics
+        self._update_metric_sum(summary, "trade_count_buy", f"trade_count{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "trade_count_sell", f"trade_count{symbol_part}.sell", since, until)
+        summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
+        
+        self._update_metric_sum(summary, "trade_volume_buy", f"trade_volume{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "trade_volume_sell", f"trade_volume{symbol_part}.sell", since, until)
+        summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
+        
+        self._update_metric_sum(summary, "trade_value_buy", f"trade_value{symbol_part}.buy", since, until)
+        self._update_metric_sum(summary, "trade_value_sell", f"trade_value{symbol_part}.sell", since, until)
+        summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
+        
+        # Calculate total fee
+        self._update_metric_sum(summary, "fee", f"trade_fee{symbol_part}", since, until)
+    
+    def _update_metric_sum(self, summary: Dict[str, float], summary_key: str, metric_name: str, 
+                          since: Optional[datetime], until: Optional[datetime]) -> None:
+        """
+        Update a summary value with the sum of a metric's values.
+        
+        Args:
+            summary: Dictionary to update
+            summary_key: Key in the summary dictionary to update
+            metric_name: Name of the metric to sum
+            since: Optional start time for filtering
+            until: Optional end time for filtering
+        """
+        values = self.get_metric(metric_name, since, until)
+        if values:
+            summary[summary_key] = sum(values.values())
+    
+    def _process_all_symbols_metrics(self, summary: Dict[str, float], since: Optional[datetime], until: Optional[datetime]) -> None:
+        """
+        Process metrics for all symbols.
+        
+        Args:
+            summary: Dictionary to update with metrics
+            since: Optional start time for filtering
+            until: Optional end time for filtering
+        """
+        # Find all metrics that match our patterns
+        for metric_name in list(self._metrics.keys()):
+            parts = metric_name.split(".")
+            
+            # Process order metrics
+            if metric_name.startswith("order_count.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "order_count", since, until)
+            elif metric_name.startswith("order_volume.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "order_volume", since, until)
+            elif metric_name.startswith("order_value.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "order_value", since, until)
+            
+            # Process trade metrics
+            elif metric_name.startswith("trade_count.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "trade_count", since, until)
+            elif metric_name.startswith("trade_volume.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "trade_volume", since, until)
+            elif metric_name.startswith("trade_value.") and len(parts) >= 3:
+                self._process_metric_by_side(summary, metric_name, parts, "trade_value", since, until)
+            elif metric_name.startswith("trade_fee."):
+                values = self.get_metric(metric_name, since, until)
+                if values:
+                    summary["fee"] += sum(values.values())
+        
+        # Calculate totals
+        summary["order_count"] = summary["order_count_buy"] + summary["order_count_sell"]
+        summary["order_volume"] = summary["order_volume_buy"] + summary["order_volume_sell"]
+        summary["order_value"] = summary["order_value_buy"] + summary["order_value_sell"]
+        summary["trade_count"] = summary["trade_count_buy"] + summary["trade_count_sell"]
+        summary["trade_volume"] = summary["trade_volume_buy"] + summary["trade_volume_sell"]
+        summary["trade_value"] = summary["trade_value_buy"] + summary["trade_value_sell"]
+    
+    def _process_metric_by_side(self, summary: Dict[str, float], metric_name: str, parts: List[str], 
+                               metric_type: str, since: Optional[datetime], until: Optional[datetime]) -> None:
+        """
+        Process a metric by its side (buy/sell).
+        
+        Args:
+            summary: Dictionary to update
+            metric_name: Name of the metric
+            parts: Split parts of the metric name
+            metric_type: Type of metric (order_count, trade_volume, etc.)
+            since: Optional start time for filtering
+            until: Optional end time for filtering
+        """
+        if parts[-1] in ["buy", "sell"]:
+            side = parts[-1]
+            values = self.get_metric(metric_name, since, until)
+            if values:
+                summary_key = f"{metric_type}_{side}"
+                summary[summary_key] += sum(values.values())
 
 
 class SystemMetricsCollector(MetricsCollector):

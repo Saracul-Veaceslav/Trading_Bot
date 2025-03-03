@@ -5,9 +5,12 @@ Defines a hierarchical exception system for the application.
 All exceptions inherit from AbidanceError.
 """
 
-# Base exceptions
-class AbidanceError(Exception):
-    """Base exception for all Abidance-related errors."""
+# Import the base exception class
+from .base import AbidanceError
+# Import the ErrorContext and error handling utilities
+from .error_context import ErrorContext, error_boundary, retry
+from .fallback import fallback, CircuitBreaker
+from .circuit_errors import CircuitOpenError
 
 # Domain exceptions
 class ConfigError(AbidanceError): """Configuration errors."""
@@ -57,13 +60,6 @@ class ModelSaveError(MLError): """Model saving errors."""
 
 class ConnectionError(ExchangeError): """Connection errors."""
 class TimeoutError(ExchangeError): """Timeout errors."""
-
-# Circuit breaker specific exceptions
-class CircuitOpenError(AbidanceError): """Circuit breaker is open."""
-
-# Import the ErrorContext and error handling utilities
-from .error_context import ErrorContext, error_boundary, retry
-from .fallback import fallback, CircuitBreaker
 
 # Export all error types and utilities
 __all__ = [

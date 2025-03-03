@@ -11,7 +11,7 @@ import traceback
 from contextlib import contextmanager
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union, cast
 
-from .import AbidanceError
+from .base import AbidanceError
 
 # Type variables for function signatures
 T = TypeVar('T')

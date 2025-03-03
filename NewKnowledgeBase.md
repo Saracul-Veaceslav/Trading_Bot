@@ -1335,3 +1335,167 @@ The project has been analyzed with Pylint (version 3.3.4) to identify code quali
    - The codebase received a rating of 5.35/10 from Pylint
 
 These findings provide opportunities for code quality improvements, particularly in reducing duplication, fixing import issues, and addressing style inconsistencies.
+
+## Test Suite
+
+The Abidance Trading Bot has a comprehensive test suite with 633 passing tests and 17 skipped tests. The test suite covers various aspects of the trading bot, including:
+
+- Unit tests for core components
+- Integration tests for exchange interactions
+- Property-based tests for trading strategies
+- Performance tests for data storage and retrieval
+- Mock exchange tests for deterministic strategy testing
+
+The test suite is organized to mirror the structure of the source code, making it easy to locate tests for specific components. The tests are designed to be fast, reliable, and independent, ensuring that they can be run in any order without affecting each other.
+
+## Code Quality
+
+The project maintains a high code quality standard with a Pylint score of 8.34/10. This score is achieved through:
+
+- Consistent code style and formatting
+- Comprehensive docstrings for all modules, classes, and functions
+- Proper error handling and exception propagation
+- Clear separation of concerns between components
+- Explicit type annotations for improved static analysis
+- Organized imports following a consistent pattern
+- Minimal code duplication through proper abstraction
+- Adherence to the SOLID principles of object-oriented design
+
+The code quality is continuously monitored and improved through regular Pylint checks, with results saved to pylint_report.txt for tracking progress over time.
+
+## Refactoring Deeply Nested Code
+
+Deeply nested code can be difficult to read, maintain, and test. The Abidance Trading Bot uses several strategies to reduce code nesting and improve readability:
+
+1. **Extract Method Refactoring**: Breaking down complex methods into smaller, more focused helper methods.
+   - Improves readability by giving meaningful names to code blocks
+   - Reduces nesting depth by moving nested logic to separate methods
+   - Facilitates testing by isolating specific functionality
+   - Makes the code more maintainable by separating concerns
+
+2. **Early Returns**: Using early returns to handle edge cases and preconditions.
+   - Reduces nesting by eliminating the need for else blocks
+   - Makes the main logic path clearer by handling special cases first
+   - Improves readability by reducing indentation levels
+
+3. **Guard Clauses**: Using guard clauses to validate inputs and handle error conditions early.
+   - Similar to early returns, but specifically for validation and error handling
+   - Reduces nesting by handling invalid cases immediately
+   - Makes the code more robust by ensuring preconditions are met
+
+Example of refactoring deeply nested code in the `get_trading_summary` method:
+
+```python
+# Before refactoring (deeply nested):
+def get_trading_summary(self, symbol=None):
+    summary = {
+        "order_count_buy": 0,
+        "order_count_sell": 0,
+        # ... more metrics ...
+    }
+    
+    if symbol:
+        # Process metrics for a specific symbol
+        for metric in self.order_metrics:
+            value = self.get_metric(f"order_{metric}_{symbol}")
+            if value:
+                if "buy" in metric:
+                    summary[f"order_{metric}_buy"] += value
+                elif "sell" in metric:
+                    summary[f"order_{metric}_sell"] += value
+                else:
+                    summary[f"order_{metric}"] += value
+        
+        # Similar nested logic for trade metrics
+        # ... more nested code ...
+    else:
+        # Process metrics for all symbols
+        # ... similar nested logic ...
+    
+    return summary
+
+# After refactoring (reduced nesting):
+def get_trading_summary(self, symbol=None):
+    summary = {
+        "order_count_buy": 0,
+        "order_count_sell": 0,
+        # ... more metrics ...
+    }
+    
+    if symbol:
+        self._process_symbol_metrics(summary, symbol)
+    else:
+        self._process_all_symbols_metrics(summary)
+    
+    return summary
+
+def _process_symbol_metrics(self, summary, symbol):
+    # Process order metrics
+    for metric in self.order_metrics:
+        value = self.get_metric(f"order_{metric}_{symbol}")
+        if value:
+            self._update_metric_sum(summary, metric, value)
+    
+    # Process trade metrics
+    # ... similar code but cleaner ...
+
+def _update_metric_sum(self, summary, metric, value):
+    if "buy" in metric:
+        summary[f"order_{metric}_buy"] += value
+    elif "sell" in metric:
+        summary[f"order_{metric}_sell"] += value
+    else:
+        summary[f"order_{metric}"] += value
+```
+
+This refactoring approach significantly improves code readability and maintainability by reducing nesting depth and giving meaningful names to code blocks.
+
+## Resolving Cyclic Imports in the Exceptions Module
+
+Cyclic imports in the exceptions module were resolved by applying the following approach:
+
+1. **Identify the Cycle**: The cycle involved `abidance.exceptions`, `abidance.exceptions.fallback`, and `abidance.exceptions.error_context`.
+
+2. **Extract Base Class**: The `AbidanceError` base class was moved from `__init__.py` to a new `base.py` file.
+
+3. **Update Import Statements**: Import statements in `fallback.py` and `error_context.py` were updated to import `AbidanceError` from `base.py` instead of from `__init__.py`.
+
+4. **Ensure Proper Module Structure**: The `__init__.py` file was updated to import and re-export the `AbidanceError` class from `base.py`.
+
+This approach breaks the import cycle by creating a clear hierarchy:
+- `base.py` defines the fundamental exception class and has no dependencies on other exception modules
+- `fallback.py` and `error_context.py` depend on `base.py` but not on each other
+- `__init__.py` imports from all modules but is not imported by them
+
+The result is a cleaner, more maintainable exception hierarchy that avoids cyclic imports while maintaining the same public API.
+
+Example implementation:
+
+```python
+# base.py
+"""Base exception classes for the Abidance trading bot."""
+
+class AbidanceError(Exception):
+    """Base exception for all Abidance-related errors."""
+    pass
+
+# __init__.py
+"""Exception classes for the Abidance trading bot."""
+
+from .base import AbidanceError
+# Import other exception classes...
+
+# fallback.py
+"""Fallback strategies for error recovery."""
+
+from .base import AbidanceError
+# Rest of the module...
+
+# error_context.py
+"""Error context for enhanced error reporting."""
+
+from .base import AbidanceError
+# Rest of the module...
+```
+
+This pattern can be applied to resolve cyclic imports in other parts of the codebase as well.

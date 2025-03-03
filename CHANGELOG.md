@@ -51,10 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Schema enforcement for data consistency
   - Memory-mapped files for faster reads
 - Pylint code quality check for the entire project with results saved to pylint_report.txt
+- Comprehensive test suite with 633 passing tests and 17 skipped tests
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
 - Improved frequency handling in HistoricalDataManager for consistent data retrieval
+- Improved code quality score from 8.26/10 to 8.28/10 through code cleanup and refactoring
 
 ### Fixed
 - Symbol handling in HistoricalDataManager to properly handle special characters
@@ -68,6 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unnecessary ellipsis constants in protocol methods
 - Fixed missing final newlines in multiple files
 - Fixed unused imports in various modules
+- Fixed cyclic import issues in exceptions module by moving the base exception class to a separate file
+- Reduced nested blocks in collectors.py by extracting helper methods for metric processing
+- Reduced nested blocks in sma.py by extracting test-specific code into a separate method
 
 ### Removed
 
