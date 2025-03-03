@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Feature Engineering Framework for machine learning models
+  - Abstract FeatureGenerator base class for consistent feature generation
+  - TechnicalFeatureGenerator for creating technical indicators from OHLCV data
+  - Support for multiple window sizes for rolling calculations
+  - Comprehensive test suite for feature generators
 - Mock Exchange Framework for deterministic testing of trading strategies
   - MockExchange class implementing the Exchange protocol
   - Mock data generation utilities for creating synthetic OHLCV data

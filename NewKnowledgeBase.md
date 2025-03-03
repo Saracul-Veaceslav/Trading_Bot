@@ -20,6 +20,10 @@ The Abidance Trading Bot is organized into the following core components:
   - **evaluation**: Strategy performance evaluation and reporting
     - **metrics.py**: PerformanceMetrics dataclass and StrategyEvaluator for calculating performance metrics
     - **reporting.py**: PerformanceReport class for generating and saving performance reports with visualizations
+  - **ml**: Machine learning components for prediction and analysis
+    - **features**: Feature engineering framework for generating features from raw data
+      - **base.py**: Abstract FeatureGenerator base class defining the common interface
+      - **technical.py**: TechnicalFeatureGenerator for creating technical indicators from OHLCV data
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
   - **typing**: Alternative type definitions (to be consolidated with type_defs)
@@ -1693,3 +1697,67 @@ The migration system includes comprehensive tests that ensure:
 3. Migrations are idempotent (can be applied multiple times without issues).
 
 These tests use temporary SQLite databases to isolate the testing environment.
+
+## Feature Engineering Framework
+
+The Abidance Trading Bot includes a robust feature engineering framework for generating features from raw data for machine learning models. This framework is designed to be extensible, allowing for the creation of custom feature generators while maintaining a consistent interface.
+
+### FeatureGenerator Base Class
+
+The `FeatureGenerator` abstract base class defines the common interface for all feature generators:
+
+- **generate**: Abstract method that takes a DataFrame of raw data and returns a DataFrame of generated features
+- **feature_names**: Abstract property that returns a list of feature names that the generator produces
+
+This design ensures that all feature generators follow a consistent pattern and can be used interchangeably in machine learning pipelines.
+
+### TechnicalFeatureGenerator
+
+The `TechnicalFeatureGenerator` class extends the `FeatureGenerator` base class to provide technical indicators commonly used in financial analysis:
+
+- **Moving Averages**: Simple Moving Average (SMA) and Exponential Moving Average (EMA)
+- **Volatility Measures**: Standard Deviation (STD)
+- **Momentum Indicators**: Rate of Change (ROC)
+- **Volume Indicators**: Volume Simple Moving Average
+- **Price Patterns**: Upper Shadow, Lower Shadow, and Body Size
+
+The generator supports multiple window sizes for rolling calculations, allowing for the creation of features with different time horizons. This is particularly useful for capturing both short-term and long-term patterns in the data.
+
+Example usage:
+```python
+import pandas as pd
+from abidance.ml.features import TechnicalFeatureGenerator
+
+# Create a feature generator with custom window sizes
+generator = TechnicalFeatureGenerator(windows=[5, 10, 20])
+
+# Generate features from OHLCV data
+features = generator.generate(ohlcv_data)
+
+# Get the list of feature names
+feature_names = generator.feature_names
+```
+
+### Key Design Principles
+
+The feature engineering framework follows several key design principles:
+
+1. **Abstraction**: The `FeatureGenerator` abstract base class provides a clear interface that all feature generators must implement.
+2. **Extensibility**: New feature generators can be easily created by extending the `FeatureGenerator` base class.
+3. **Consistency**: All feature generators follow the same pattern, making them interchangeable in machine learning pipelines.
+4. **Configurability**: Feature generators can be configured with different parameters (e.g., window sizes) to customize the generated features.
+5. **Robustness**: Feature generators handle missing data gracefully, ensuring that the generated features are always valid.
+
+### Testing Approach
+
+The feature engineering framework includes a comprehensive test suite that verifies:
+
+- The abstract nature of the `FeatureGenerator` base class
+- Proper initialization of feature generators with default and custom parameters
+- Consistency between the generated features and the reported feature names
+- Correct calculation of technical indicators
+- Proper handling of missing data
+- Expected value ranges for generated features
+- Support for different window sizes
+
+This testing approach ensures that the feature engineering framework is robust and reliable, providing a solid foundation for machine learning models.
