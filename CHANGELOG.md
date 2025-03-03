@@ -60,6 +60,7 @@ All notable changes to this project will be documented in this file.
 - Health status reporting with healthy, degraded, and unhealthy states
 - Common health checks for memory, CPU, disk space, API endpoints, and database connectivity
 - Async health check execution with error handling
+- Object-oriented implementation of momentum indicators (RSI, MACD) with comprehensive test suite
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
