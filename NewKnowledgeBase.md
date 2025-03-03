@@ -41,6 +41,8 @@ The Abidance Trading Bot is organized into the following core components:
     - **mock_data.py**: Utilities for generating synthetic market data
     - **pylon_storage.py**: Storage utilities for testing
     - **binance_data_fetcher.py**: Binance data fetching utilities for testing
+    - **properties.py**: Property-based testing utilities for strategies
+    - **generators.py**: Data generators for property-based testing
 
 ## Module Structure
 
@@ -936,6 +938,112 @@ df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h", save=True)
 
 This Historical Data Management system provides a solid foundation for backtesting and strategy development by ensuring consistent access to historical market data. The combination of efficient storage with Parquet, flexible loading options, and robust data validation makes it a powerful tool for algorithmic trading development.
 
+## Property-Based Testing Framework
+
+The Abidance Trading Bot implements a comprehensive Property-Based Testing Framework that enables thorough testing of trading strategies under various market conditions. This framework consists of two main components:
+
+1. **Data Generators (testing/generators.py)**: A collection of generators for creating test data:
+   - **generate_ohlcv_data**: Generates realistic OHLCV data with proper price relationships
+   - **generate_strategy_parameters**: Generates valid parameters for different strategy types
+   - **generate_market_data**: Generates market data for multiple symbols
+   - **generate_order_book_data**: Generates order book data with bids and asks
+   - **generate_trade_data**: Generates trade data with timestamps, prices, and sides
+
+2. **Property Validators (testing/properties.py)**: Utilities for testing strategy properties:
+   - **validate_ohlcv_data**: Validates that OHLCV data satisfies basic properties
+   - **test_strategy_signal_invariants**: Tests that strategy signals satisfy basic invariants
+   - **test_strategy_consistency**: Tests that strategy signals are consistent when run multiple times
+   - **test_strategy_edge_cases**: Tests strategy behavior with edge cases like NaN values
+   - **create_trending_market**: Creates a trending market from base data
+   - **create_sideways_market**: Creates a sideways market from base data
+
+### Key Features
+
+- **Hypothesis Integration**: Built on the Hypothesis property-based testing library
+- **Realistic Data Generation**: Generates realistic market data with proper price relationships
+- **Strategy Invariant Testing**: Tests properties that should hold for all strategies
+- **Market Scenario Testing**: Tests strategy behavior in different market conditions
+- **Edge Case Handling**: Tests strategy robustness with problematic data
+- **Customizable Parameters**: Allows fine-tuning of data generation parameters
+
+### Usage Examples
+
+#### Basic Property Testing
+
+```python
+from hypothesis import given, settings, HealthCheck
+from abidance.testing.generators import generate_ohlcv_data
+from abidance.strategy import SMAStrategy, SMAConfig
+
+@given(data=generate_ohlcv_data())
+@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
+def test_sma_strategy_signals(data):
+    # Create strategy
+    config = SMAConfig(
+        name="SMA Test",
+        symbols=["BTC/USDT"],
+        fast_period=10,
+        slow_period=30
+    )
+    strategy = SMAStrategy(config)
+    
+    # Calculate signal
+    signal = strategy.calculate_signal(data)
+    
+    # Check that the signal is valid
+    assert signal in [1, 0, -1]  # 1=BUY, 0=HOLD, -1=SELL
+```
+
+#### Testing with Market Scenarios
+
+```python
+from hypothesis import given, settings, HealthCheck
+from abidance.testing.generators import generate_ohlcv_data
+from abidance.testing.properties import create_trending_market
+from abidance.strategy import SMAStrategy, SMAConfig
+
+@given(data=generate_ohlcv_data())
+@settings(max_examples=5, suppress_health_check=[HealthCheck.data_too_large])
+def test_strategy_in_trending_market(data):
+    # Create strategy
+    config = SMAConfig(
+        name="SMA Test",
+        symbols=["BTC/USDT"],
+        fast_period=10,
+        slow_period=30
+    )
+    strategy = SMAStrategy(config)
+    
+    # Create a trending market
+    trending_data = create_trending_market(data, trend_factor=0.01)
+    
+    # Calculate signal
+    signal = strategy.calculate_signal(trending_data)
+    
+    # In a strong uptrend, we might expect a buy signal
+    # (but this isn't guaranteed, so we don't assert it)
+    print(f"Signal in uptrend: {signal}")
+```
+
+#### Using the Property Test Helpers
+
+```python
+from abidance.testing.properties import test_strategy_signal_invariants
+from abidance.strategy import SMAStrategy, SMAConfig
+
+# Create a test function for SMA strategy
+test_sma_signals = test_strategy_signal_invariants(
+    strategy_class=SMAStrategy,
+    config_class=SMAConfig,
+    config_params={'fast_period': 10, 'slow_period': 30}
+)
+
+# Run the test
+test_sma_signals()
+```
+
+This Property-Based Testing Framework provides a powerful approach to testing trading strategies by generating a wide range of test cases and verifying that important properties hold across all of them. This helps identify edge cases and ensures that strategies behave correctly under various market conditions.
+
 ## Pylon Storage System
 
 The Pylon Storage system is a high-performance time series data storage solution built on Apache Arrow and Parquet. It provides efficient storage and retrieval of financial time series data with the following key features:
@@ -1061,3 +1169,84 @@ This document contains key learnings and insights about the codebase that help i
 - MACD is calculated using exponential moving averages (EMAs)
 - Bollinger Bands use a 20-period moving average with 2 standard deviation bands
 - These indicators can be used for strategy development and backtesting
+
+## Performance Testing Framework
+
+The Abidance Trading Bot includes a comprehensive performance testing framework for evaluating and benchmarking trading strategies. This framework is implemented in the `abidance.testing.performance` and `abidance.testing.benchmarks` modules and provides tools for measuring execution time, memory usage, and parallel execution capabilities.
+
+### Key Components
+
+1. **PerformanceTester (performance.py)**: A class for testing the performance of individual trading strategies:
+   - `measure_execution_time`: Measures strategy execution time statistics (mean, median, std, min, max)
+   - `measure_memory_usage`: Measures strategy memory usage (initial, final, delta)
+   - `benchmark_parallel_execution`: Benchmarks parallel strategy execution
+
+2. **StrategyBenchmark (benchmarks.py)**: A class for benchmarking and comparing multiple trading strategies:
+   - `add_strategy`: Adds a strategy to the benchmark
+   - `run_all`: Runs benchmark for multiple strategies
+   - `save_results`: Saves benchmark results to a JSON file
+   - `compare_strategies`: Compares strategies based on key performance metrics
+   - `plot_comparison`: Plots comparison of strategies for a specific metric
+
+### Implementation Notes
+
+- The performance testing framework uses conditional imports for optional dependencies like `psutil` (for memory usage) and `matplotlib` (for plotting)
+- The framework is designed to be used with any strategy that implements the `Strategy` interface
+- The benchmark results are saved in a structured JSON format for easy analysis
+- The framework supports parallel execution testing to evaluate strategy performance in multi-threaded environments
+- The `PerformanceTester` class creates strategy instances with default configurations if none are provided
+
+### Usage Examples
+
+#### Basic Performance Testing
+
+```python
+from abidance.testing.performance import PerformanceTester
+from abidance.strategy.moving_average import MovingAverageCrossoverStrategy
+import pandas as pd
+
+# Load test data
+data = pd.read_csv("test_data.csv")
+
+# Create a performance tester
+tester = PerformanceTester(MovingAverageCrossoverStrategy, data)
+
+# Measure execution time
+execution_time = tester.measure_execution_time(num_runs=100, fast_period=10, slow_period=30)
+print(f"Mean execution time: {execution_time['mean']:.6f} seconds")
+
+# Measure memory usage
+memory_usage = tester.measure_memory_usage(fast_period=10, slow_period=30)
+print(f"Memory delta: {memory_usage['delta_mb']:.2f} MB")
+```
+
+#### Benchmarking Multiple Strategies
+
+```python
+from abidance.testing.benchmarks import StrategyBenchmark
+from abidance.strategy.moving_average import MovingAverageCrossoverStrategy
+from abidance.strategy.rsi import RSIStrategy
+import pandas as pd
+
+# Load test data
+data = pd.read_csv("test_data.csv")
+
+# Create a benchmark
+benchmark = StrategyBenchmark(data, output_dir="benchmark_results")
+
+# Add strategies to benchmark
+benchmark.add_strategy(MovingAverageCrossoverStrategy, "MA_Cross_10_30", fast_period=10, slow_period=30)
+benchmark.add_strategy(MovingAverageCrossoverStrategy, "MA_Cross_5_20", fast_period=5, slow_period=20)
+benchmark.add_strategy(RSIStrategy, "RSI_14", period=14, overbought=70, oversold=30)
+
+# Compare strategies
+comparison = benchmark.compare_strategies()
+print(comparison)
+
+# Plot comparison
+benchmark.plot_comparison(metric="mean_execution_time", save_path="execution_time_comparison.png")
+
+# Save results
+result_path = benchmark.save_results()
+print(f"Benchmark results saved to: {result_path}")
+```
