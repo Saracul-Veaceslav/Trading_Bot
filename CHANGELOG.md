@@ -54,6 +54,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Memory-mapped files for faster reads
 - Pylint code quality check for the entire project with results saved to pylint_report.txt
 - Comprehensive test suite with 633 passing tests and 17 skipped tests
+- Database schema design with SQLAlchemy models for Trade, Strategy, and OHLCV data
+- Alembic migration setup for database schema versioning
+- Unit tests for database models with comprehensive test coverage
+- Unique constraint on OHLCV data to prevent duplicates
+- Indexes on frequently queried fields for better performance
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
