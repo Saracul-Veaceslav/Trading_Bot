@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- RESTful API for accessing trading bot data
+  - FastAPI-based implementation with dependency injection
+  - Endpoints for listing strategies and trades
+  - Support for filtering trades by symbol and date range
+  - Comprehensive test suite with proper mocking
+- WebSocket server implementation for real-time communication
+  - WebSocketManager for handling client connections
+  - Support for broadcasting events to connected clients
+  - Event handler registration system
+- API server implementation for serving the RESTful API
+  - Configurable host and port settings
+  - Integration with FastAPI application
 - Model Selection Framework for evaluating and selecting machine learning models
   - ModelEvaluator class for evaluating multiple models on the same dataset
   - Support for various performance metrics (precision, recall, f1, etc.)

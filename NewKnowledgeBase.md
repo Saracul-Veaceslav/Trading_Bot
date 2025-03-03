@@ -40,6 +40,11 @@ The Abidance Trading Bot is organized into the following core components:
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
   - **api**: API interfaces and implementations
+    - **app.py**: FastAPI application with route definitions
+    - **models.py**: Pydantic models for API responses
+    - **database.py**: Database connection utilities
+    - **server.py**: APIServer class for serving the RESTful API
+    - **websocket.py**: WebSocketServer and WebSocketManager classes for real-time communication
   - **monitoring**: Performance monitoring and metrics collection
   - **logging**: Advanced logging framework with structured logging
   - **tracing**: Distributed tracing system for tracking operations
@@ -473,3 +478,138 @@ The online learning system enables models to adapt to changing market conditions
    - F1 score is used as the performance metric for binary classification tasks
    - Performance degradation is detected by comparing recent vs. historical metrics
    - The system requires sufficient history before making update decisions
+
+## API Development
+
+### FastAPI Integration
+
+- FastAPI provides a modern, fast web framework for building APIs with Python 3.7+
+- Dependency injection is used for database sessions, making testing easier
+- Pydantic models with `from_attributes=True` allow easy conversion from SQLAlchemy models
+- The `model_validate` method is preferred over the deprecated `from_orm` method
+- FastAPI's automatic request validation helps ensure data integrity
+
+### Testing API Endpoints
+
+- TestClient from FastAPI allows easy testing of API endpoints
+- Mocking database dependencies is crucial for isolated unit tests
+- Override dependency injection using `app.dependency_overrides` for testing
+- Use `try/finally` blocks to ensure cleanup of overridden dependencies
+- DateTime handling in tests requires careful formatting, especially with timezone information
+
+## API Module Implementation
+
+The Abidance Trading Bot implements a comprehensive API system with both RESTful endpoints and WebSocket support for real-time communication.
+
+### API Server
+
+The `APIServer` class in `abidance.api.server` provides a wrapper around the FastAPI application:
+
+- **Initialization**: Configurable host and port settings with default values
+- **Start/Stop**: Methods to start and stop the server
+- **URL Property**: Provides the base URL of the server
+
+Key implementation details:
+```python
+class APIServer:
+    """
+    Server for the Abidance trading bot API.
+    
+    This class wraps the FastAPI application and provides methods for
+    starting and stopping the server.
+    """
+    
+    def __init__(self, host: str = "0.0.0.0", port: int = 8000, 
+                 app: Optional[FastAPI] = None, **kwargs: Any):
+        """Initialize the API server with configurable settings."""
+        self.host = host
+        self.port = port
+        self.app = app or globals()['app']
+        self.server_config = {
+            "host": host,
+            "port": port,
+            **kwargs
+        }
+    
+    def start(self, block: bool = True) -> None:
+        """Start the API server, with optional blocking behavior."""
+        if block:
+            uvicorn.run(self.app, **self.server_config)
+        else:
+            # Non-blocking operation would require a separate thread
+            raise NotImplementedError(
+                "Non-blocking server start is not implemented yet"
+            )
+```
+
+### WebSocket Server
+
+The `WebSocketServer` class in `abidance.api.websocket` provides real-time communication capabilities:
+
+- **WebSocketManager**: Handles client connections, disconnections, and message broadcasting
+- **Event Handlers**: Registration system for handling different event types
+- **Broadcasting**: Methods for sending messages to all connected clients
+
+Key implementation details:
+```python
+class WebSocketManager:
+    """Manager for WebSocket connections."""
+    
+    def __init__(self):
+        """Initialize the WebSocket manager."""
+        self.active_connections: Dict[str, Set[WebSocket]] = {}
+        
+    async def connect(self, websocket: WebSocket, client_id: str) -> None:
+        """Handle new WebSocket connection."""
+        await websocket.accept()
+        if client_id not in self.active_connections:
+            self.active_connections[client_id] = set()
+        self.active_connections[client_id].add(websocket)
+        
+    async def broadcast(self, event_type: str, data: Dict[str, Any]) -> None:
+        """Broadcast message to all connected clients."""
+        message = {
+            'type': event_type,
+            'data': data,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        # Send to all connections and handle disconnections
+        # ...
+```
+
+### Module Exports
+
+The API module exports the following components:
+
+- **app**: The FastAPI application instance
+- **APIServer**: Server for the RESTful API
+- **WebSocketServer**: Server for WebSocket communication
+
+This is defined in the `__init__.py` file:
+```python
+from abidance.api.app import app
+from abidance.api.server import APIServer
+from abidance.api.websocket import WebSocketServer
+
+__all__ = ['app', 'APIServer', 'WebSocketServer']
+```
+
+## Testing API Components
+
+Testing API components requires special considerations:
+
+1. **Module Export Testing**: Ensuring that the API module exports the expected classes
+   - Test that `APIServer` and `WebSocketServer` are exported from the `abidance.api` module
+
+2. **Integration Testing**: Testing the integration between different API components
+   - Test that the `APIServer` can properly serve the FastAPI application
+   - Test that the `WebSocketServer` can handle connections and broadcast messages
+
+3. **Error Handling**: Testing error scenarios in API endpoints
+   - Test that API endpoints properly handle and report errors
+   - Test that WebSocket connections handle disconnections gracefully
+
+4. **Module Naming**: Ensuring unique module names to avoid test collection conflicts
+   - Rename test files with similar names to avoid pytest collection issues
+   - Use descriptive module names in docstrings to clarify test purposes
