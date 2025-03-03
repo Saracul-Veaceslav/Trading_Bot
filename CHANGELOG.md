@@ -89,6 +89,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced JSON parameter handling in StrategyRepository for more reliable filtering
 
 ### Fixed
+- Fixed DataPreprocessor's remove_outliers method to properly handle integer outliers and extreme values
+- Fixed pandas dtype incompatibility warning in DataPreprocessor by explicitly casting values to the appropriate type
+- Fixed calculate_profit_metrics function in validation module to correctly calculate profit-based performance metrics
+- Fixed test_remove_outliers test to use more extreme outlier values for reliable testing
+- Fixed test_calculate_profit_metrics test to properly calculate expected returns based on correct and incorrect predictions
 - Symbol handling in HistoricalDataManager to properly handle special characters
 - Fixed parallel fetching in BinanceDataFetcher to correctly handle multiple symbols
 - Fixed PylonStorage's load_dataframe method to properly preserve DatetimeIndex frequency
