@@ -56,6 +56,10 @@ All notable changes to this project will be documented in this file.
 - Span-based tracing with parent-child relationship support
 - Trace context management with timing information
 - Metadata enrichment for trace spans
+- Health checking system for monitoring system components and services
+- Health status reporting with healthy, degraded, and unhealthy states
+- Common health checks for memory, CPU, disk space, API endpoints, and database connectivity
+- Async health check execution with error handling
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles

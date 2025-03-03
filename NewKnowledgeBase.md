@@ -18,10 +18,10 @@ The Abidance Trading Bot is organized into the following core components:
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
   - **api**: API interfaces and implementations
-  - **tracing**: Distributed tracing system for tracking operations
   - **monitoring**: Performance monitoring and metrics collection
-  - **logging**: Advanced logging framework with structured JSON output
-  - **ml**: Machine learning models and utilities
+  - **logging**: Advanced logging framework with structured logging
+  - **tracing**: Distributed tracing system for tracking operations
+  - **health**: Health checking system for monitoring system components
 
 ## Module Structure
 
@@ -1100,3 +1100,73 @@ with tracer.start_span("fetch_market_data", metadata={"exchange": "binance", "sy
 - **Performance Analysis**: Identify bottlenecks in the system by analyzing span durations.
 - **Debugging**: Trace the flow of operations through the system to identify issues.
 - **Monitoring**: Track the frequency and duration of operations for monitoring purposes.
+
+## Health Checking System
+
+The Abidance Trading Bot includes a comprehensive health checking system that enables monitoring the health of various system components and services. This system is implemented in the `abidance.health` package and provides the following features:
+
+### Key Components
+
+- **HealthStatus**: An enumeration representing the health status of a component:
+  - `HEALTHY`: The component is functioning normally
+  - `DEGRADED`: The component is functioning but with reduced performance or capabilities
+  - `UNHEALTHY`: The component is not functioning properly
+
+- **HealthCheck**: The main class responsible for registering and running health checks:
+  - Provides methods for registering and unregistering health checks
+  - Runs all registered health checks asynchronously
+  - Handles errors in health checks gracefully
+  - Returns detailed results including status, timestamp, and error information
+
+- **Common Health Checks**: A collection of factory functions for creating common health checks:
+  - `create_memory_check`: Monitors available system memory
+  - `create_cpu_check`: Monitors CPU usage
+  - `create_disk_space_check`: Monitors available disk space
+  - `create_api_health_check`: Monitors the health of an API endpoint
+  - `create_database_check`: Monitors database connectivity
+
+### Usage Example
+
+```python
+from abidance.health import (
+    HealthStatus, HealthCheck,
+    create_memory_check, create_cpu_check, create_disk_space_check,
+    create_api_health_check, create_database_check
+)
+
+# Create a health checker
+health_checker = HealthCheck()
+
+# Register common health checks
+health_checker.register_check("memory", create_memory_check(threshold_mb=500))
+health_checker.register_check("cpu", create_cpu_check(threshold_percent=80))
+health_checker.register_check("disk", create_disk_space_check(path="/", threshold_gb=10))
+health_checker.register_check("api", create_api_health_check(url="https://api.example.com/health"))
+
+# Register a custom database health check
+def check_database_connection():
+    # Custom logic to check database connection
+    return True  # Return True if connection is healthy, False otherwise
+
+health_checker.register_check("database", create_database_check(check_database_connection))
+
+# Run all health checks
+async def check_system_health():
+    results = await health_checker.run_checks()
+    
+    # Process results
+    for name, result in results.items():
+        print(f"{name}: {result['status']} at {result['timestamp']}")
+        if result['error']:
+            print(f"  Error: {result['error']}")
+```
+
+### Benefits
+
+- **Early Problem Detection**: Identify issues before they become critical
+- **Comprehensive Monitoring**: Monitor various aspects of the system
+- **Graceful Degradation**: Detect degraded components and take appropriate action
+- **Detailed Reporting**: Get detailed information about component health
+- **Extensibility**: Easily add custom health checks for specific components
+
+This health checking system provides a robust foundation for monitoring the health of the Abidance Trading Bot and its dependencies, enabling proactive issue detection and resolution.

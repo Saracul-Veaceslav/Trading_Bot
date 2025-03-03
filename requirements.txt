@@ -6,6 +6,7 @@ pyyaml>=6.0
 python-dotenv>=0.19.0
 requests>=2.25.0
 websocket-client>=1.2.0
+aiohttp>=3.8.0  # For async HTTP requests and API health checks
 
 # Data visualization and analysis (optional)
 matplotlib>=3.5.0; platform_system != "Darwin" or platform_machine != "arm64"
@@ -40,6 +41,7 @@ pydantic>=1.9.0
 pytest>=7.0.0
 pytest-mock>=3.7.0
 pytest-cov>=3.0.0
+pytest-asyncio>=0.18.0  # For testing async functions
 
 # Utilities
 tqdm>=4.62.0  # Progress bars
