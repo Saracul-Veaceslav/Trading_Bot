@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Model Selection Framework for evaluating and selecting machine learning models
+  - ModelEvaluator class for evaluating multiple models on the same dataset
+  - Support for various performance metrics (precision, recall, f1, etc.)
+  - Automatic selection of the best performing model based on specified metrics
+  - Comprehensive test suite for model evaluation and selection
 - Feature Engineering Framework for machine learning models
   - Abstract FeatureGenerator base class for consistent feature generation
   - TechnicalFeatureGenerator for creating technical indicators from OHLCV data

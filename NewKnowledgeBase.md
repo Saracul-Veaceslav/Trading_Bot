@@ -14,20 +14,19 @@ The Abidance Trading Bot is organized into the following core components:
     - **composition.py**: Strategy composition framework for combining multiple strategies
       - **CompositeStrategy**: Base class for composite strategies with weighted signal combination
       - **VotingStrategy**: Strategy that uses majority voting to combine signals
+  - **ml**: Machine learning components for predictive modeling
+    - **features**: Feature generation for machine learning models
+      - **base.py**: FeatureGenerator abstract base class for consistent feature generation
+    - **pipeline**: Machine learning pipeline components
+      - **trainer.py**: ModelTrainer class for training and evaluating models
+    - **selection**: Model selection and evaluation framework
+      - **evaluator.py**: ModelEvaluator class for evaluating and selecting the best models
   - **optimization**: Strategy parameter optimization and performance metrics
     - **optimizer.py**: StrategyOptimizer class for parameter grid search
     - **metrics.py**: Performance metric calculations (Sharpe, Sortino, etc.)
   - **evaluation**: Strategy performance evaluation and reporting
     - **metrics.py**: PerformanceMetrics dataclass and StrategyEvaluator for calculating performance metrics
     - **reporting.py**: PerformanceReport class for generating and saving performance reports with visualizations
-  - **ml**: Machine learning components for prediction and analysis
-    - **features**: Feature engineering framework for generating features from raw data
-      - **base.py**: Abstract FeatureGenerator base class defining the common interface
-      - **technical.py**: TechnicalFeatureGenerator for creating technical indicators from OHLCV data
-    - **pipeline**: ML pipeline components for data processing and model training
-      - **preprocessing.py**: DataPreprocessor class for data cleaning and preparation
-      - **validation.py**: TimeSeriesValidator for time series cross-validation and metrics calculation
-      - **trainer.py**: ModelTrainer for training and optimizing ML models
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
   - **typing**: Alternative type definitions (to be consolidated with type_defs)
