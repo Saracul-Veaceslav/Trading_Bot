@@ -18,6 +18,7 @@ The Abidance Trading Bot is organized into the following core components:
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
   - **api**: API interfaces and implementations
+  - **monitoring**: Performance monitoring and metrics collection
   - **logging**: Advanced logging framework with structured JSON output
   - **ml**: Machine learning models and utilities
 
@@ -974,3 +975,85 @@ The test suite contains several skipped tests for specific reasons:
 5. **Data Manager Tests**: `test_update_trade_exit` is skipped because it's difficult to make it work consistently due to timing and file system interactions.
 
 These skipped tests represent areas where the implementation has evolved beyond the original test design or where testing is inherently difficult due to asynchronous behavior, external dependencies, or complex interactions. They serve as documentation for future improvements to the test suite.
+
+## Performance Monitoring
+
+The Abidance Trading Bot includes a comprehensive performance monitoring system that helps identify bottlenecks and track system health. The monitoring system is implemented in the `abidance.monitoring` package and provides the following features:
+
+### PerformanceMetrics
+
+The `PerformanceMetrics` class is the core of the monitoring system and provides the following functionality:
+
+- Thread-safe recording of operation durations
+- Statistical analysis of timing data (count, mean, median, min, max)
+- Window-based limiting of stored metrics to prevent memory issues
+- Context manager for timing operations
+- Function decorator for timing function execution
+
+Example usage:
+
+```python
+from abidance.monitoring.performance import PerformanceMetrics
+
+# Create a metrics collector
+metrics = PerformanceMetrics(window_size=1000)
+
+# Record timing manually
+metrics.record_timing("operation_name", 0.1)
+
+# Use context manager for timing
+with metrics.timed_operation("database_query"):
+    # Code to time goes here
+    result = db.execute_query()
+
+# Get statistics
+stats = metrics.get_statistics("database_query")
+print(f"Mean query time: {stats['mean']:.3f}s")
+```
+
+### Specialized Collectors
+
+The monitoring system includes specialized collectors for different parts of the trading system:
+
+- `ExchangeMetrics`: For monitoring exchange operations like API calls and order placement
+- `StrategyMetrics`: For monitoring strategy operations like signal generation and backtesting
+
+Example usage:
+
+```python
+from abidance.monitoring.collectors import ExchangeMetrics, time_function
+
+# Create an exchange metrics collector
+exchange_metrics = ExchangeMetrics()
+
+# Record API call timing
+exchange_metrics.record_api_call("get_ticker", 0.05)
+
+# Use decorator for timing functions
+@time_function(exchange_metrics, "place_order")
+def place_order(symbol, side, quantity, price):
+    # Function code here
+    pass
+```
+
+### Function Decorator
+
+The `time_function` decorator provides an easy way to time function execution:
+
+```python
+from abidance.monitoring.collectors import time_function
+from abidance.monitoring.performance import PerformanceMetrics
+
+metrics = PerformanceMetrics()
+
+@time_function(metrics)
+def my_function():
+    # Function code here
+    pass
+
+# With custom operation name
+@time_function(metrics, "custom_operation_name")
+def another_function():
+    # Function code here
+    pass
+```

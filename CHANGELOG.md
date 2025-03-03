@@ -48,6 +48,10 @@ All notable changes to this project will be documented in this file.
 - Asynchronous log handlers for improved performance
 - Context-aware logging with request ID tracking
 - Documentation about expected PytestCollectionWarnings related to @runtime_checkable Protocol classes
+- Performance monitoring module with thread-safe metrics collection
+- Specialized metric collectors for exchange and strategy operations
+- Context manager for timing operations
+- Function decorator for timing function execution
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
