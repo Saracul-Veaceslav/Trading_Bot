@@ -68,6 +68,15 @@ The Abidance Trading Bot is organized into the following core components:
     - **repository**: Repository pattern implementation for data access
     - **queries.py**: Optimized query implementations for efficient data retrieval
     - **indexes.py**: Database index management for improved query performance
+- **frontend**: React-based frontend for the trading dashboard
+  - **src/components**: Reusable UI components
+    - **TradingChart.tsx**: Chart.js-based component for visualizing trading data
+    - **TradeList.tsx**: Component for displaying a list of trades
+  - **src/pages**: Page components
+    - **Dashboard.tsx**: Main dashboard page with real-time trading data
+  - **src/api**: API integration
+    - **trading.ts**: Functions for fetching trade data and subscribing to updates
+  - **src/types.ts**: TypeScript type definitions for the frontend
 
 ## Module Structure
 

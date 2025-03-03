@@ -24,6 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API server implementation for serving the RESTful API
   - Configurable host and port settings
   - Integration with FastAPI application
+- React-based Frontend Dashboard for monitoring trading activities
+  - Real-time trading data visualization with Chart.js
+  - WebSocket integration for live updates
+  - Responsive design for desktop and mobile
+  - Comprehensive error handling
+  - TypeScript for type safety
+  - TDD-based implementation with comprehensive test suite
+  - Component-based architecture for maintainability
+  - Modern UI with clean design
 - Model Selection Framework for evaluating and selecting machine learning models
   - ModelEvaluator class for evaluating multiple models on the same dataset
   - Support for various performance metrics (precision, recall, f1, etc.)
