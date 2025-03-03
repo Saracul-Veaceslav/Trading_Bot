@@ -17,11 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Strategy Evaluation Framework with PerformanceMetrics and StrategyEvaluator classes
 - Performance reporting with equity curve visualization and metrics calculation
 - JSON report generation for strategy performance analysis
+- Historical Data Management with HistoricalDataManager for efficient storage and retrieval of OHLCV data
+  - Parquet file format for optimized storage and fast data retrieval
+  - Date range filtering for targeted data access
+  - Automatic directory management for organized data storage
+  - Symbol normalization for consistent data handling
+- Data loaders for fetching data from exchanges and loading from CSV files
+  - ExchangeDataLoader with support for all CCXT exchanges
+  - CSVDataLoader with flexible date format handling
+  - Load-or-fetch pattern to minimize API calls
+  - Automatic data saving to the data manager
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
+- Improved frequency handling in HistoricalDataManager for consistent data retrieval
 
 ### Fixed
+- Symbol handling in HistoricalDataManager to properly handle special characters
 
 ### Removed
 

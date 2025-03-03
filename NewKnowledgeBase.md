@@ -34,6 +34,9 @@ The Abidance Trading Bot is organized into the following core components:
   - **logging**: Advanced logging framework with structured logging
   - **tracing**: Distributed tracing system for tracking operations
   - **health**: Health checking system for monitoring system components
+  - **testing**: Testing infrastructure and utilities
+    - **data_management.py**: HistoricalDataManager for storing and retrieving OHLCV data
+    - **data_loaders.py**: Data loaders for fetching data from exchanges and loading from CSV files
 
 ## Module Structure
 
@@ -814,3 +817,117 @@ fig, ax = report_generator.plot_equity_curve(trades, save_path="reports/equity_c
 - **Flexible Integration**: The framework can be used with any strategy that produces trade history
 
 This evaluation framework provides a robust foundation for assessing trading strategy performance and making data-driven decisions about strategy selection and parameter tuning.
+
+## Testing Infrastructure
+
+### Historical Data Management
+
+The Abidance Trading Bot implements a robust Historical Data Management system that provides efficient storage and retrieval of OHLCV (Open, High, Low, Close, Volume) data for backtesting and strategy development. This system consists of two main components:
+
+1. **HistoricalDataManager (testing/data_management.py)**: The core class responsible for managing historical price data:
+   - **Parquet Storage**: Uses the Apache Parquet file format for efficient columnar storage and fast data retrieval
+   - **Symbol Handling**: Properly manages trading pair symbols with special characters (e.g., BTC/USDT)
+   - **Date Filtering**: Supports loading data within specific date ranges
+   - **Frequency Support**: Handles different timeframes (1m, 5m, 15m, 1h, 4h, 1d, etc.)
+   - **Directory Management**: Automatically creates necessary data directories
+   - **Data Validation**: Ensures data integrity before storage
+   - **Efficient Appending**: Intelligently appends new data to existing datasets
+   - **Consistent Data Format**: Maintains a standardized DataFrame structure for all data
+
+2. **Data Loaders (testing/data_loaders.py)**: Classes for fetching and loading historical data:
+   - **ExchangeDataLoader**: Fetches historical data from cryptocurrency exchanges
+     - Supports all exchanges available in the CCXT library
+     - Handles rate limiting and retry logic
+     - Supports fetching specific timeframes
+     - Automatically saves fetched data to the data manager
+     - Implements a load-or-fetch pattern to minimize API calls
+     - Handles date range specifications
+   - **CSVDataLoader**: Loads historical data from CSV files
+     - Supports custom date formats
+     - Validates required OHLCV columns
+     - Automatically saves loaded data to the data manager
+     - Handles various CSV formats and structures
+
+### Key Learnings
+
+- **Parquet vs. CSV**: Parquet provides significantly faster read/write operations and smaller file sizes compared to CSV, especially for large datasets
+- **Symbol Normalization**: Trading pair symbols need to be normalized for filesystem storage (e.g., BTC/USDT → BTC_USDT)
+- **Frequency Handling**: Consistent handling of timeframe frequencies is crucial for proper data retrieval and analysis
+- **Data Integrity**: Validating timestamp uniqueness and sorting is essential for accurate backtesting
+- **Efficient Appending**: Properly appending new data to existing datasets requires careful handling of duplicates and sorting
+- **Directory Structure**: Organizing data by exchange, symbol, and frequency creates a clean and navigable data structure
+- **Date Filtering**: Implementing efficient date filtering improves performance for backtesting specific time periods
+- **Load-or-Fetch Pattern**: Minimizing API calls by first checking for local data significantly improves performance and reduces API rate limiting issues
+- **Error Handling**: Robust error handling for network issues, API limitations, and file operations is essential for reliable data management
+
+### Usage Examples
+
+#### Basic Data Management
+
+```python
+from abidance.testing.data_management import HistoricalDataManager
+
+# Create a data manager
+data_manager = HistoricalDataManager(base_path="./data")
+
+# Load OHLCV data
+df = data_manager.load_ohlcv("binance", "BTC/USDT", "1h")
+
+# Load data for a specific date range
+import datetime
+start_date = datetime.datetime(2023, 1, 1)
+end_date = datetime.datetime(2023, 1, 31)
+df = data_manager.load_ohlcv("binance", "BTC/USDT", "1h", start_date=start_date, end_date=end_date)
+
+# Store new OHLCV data
+data_manager.store_ohlcv(df, "binance", "BTC/USDT", "1h")
+```
+
+#### Using the Exchange Data Loader
+
+```python
+from abidance.testing.data_loaders import ExchangeDataLoader
+from abidance.testing.data_management import HistoricalDataManager
+
+# Create a data manager
+data_manager = HistoricalDataManager(base_path="./data")
+
+# Create an exchange data loader
+loader = ExchangeDataLoader(data_manager, exchange_id="binance")
+
+# Fetch OHLCV data
+df = loader.fetch_ohlcv("BTC/USDT", "1h", limit=1000)
+
+# Load or fetch data (will load from disk if available, otherwise fetch from exchange)
+df = loader.load_or_fetch_ohlcv("BTC/USDT", "1h", limit=1000)
+
+# Fetch data for a specific date range
+import datetime
+start_date = datetime.datetime(2023, 1, 1)
+end_date = datetime.datetime(2023, 1, 31)
+df = loader.fetch_ohlcv("BTC/USDT", "1h", since=start_date, until=end_date)
+```
+
+#### Using the CSV Data Loader
+
+```python
+from abidance.testing.data_loaders import CSVDataLoader
+from abidance.testing.data_management import HistoricalDataManager
+
+# Create a data manager
+data_manager = HistoricalDataManager(base_path="./data")
+
+# Create a CSV data loader
+loader = CSVDataLoader(data_manager, exchange_id="binance")
+
+# Load data from a CSV file
+df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h")
+
+# Load data with a custom date format
+df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h", date_format="%Y-%m-%d %H:%M:%S")
+
+# Load data and save to the data manager
+df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h", save=True)
+```
+
+This Historical Data Management system provides a solid foundation for backtesting and strategy development by ensuring consistent access to historical market data. The combination of efficient storage with Parquet, flexible loading options, and robust data validation makes it a powerful tool for algorithmic trading development.
