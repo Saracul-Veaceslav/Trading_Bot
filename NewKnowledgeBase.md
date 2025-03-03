@@ -1169,3 +1169,84 @@ This document contains key learnings and insights about the codebase that help i
 - MACD is calculated using exponential moving averages (EMAs)
 - Bollinger Bands use a 20-period moving average with 2 standard deviation bands
 - These indicators can be used for strategy development and backtesting
+
+## Performance Testing Framework
+
+The Abidance Trading Bot includes a comprehensive performance testing framework for evaluating and benchmarking trading strategies. This framework is implemented in the `abidance.testing.performance` and `abidance.testing.benchmarks` modules and provides tools for measuring execution time, memory usage, and parallel execution capabilities.
+
+### Key Components
+
+1. **PerformanceTester (performance.py)**: A class for testing the performance of individual trading strategies:
+   - `measure_execution_time`: Measures strategy execution time statistics (mean, median, std, min, max)
+   - `measure_memory_usage`: Measures strategy memory usage (initial, final, delta)
+   - `benchmark_parallel_execution`: Benchmarks parallel strategy execution
+
+2. **StrategyBenchmark (benchmarks.py)**: A class for benchmarking and comparing multiple trading strategies:
+   - `add_strategy`: Adds a strategy to the benchmark
+   - `run_all`: Runs benchmark for multiple strategies
+   - `save_results`: Saves benchmark results to a JSON file
+   - `compare_strategies`: Compares strategies based on key performance metrics
+   - `plot_comparison`: Plots comparison of strategies for a specific metric
+
+### Implementation Notes
+
+- The performance testing framework uses conditional imports for optional dependencies like `psutil` (for memory usage) and `matplotlib` (for plotting)
+- The framework is designed to be used with any strategy that implements the `Strategy` interface
+- The benchmark results are saved in a structured JSON format for easy analysis
+- The framework supports parallel execution testing to evaluate strategy performance in multi-threaded environments
+- The `PerformanceTester` class creates strategy instances with default configurations if none are provided
+
+### Usage Examples
+
+#### Basic Performance Testing
+
+```python
+from abidance.testing.performance import PerformanceTester
+from abidance.strategy.moving_average import MovingAverageCrossoverStrategy
+import pandas as pd
+
+# Load test data
+data = pd.read_csv("test_data.csv")
+
+# Create a performance tester
+tester = PerformanceTester(MovingAverageCrossoverStrategy, data)
+
+# Measure execution time
+execution_time = tester.measure_execution_time(num_runs=100, fast_period=10, slow_period=30)
+print(f"Mean execution time: {execution_time['mean']:.6f} seconds")
+
+# Measure memory usage
+memory_usage = tester.measure_memory_usage(fast_period=10, slow_period=30)
+print(f"Memory delta: {memory_usage['delta_mb']:.2f} MB")
+```
+
+#### Benchmarking Multiple Strategies
+
+```python
+from abidance.testing.benchmarks import StrategyBenchmark
+from abidance.strategy.moving_average import MovingAverageCrossoverStrategy
+from abidance.strategy.rsi import RSIStrategy
+import pandas as pd
+
+# Load test data
+data = pd.read_csv("test_data.csv")
+
+# Create a benchmark
+benchmark = StrategyBenchmark(data, output_dir="benchmark_results")
+
+# Add strategies to benchmark
+benchmark.add_strategy(MovingAverageCrossoverStrategy, "MA_Cross_10_30", fast_period=10, slow_period=30)
+benchmark.add_strategy(MovingAverageCrossoverStrategy, "MA_Cross_5_20", fast_period=5, slow_period=20)
+benchmark.add_strategy(RSIStrategy, "RSI_14", period=14, overbought=70, oversold=30)
+
+# Compare strategies
+comparison = benchmark.compare_strategies()
+print(comparison)
+
+# Plot comparison
+benchmark.plot_comparison(metric="mean_execution_time", save_path="execution_time_comparison.png")
+
+# Save results
+result_path = benchmark.save_results()
+print(f"Benchmark results saved to: {result_path}")
+```

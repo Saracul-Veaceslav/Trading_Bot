@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed PylonStorage's append_dataframe method to correctly handle duplicate timestamps
 - Fixed PylonStorage's store_dataframe method to support custom partitioning columns
 - Fixed test_performance method in PylonStorage tests to use non-deprecated frequency format ('h' instead of 'H')
+- Fixed code quality issues in performance testing framework (trailing whitespace, missing newlines, import organization)
 
 ### Removed
 
