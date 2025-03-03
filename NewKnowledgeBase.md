@@ -931,3 +931,46 @@ df = loader.load_csv("path/to/btc_usdt_1h.csv", "BTC/USDT", "1h", save=True)
 ```
 
 This Historical Data Management system provides a solid foundation for backtesting and strategy development by ensuring consistent access to historical market data. The combination of efficient storage with Parquet, flexible loading options, and robust data validation makes it a powerful tool for algorithmic trading development.
+
+## Pylon Storage System
+
+The Pylon Storage system is a high-performance time series data storage solution built on Apache Arrow and Parquet. It provides efficient storage and retrieval of financial time series data with the following key features:
+
+- **Columnar Storage**: Uses Apache Arrow and Parquet for efficient columnar data access, which is particularly well-suited for time series data analysis.
+- **Partitioning**: Supports data partitioning (by default using year and month) to enable faster data retrieval by limiting the amount of data that needs to be scanned.
+- **Custom Partitioning**: Allows custom partitioning columns to be specified for specialized data organization needs.
+- **Compression**: Implements data compression to reduce storage requirements while maintaining fast access.
+- **DatetimeIndex Preservation**: Carefully preserves the frequency of DatetimeIndex when loading data, which is critical for time series analysis.
+- **Duplicate Handling**: Properly handles duplicate timestamps when appending data, ensuring data integrity.
+- **Efficient Appending**: Provides optimized methods for appending new data to existing datasets.
+- **Date Filtering**: Supports efficient filtering by date ranges during data retrieval.
+- **Column Projection**: Allows loading only specific columns to reduce memory usage and improve performance.
+
+The Pylon Storage system is implemented in `abidance/testing/pylon_storage.py` and provides three main methods:
+
+1. **store_dataframe**: Stores a DataFrame with time series data, partitioning it by year and month (or custom columns).
+2. **load_dataframe**: Loads a DataFrame with time series data, with support for date filtering and column projection.
+3. **append_dataframe**: Appends new data to an existing dataset, handling overlapping timestamps correctly.
+
+Important implementation details:
+- When loading data, the system sets the appropriate frequency on the DatetimeIndex based on the timeframe parameter.
+- When appending data, the system removes duplicate timestamps to ensure data integrity.
+- The system uses PyArrow for efficient data manipulation and Parquet for storage.
+
+## Binance Data Fetcher
+
+The Binance Data Fetcher is a specialized component for retrieving historical OHLCV data from the Binance exchange. It provides efficient data retrieval with the following key features:
+
+- **Multiple Symbol Support**: Can fetch data for multiple trading pairs in a single operation.
+- **Multiple Timeframe Support**: Supports various timeframes (1m, 5m, 15m, 1h, etc.).
+- **Pagination**: Handles large date ranges by automatically paginating requests.
+- **Rate Limiting**: Implements exponential backoff for rate limit handling.
+- **Parallel Fetching**: Uses asyncio and concurrent.futures to fetch data for multiple symbols in parallel.
+- **Integration with Pylon**: Seamlessly stores fetched data in the Pylon Storage system.
+
+The Binance Data Fetcher is implemented in `abidance/testing/binance_data_fetcher.py` and provides methods for fetching historical data with various options.
+
+Important implementation details:
+- The parallel fetching functionality uses a ThreadPoolExecutor to fetch data for multiple symbols concurrently.
+- The fetcher properly handles the results from concurrent futures to ensure all symbols are processed correctly.
+- Rate limiting is implemented with exponential backoff to avoid hitting Binance API limits.

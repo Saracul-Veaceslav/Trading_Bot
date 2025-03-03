@@ -27,6 +27,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CSVDataLoader with flexible date format handling
   - Load-or-fetch pattern to minimize API calls
   - Automatic data saving to the data manager
+- Binance Historical Data Fetcher for efficient data retrieval from Binance exchange
+  - Support for multiple symbols and timeframes
+  - Pagination for large date ranges
+  - Rate limiting with exponential backoff
+  - Parallel fetching for improved performance
+- Pylon Storage system for optimized time series data storage
+  - Apache Arrow and Parquet-based storage for efficient columnar data access
+  - Partitioning for faster data retrieval
+  - Compression for reduced storage size
+  - Schema enforcement for data consistency
+  - Memory-mapped files for faster reads
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
@@ -34,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Symbol handling in HistoricalDataManager to properly handle special characters
+- Fixed parallel fetching in BinanceDataFetcher to correctly handle multiple symbols
+- Fixed PylonStorage's load_dataframe method to properly preserve DatetimeIndex frequency
+- Fixed PylonStorage's append_dataframe method to correctly handle duplicate timestamps
+- Fixed PylonStorage's store_dataframe method to support custom partitioning columns
+- Fixed test_performance method in PylonStorage tests to use non-deprecated frequency format ('h' instead of 'H')
 
 ### Removed
 
