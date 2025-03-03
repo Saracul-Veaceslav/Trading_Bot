@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parallel optimization execution for improved performance
 - Backtest method in Strategy base class for strategy evaluation
 - Comprehensive test suite for optimization module
+- Strategy Evaluation Framework with PerformanceMetrics and StrategyEvaluator classes
+- Performance reporting with equity curve visualization and metrics calculation
+- JSON report generation for strategy performance analysis
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities

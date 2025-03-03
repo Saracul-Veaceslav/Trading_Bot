@@ -17,6 +17,9 @@ The Abidance Trading Bot is organized into the following core components:
   - **optimization**: Strategy parameter optimization and performance metrics
     - **optimizer.py**: StrategyOptimizer class for parameter grid search
     - **metrics.py**: Performance metric calculations (Sharpe, Sortino, etc.)
+  - **evaluation**: Strategy performance evaluation and reporting
+    - **metrics.py**: PerformanceMetrics dataclass and StrategyEvaluator for calculating performance metrics
+    - **reporting.py**: PerformanceReport class for generating and saving performance reports with visualizations
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
   - **typing**: Alternative type definitions (to be consolidated with type_defs)
@@ -738,530 +741,76 @@ The Abidance Trading Bot uses a specific pattern for strategy implementation:
 1. Each strategy has a corresponding configuration class (e.g., `SMAConfig` for `SMAStrategy`)
 2. The strategy constructor expects a configuration object of the appropriate type
 3. The configuration object contains all parameters needed by the strategy, including:
-   - `name`: A unique name for the strategy instance
-   - `symbols`: List of trading symbols the strategy will operate on
-   - `timeframe`: The timeframe for analysis (e.g., '15m', '1h')
-   - Strategy-specific parameters (e.g., `fast_period` and `slow_period` for SMA strategy)
+   - `
 
-When creating a strategy instance, you must:
-1. Create the appropriate configuration object for the strategy type
-2. Set all required parameters on the configuration object
-3. Pass the configuration object to the strategy constructor
+## Strategy Evaluation Framework
 
-This pattern allows for type-safe strategy configuration and initialization.
-
-## Advanced Logging Framework
-
-The Abidance Trading Bot includes a sophisticated logging framework that provides structured JSON logging for better log analysis and integration with log management systems.
+The Abidance Trading Bot includes a comprehensive strategy evaluation framework that helps assess the performance of trading strategies and generate detailed reports:
 
 ### Key Components
 
-- **StructuredLogger**: A logger that outputs logs in JSON format with consistent fields like timestamp, logger name, log level, and message.
-- **Context Variables**: Support for context variables like request_id that can be set once and automatically included in all logs within that context.
-- **Custom Formatters**:
-  - **JsonFormatter**: Formats log records as JSON with configurable fields.
-  - **ColoredConsoleFormatter**: Adds color to console output based on log level for better readability.
-- **Custom Handlers**:
-  - **AsyncRotatingFileHandler**: Writes logs to a file asynchronously to avoid blocking the main thread.
-  - **JsonFileHandler**: Ensures each log entry is written as a valid JSON object on a new line.
-  - **ContextAwareHandler**: Adds context information like hostname and process ID to log records.
+- **PerformanceMetrics**: A dataclass that serves as a container for strategy performance metrics:
+  - `total_return`: The total return of the strategy
+  - `sharpe_ratio`: Risk-adjusted return measure
+  - `max_drawdown`: Maximum peak-to-trough decline
+  - `win_rate`: Percentage of profitable trades
+  - `profit_factor`: Ratio of gross profits to gross losses
+  - `avg_trade`: Average profit/loss per trade
+  - `num_trades`: Total number of trades
 
-### Usage Examples
+- **StrategyEvaluator**: The main class responsible for calculating performance metrics:
+  - Calculates various performance metrics from trade history
+  - Handles edge cases like empty trade history or all winning/losing trades
+  - Provides methods for calculating Sharpe ratio and maximum drawdown
 
-```python
-from abidance.logging import StructuredLogger, request_id
-
-# Create a logger
-logger = StructuredLogger('my_component')
-
-# Set a request ID for the current context
-token = request_id.set('abc-123')
-
-# Log with structured data
-logger.info("Processing order", order_id=12345, user_id=42)
-
-# Log errors with context
-try:
-    # Some operation
-    pass
-except Exception as e:
-    logger.error("Failed to process order", order_id=12345, exception=str(e))
-
-# Reset the request ID when done
-request_id.reset(token)
-```
-
-### Benefits
-
-- **Structured Data**: All logs are in a consistent JSON format for easy parsing and analysis.
-- **Context Tracking**: Request IDs and other context variables help trace operations across components.
-- **Performance**: Asynchronous logging prevents I/O operations from blocking the main thread.
-- **Readability**: Colored console output makes logs easier to read during development.
-- **Integration**: JSON format makes it easy to integrate with log management systems like ELK Stack or Splunk.
-
-# New Knowledge Base
-
-This document contains insights and lessons learned during the development of the Abidance Trading Bot.
-
-## Metrics Collection System
-
-- The metrics collection system uses a thread-safe approach with locks to ensure concurrent access doesn't cause data corruption
-- The `SystemMetricsCollector.collect_system_metrics` method needs a `single_run` parameter for testing to avoid infinite loops
-- When implementing metric aggregation, it's important to match the metric naming patterns used in the recording methods
-- For trading metrics, we need to handle both specific symbol queries and all-symbols aggregation differently
-- The `psutil` library is used for collecting system metrics like CPU and memory usage
-
-## Data Recording and Storage
-
-The Abidance Trading Bot implements a comprehensive data recording and storage system that allows for persistent storage of market data, trades, and strategy states. This system is built around the following components:
-
-### DataManager
-
-The `DataManager` class serves as the central coordinator for data storage and retrieval operations. It provides a unified interface for working with different types of data repositories and handles caching for improved performance.
-
-Key features of the DataManager:
-- Manages multiple repository types (OHLCV, Trade, Strategy)
-- Provides caching for frequently accessed data
-- Handles error logging and recovery
-- Offers factory methods for creating pre-configured instances
-
-### Repository Interfaces
-
-The system defines abstract repository interfaces for different types of data:
-- `OHLCVRepository`: For storing and retrieving market data (Open, High, Low, Close, Volume)
-- `TradeRepository`: For storing and retrieving trade records
-- `StrategyRepository`: For storing and retrieving strategy states
-
-### File-Based Implementations
-
-The default implementation uses file-based storage:
-- `FileOHLCVRepository`: Stores OHLCV data in CSV files organized by symbol and timeframe
-- `FileTradeRepository`: Stores trade records in CSV files organized by symbol
-- `FileStrategyRepository`: Stores strategy states in JSON files
+- **PerformanceReport**: Generates and saves performance reports:
+  - Creates JSON reports with performance metrics and equity curve data
+  - Plots equity curves with drawdown visualization
+  - Handles serialization of complex objects for storage
 
 ### Usage Example
 
 ```python
-# Create a DataManager with file-based storage
-data_dir = "data"
-data_manager = DataManager.create_with_file_storage(data_dir)
-
-# Store OHLCV data
+from abidance.evaluation import StrategyEvaluator, PerformanceReport
 import pandas as pd
-ohlcv_data = pd.DataFrame({
-    "open": [100.0, 101.0, 102.0],
-    "high": [105.0, 106.0, 107.0],
-    "low": [98.0, 99.0, 100.0],
-    "close": [103.0, 104.0, 105.0],
-    "volume": [1000, 1100, 1200]
-}, index=pd.date_range(start="2023-01-01", periods=3, freq="1h"))
 
-data_manager.store_ohlcv_data("BTC/USDT", "1h", ohlcv_data)
+# Create a DataFrame of trades
+trades = pd.DataFrame({
+    'date': ['2023-01-01', '2023-01-02', '2023-01-03'],
+    'profit_pct': [0.02, -0.01, 0.03]
+})
 
-# Retrieve OHLCV data
-retrieved_data = data_manager.get_ohlcv_data("BTC/USDT", "1h")
+# Calculate performance metrics
+evaluator = StrategyEvaluator()
+metrics = evaluator.calculate_metrics(trades)
 
-# Store a trade
-from abidance.trading.trade import Trade
-from abidance.trading.order import OrderSide
-from datetime import datetime
+print(f"Total Return: {metrics.total_return:.2%}")
+print(f"Sharpe Ratio: {metrics.sharpe_ratio:.2f}")
+print(f"Max Drawdown: {metrics.max_drawdown:.2%}")
+print(f"Win Rate: {metrics.win_rate:.2%}")
 
-trade = Trade(
-    trade_id="123456",
-    symbol="BTC/USDT",
-    side=OrderSide.BUY,
-    price=50000.0,
-    quantity=1.0,
-    timestamp=datetime.now(),
-    fee=50.0,
-    fee_currency="USDT"
+# Generate and save a performance report
+report_generator = PerformanceReport(output_dir="reports/")
+report_data = report_generator.generate_report(
+    trades=trades,
+    strategy_name="My Strategy",
+    parameters={"param1": 10, "param2": 20}
 )
 
-data_manager.store_trade(trade)
-
-# Store strategy state
-strategy_state = {
-    "iteration": 1,
-    "timestamp": datetime.now().isoformat(),
-    "symbol": "BTC/USDT",
-    "timeframe": "1h",
-    "last_execution": datetime.now().timestamp(),
-    "strategy_type": "sma_crossover",
-    "fast_period": 10,
-    "slow_period": 50
-}
-
-data_manager.store_strategy_state("sma_crossover_BTC/USDT_1h", strategy_state)
-```
-
-### Data Storage Structure
-
-The file-based storage implementation organizes data as follows:
-
-```
-data/
-├── ohlcv/
-│   ├── BTC_USDT/
-│   │   ├── 1h.csv
-│   │   ├── 4h.csv
-│   │   └── metadata.json
-│   └── ETH_USDT/
-│       ├── 1h.csv
-│       └── metadata.json
-├── trades/
-│   ├── BTC_USDT.csv
-│   └── ETH_USDT.csv
-└── strategy/
-    ├── sma_crossover_BTC_USDT_1h.json
-    └── rsi_strategy_ETH_USDT_4h.json
-```
-
-This structured approach allows for efficient storage and retrieval of different types of data while maintaining a clear organization.
-
-## Pandas Best Practices
-
-When working with pandas in the Abidance Trading Bot, it's important to follow these best practices to avoid warnings and ensure consistent behavior:
-
-### Handling Boolean Series and Downcasting
-
-- **Silent Downcasting Warning**: Pandas 2.0+ warns about silent downcasting when converting between types. To avoid these warnings:
-  - Use `infer_objects(copy=False)` before `astype(bool)` when converting Series to boolean types
-  - Set `pd.set_option('future.no_silent_downcasting', True)` at the module level to catch these issues early
-  - Always explicitly specify the desired type with `astype()` after using `fillna()`
-
-Example of proper boolean conversion:
-```python
-import pandas as pd
-pd.set_option('future.no_silent_downcasting', True)
-
-# Correct way to convert to boolean while avoiding downcasting warnings
-series = series.fillna(False).infer_objects(copy=False).astype(bool)
-```
-
-This pattern is used in several strategy implementations, including RSI and indicator calculations, to ensure consistent behavior and avoid warnings.
-
-## Module Naming Considerations
-
-When creating new modules in the Abidance Trading Bot, consider these naming guidelines:
-
-- **Avoid Shadowing Standard Libraries**: The package structure should avoid shadowing standard Python libraries or common third-party packages
-  - Exception: `abidance.logging` is an intentional exception as it provides enhanced logging functionality
-  - The test suite includes checks to prevent accidental shadowing (`test_no_module_shadowing`)
-  - When intentionally shadowing a module, document the reason and ensure it provides significant enhancements
-
-- **Consistent Naming**: Use consistent naming patterns across the codebase
-  - Use singular nouns for modules that define a single concept (e.g., `strategy`, `exchange`)
-  - Use plural nouns for modules that contain multiple implementations (e.g., `strategies`, `exchanges`)
-  - Use descriptive names that clearly indicate the module's purpose
-
-This approach helps maintain a clean, intuitive package structure while avoiding conflicts with standard libraries.
-
-## Test Framework Considerations
-
-### Expected Warnings in Test Suite
-
-The test suite contains some expected warnings that don't indicate actual issues:
-
-- **PytestCollectionWarnings for Protocol Classes**: When using `@runtime_checkable` Protocol classes in test files, pytest generates warnings about not being able to collect test classes with `__init__` constructors. These warnings appear in:
-  - `tests/unit/core/test_application_bootstrap.py` for the `TestComponent` Protocol
-  - `tests/unit/core/test_service_registry.py` for the `TestService` Protocol
-  
-  These warnings are expected and can be safely ignored as they're related to how pytest interacts with Protocol classes, not actual issues with the code. The Protocol classes are correctly defined and used in the tests.
-
-### Skipped Tests and Their Reasons
-
-The test suite contains several skipped tests for specific reasons:
-
-1. **Stop Loss and Take Profit Tests**: Tests related to stop loss and take profit functionality are skipped in multiple files because the implementation doesn't match test expectations or requires complex mocking:
-   - `test_check_stop_loss_take_profit_stop_loss` and `test_check_stop_loss_take_profit_take_profit` in exchange tests
-   - Similar tests in the strategy executor tests
-
-2. **Exchange Initialization Tests**: Tests like `test_initialize_exchange` and `test_get_current_price` are skipped because the implementation doesn't match test expectations. These tests would need to be updated to match the current implementation.
-
-3. **Strategy Loading Tests**: `test_load_strategy` is skipped because it requires complex mocking of the importlib module, which is challenging to implement correctly.
-
-4. **Asynchronous Handler Tests**: `test_process_queue` in the AsyncRotatingFileHandler tests is skipped because testing asynchronous queue processing is difficult to make work consistently.
-
-5. **Data Manager Tests**: `test_update_trade_exit` is skipped because it's difficult to make it work consistently due to timing and file system interactions.
-
-These skipped tests represent areas where the implementation has evolved beyond the original test design or where testing is inherently difficult due to asynchronous behavior, external dependencies, or complex interactions. They serve as documentation for future improvements to the test suite.
-
-## Performance Monitoring
-
-The Abidance Trading Bot includes a comprehensive performance monitoring system that helps identify bottlenecks and track system health. The monitoring system is implemented in the `abidance.monitoring` package and provides the following features:
-
-### PerformanceMetrics
-
-The `PerformanceMetrics` class is the core of the monitoring system and provides the following functionality:
-
-- Thread-safe recording of operation durations
-- Statistical analysis of timing data (count, mean, median, min, max)
-- Window-based limiting of stored metrics to prevent memory issues
-- Context manager for timing operations
-- Function decorator for timing function execution
-
-Example usage:
-
-```python
-from abidance.monitoring.performance import PerformanceMetrics
-
-# Create a metrics collector
-metrics = PerformanceMetrics(window_size=1000)
-
-# Record timing manually
-metrics.record_timing("operation_name", 0.1)
-
-# Use context manager for timing
-with metrics.timed_operation("database_query"):
-    # Code to time goes here
-    result = db.execute_query()
-
-# Get statistics
-stats = metrics.get_statistics("database_query")
-print(f"Mean query time: {stats['mean']:.3f}s")
-```
-
-### Specialized Collectors
-
-The monitoring system includes specialized collectors for different parts of the trading system:
-
-- `ExchangeMetrics`: For monitoring exchange operations like API calls and order placement
-- `StrategyMetrics`: For monitoring strategy operations like signal generation and backtesting
-
-Example usage:
-
-```python
-from abidance.monitoring.collectors import ExchangeMetrics, time_function
-
-# Create an exchange metrics collector
-exchange_metrics = ExchangeMetrics()
-
-# Record API call timing
-exchange_metrics.record_api_call("get_ticker", 0.05)
-
-# Use decorator for timing functions
-@time_function(exchange_metrics, "place_order")
-def place_order(symbol, side, quantity, price):
-    # Function code here
-    pass
-```
-
-### Function Decorator
-
-The `time_function` decorator provides an easy way to time function execution:
-
-```python
-from abidance.monitoring.collectors import time_function
-from abidance.monitoring.performance import PerformanceMetrics
-
-metrics = PerformanceMetrics()
-
-@time_function(metrics)
-def my_function():
-    # Function code here
-    pass
-
-# With custom operation name
-@time_function(metrics, "custom_operation_name")
-def another_function():
-    # Function code here
-    pass
-```
-
-## Tracing System
-
-The Abidance Trading Bot includes a distributed tracing system that helps track operations across different components of the system. This is particularly useful for debugging and performance analysis.
-
-### Key Components
-
-- **Tracer**: The main class responsible for creating and managing trace spans.
-- **Span**: Represents a single operation within a trace, with timing information and metadata.
-
-### Usage Example
-
-```python
-from abidance.tracing import Tracer
-
-# Create a tracer
-tracer = Tracer()
-
-# Start a span for a high-level operation
-with tracer.start_span("fetch_market_data", metadata={"exchange": "binance", "symbol": "BTC/USDT"}) as span:
-    # Perform the operation
-    
-    # Start a nested span for a sub-operation
-    with tracer.start_span("process_candles", metadata={"timeframe": "1h"}) as sub_span:
-        # Perform the sub-operation
-        pass
-        
-    # The parent span becomes active again after the sub-span completes
-```
-
-### Features
-
-- **Nested Spans**: Spans can be nested to represent parent-child relationships between operations.
-- **Timing Information**: Each span records its start and end time, allowing for performance analysis.
-- **Metadata**: Spans can include arbitrary metadata to provide context for the operation.
-- **Trace Retrieval**: All spans belonging to a specific trace can be retrieved for analysis.
-
-### Benefits
-
-- **Performance Analysis**: Identify bottlenecks in the system by analyzing span durations.
-- **Debugging**: Trace the flow of operations through the system to identify issues.
-- **Monitoring**: Track the frequency and duration of operations for monitoring purposes.
-
-## Health Checking System
-
-The Abidance Trading Bot includes a comprehensive health checking system that enables monitoring the health of various system components and services. This system is implemented in the `abidance.health` package and provides the following features:
-
-### Key Components
-
-- **HealthStatus**: An enumeration representing the health status of a component:
-  - `HEALTHY`: The component is functioning normally
-  - `DEGRADED`: The component is functioning but with reduced performance or capabilities
-  - `UNHEALTHY`: The component is not functioning properly
-
-- **HealthCheck**: The main class responsible for registering and running health checks:
-  - Provides methods for registering and unregistering health checks
-  - Runs all registered health checks asynchronously
-  - Handles errors in health checks gracefully
-  - Returns detailed results including status, timestamp, and error information
-
-- **Common Health Checks**: A collection of factory functions for creating common health checks:
-  - `create_memory_check`: Monitors available system memory
-  - `create_cpu_check`: Monitors CPU usage
-  - `create_disk_space_check`: Monitors available disk space
-  - `create_api_health_check`: Monitors the health of an API endpoint
-  - `create_database_check`: Monitors database connectivity
-
-### Usage Example
-
-```python
-from abidance.health import (
-    HealthStatus, HealthCheck,
-    create_memory_check, create_cpu_check, create_disk_space_check,
-    create_api_health_check, create_database_check
-)
-
-# Create a health checker
-health_checker = HealthCheck()
-
-# Register common health checks
-health_checker.register_check("memory", create_memory_check(threshold_mb=500))
-health_checker.register_check("cpu", create_cpu_check(threshold_percent=80))
-health_checker.register_check("disk", create_disk_space_check(path="/", threshold_gb=10))
-health_checker.register_check("api", create_api_health_check(url="https://api.example.com/health"))
-
-# Register a custom database health check
-def check_database_connection():
-    # Custom logic to check database connection
-    return True  # Return True if connection is healthy, False otherwise
-
-health_checker.register_check("database", create_database_check(check_database_connection))
-
-# Run all health checks
-async def check_system_health():
-    results = await health_checker.run_checks()
-    
-    # Process results
-    for name, result in results.items():
-        print(f"{name}: {result['status']} at {result['timestamp']}")
-        if result['error']:
-            print(f"  Error: {result['error']}")
+# Save the report
+report_path = report_generator.save_report(report_data)
+print(f"Report saved to: {report_path}")
+
+# Plot equity curve
+fig, ax = report_generator.plot_equity_curve(trades, save_path="reports/equity_curve.png")
 ```
 
 ### Benefits
 
-- **Early Problem Detection**: Identify issues before they become critical
-- **Comprehensive Monitoring**: Monitor various aspects of the system
-- **Graceful Degradation**: Detect degraded components and take appropriate action
-- **Detailed Reporting**: Get detailed information about component health
-- **Extensibility**: Easily add custom health checks for specific components
+- **Standardized Evaluation**: Consistent metrics for comparing different strategies
+- **Comprehensive Analysis**: Multiple metrics provide a holistic view of strategy performance
+- **Visual Representation**: Equity curve plots help visualize strategy performance over time
+- **Persistent Storage**: Reports can be saved for future reference and comparison
+- **Flexible Integration**: The framework can be used with any strategy that produces trade history
 
-This health checking system provides a robust foundation for monitoring the health of the Abidance Trading Bot and its dependencies, enabling proactive issue detection and resolution.
-
-## Technical Indicators
-
-The Abidance Trading Bot now features an object-oriented approach to technical indicators, providing a consistent interface for all indicator implementations.
-
-### Indicator Base Class
-
-All indicators inherit from the `Indicator` abstract base class, which defines the common interface:
-
-```python
-class Indicator(ABC):
-    @abstractmethod
-    def calculate(self, data: pd.DataFrame) -> Union[pd.Series, pd.DataFrame]:
-        """Calculate the indicator values."""
-        pass
-    
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        """Get the name of the indicator."""
-        pass
-```
-
-### Momentum Indicators
-
-The `momentum.py` module implements momentum-based indicators:
-
-1. **RSI (Relative Strength Index)**
-   - Measures the speed and change of price movements
-   - Returns values between 0 and 100
-   - Values above 70 typically indicate overbought conditions
-   - Values below 30 typically indicate oversold conditions
-
-2. **MACD (Moving Average Convergence Divergence)**
-   - Trend-following momentum indicator
-   - Shows the relationship between two moving averages of a security's price
-   - Components:
-     - MACD line: Difference between fast and slow EMAs
-     - Signal line: EMA of the MACD line
-     - Histogram: Difference between MACD and signal lines
-
-### Backward Compatibility
-
-The indicators package maintains backward compatibility with the previous functional approach through re-exported functions in the `__init__.py` file. This allows existing code to continue working while new code can take advantage of the object-oriented approach.
-
-## Strategy Optimization
-
-The Abidance Trading Bot includes a comprehensive strategy optimization framework that helps find optimal parameters for trading strategies:
-
-- **Grid Search**: The `StrategyOptimizer` class performs grid search over parameter combinations to find the best performing set.
-- **Parallel Execution**: Parameter evaluation is parallelized for improved performance, utilizing multiple CPU cores.
-- **Performance Metrics**: Various metrics are available to evaluate strategy performance:
-  - **Sharpe Ratio**: Measures risk-adjusted return
-  - **Sortino Ratio**: Similar to Sharpe but only considers downside risk
-  - **Maximum Drawdown**: Measures the largest peak-to-trough decline
-  - **Win Rate**: Percentage of profitable trades
-  - **Profit Factor**: Ratio of gross profits to gross losses
-- **Backtest Integration**: The Strategy base class includes a backtest method that provides a consistent interface for strategy evaluation.
-- **Result Ranking**: Optimization results are sorted by performance to easily identify the best parameter combinations.
-
-### Usage Example
-
-```python
-from abidance.optimization import StrategyOptimizer, calculate_sharpe_ratio
-from abidance.strategy import SMAStrategy
-
-# Define parameter ranges to search
-parameter_ranges = {
-    'short_window': [5, 10, 15, 20],
-    'long_window': [50, 100, 150, 200]
-}
-
-# Create optimizer
-optimizer = StrategyOptimizer(
-    strategy_class=SMAStrategy,
-    parameter_ranges=parameter_ranges,
-    metric_function=calculate_sharpe_ratio
-)
-
-# Run optimization
-results = optimizer.optimize(historical_data, max_iterations=100, n_jobs=4)
-
-# Get best parameters
-best_params = results[0].parameters
-best_performance = results[0].performance_metrics['metric']
-```
+This evaluation framework provides a robust foundation for assessing trading strategy performance and making data-driven decisions about strategy selection and parameter tuning.
