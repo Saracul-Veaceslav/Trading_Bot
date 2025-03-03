@@ -1399,3 +1399,13 @@ During code quality improvements, several common issues were identified and fixe
    - These functions are critical for type conversion and validation throughout the codebase.
 
 Fixing these issues resulted in all tests passing successfully, improving the reliability and correctness of the codebase.
+
+## Database Design
+
+- SQLAlchemy models can be used to create a clean and maintainable database schema for trading data
+- Using SQLAlchemy's declarative_base from sqlalchemy.orm instead of sqlalchemy.ext.declarative avoids deprecation warnings in SQLAlchemy 2.0
+- Unique constraints on OHLCV data (symbol + timestamp) prevent duplicate market data entries
+- Creating indexes on frequently queried fields (symbol, timestamp) improves query performance
+- Alembic provides a robust migration system for evolving the database schema over time
+- Using in-memory SQLite databases for testing provides fast and isolated test environments
+- The relationship between Strategy and Trade models allows for efficient querying of trades by strategy
