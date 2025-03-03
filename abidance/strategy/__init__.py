@@ -11,6 +11,7 @@ from .registry import StrategyRegistry
 from .sma import SMAStrategy, SMAConfig
 from .rsi import RSIStrategy, RSIConfig
 from .protocols import Strategy as StrategyProtocol, StrategyFactory
+from .composition import CompositeStrategy, VotingStrategy
 from .indicators import (
     calculate_sma,
     calculate_ema,
@@ -41,6 +42,10 @@ __all__ = [
     "SMAConfig",
     "RSIStrategy",
     "RSIConfig",
+    
+    # Composite strategies
+    "CompositeStrategy",
+    "VotingStrategy",
     
     # Indicators
     "calculate_sma",

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Strategy Composition Framework with CompositeStrategy and VotingStrategy classes
 - Strategy Optimization Framework with grid search capabilities
 - Performance metrics calculation (Sharpe ratio, Sortino ratio, max drawdown, win rate, profit factor)
 - Parallel optimization execution for improved performance

@@ -11,6 +11,9 @@ The Abidance Trading Bot is organized into the following core components:
     - **indicators**: Object-oriented technical indicators with a consistent interface
       - **base.py**: Base Indicator abstract class defining the common interface
       - **momentum.py**: Momentum indicators like RSI and MACD
+    - **composition.py**: Strategy composition framework for combining multiple strategies
+      - **CompositeStrategy**: Base class for composite strategies with weighted signal combination
+      - **VotingStrategy**: Strategy that uses majority voting to combine signals
   - **optimization**: Strategy parameter optimization and performance metrics
     - **optimizer.py**: StrategyOptimizer class for parameter grid search
     - **metrics.py**: Performance metric calculations (Sharpe, Sortino, etc.)
