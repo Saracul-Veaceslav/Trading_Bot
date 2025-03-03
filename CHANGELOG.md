@@ -52,6 +52,10 @@ All notable changes to this project will be documented in this file.
 - Specialized metric collectors for exchange and strategy operations
 - Context manager for timing operations
 - Function decorator for timing function execution
+- Distributed tracing system for tracking operations across components
+- Span-based tracing with parent-child relationship support
+- Trace context management with timing information
+- Metadata enrichment for trace spans
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles

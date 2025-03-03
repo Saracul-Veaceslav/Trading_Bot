@@ -18,6 +18,7 @@ The Abidance Trading Bot is organized into the following core components:
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
   - **api**: API interfaces and implementations
+  - **tracing**: Distributed tracing system for tracking operations
   - **monitoring**: Performance monitoring and metrics collection
   - **logging**: Advanced logging framework with structured JSON output
   - **ml**: Machine learning models and utilities
@@ -1057,3 +1058,45 @@ def another_function():
     # Function code here
     pass
 ```
+
+## Tracing System
+
+The Abidance Trading Bot includes a distributed tracing system that helps track operations across different components of the system. This is particularly useful for debugging and performance analysis.
+
+### Key Components
+
+- **Tracer**: The main class responsible for creating and managing trace spans.
+- **Span**: Represents a single operation within a trace, with timing information and metadata.
+
+### Usage Example
+
+```python
+from abidance.tracing import Tracer
+
+# Create a tracer
+tracer = Tracer()
+
+# Start a span for a high-level operation
+with tracer.start_span("fetch_market_data", metadata={"exchange": "binance", "symbol": "BTC/USDT"}) as span:
+    # Perform the operation
+    
+    # Start a nested span for a sub-operation
+    with tracer.start_span("process_candles", metadata={"timeframe": "1h"}) as sub_span:
+        # Perform the sub-operation
+        pass
+        
+    # The parent span becomes active again after the sub-span completes
+```
+
+### Features
+
+- **Nested Spans**: Spans can be nested to represent parent-child relationships between operations.
+- **Timing Information**: Each span records its start and end time, allowing for performance analysis.
+- **Metadata**: Spans can include arbitrary metadata to provide context for the operation.
+- **Trace Retrieval**: All spans belonging to a specific trace can be retrieved for analysis.
+
+### Benefits
+
+- **Performance Analysis**: Identify bottlenecks in the system by analyzing span durations.
+- **Debugging**: Trace the flow of operations through the system to identify issues.
+- **Monitoring**: Track the frequency and duration of operations for monitoring purposes.
