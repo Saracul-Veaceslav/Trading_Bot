@@ -47,6 +47,7 @@ All notable changes to this project will be documented in this file.
 - Custom log formatters with color support
 - Asynchronous log handlers for improved performance
 - Context-aware logging with request ID tracking
+- Documentation about expected PytestCollectionWarnings related to @runtime_checkable Protocol classes
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles

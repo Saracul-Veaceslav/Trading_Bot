@@ -944,3 +944,33 @@ When creating new modules in the Abidance Trading Bot, consider these naming gui
   - Use descriptive names that clearly indicate the module's purpose
 
 This approach helps maintain a clean, intuitive package structure while avoiding conflicts with standard libraries.
+
+## Test Framework Considerations
+
+### Expected Warnings in Test Suite
+
+The test suite contains some expected warnings that don't indicate actual issues:
+
+- **PytestCollectionWarnings for Protocol Classes**: When using `@runtime_checkable` Protocol classes in test files, pytest generates warnings about not being able to collect test classes with `__init__` constructors. These warnings appear in:
+  - `tests/unit/core/test_application_bootstrap.py` for the `TestComponent` Protocol
+  - `tests/unit/core/test_service_registry.py` for the `TestService` Protocol
+  
+  These warnings are expected and can be safely ignored as they're related to how pytest interacts with Protocol classes, not actual issues with the code. The Protocol classes are correctly defined and used in the tests.
+
+### Skipped Tests and Their Reasons
+
+The test suite contains several skipped tests for specific reasons:
+
+1. **Stop Loss and Take Profit Tests**: Tests related to stop loss and take profit functionality are skipped in multiple files because the implementation doesn't match test expectations or requires complex mocking:
+   - `test_check_stop_loss_take_profit_stop_loss` and `test_check_stop_loss_take_profit_take_profit` in exchange tests
+   - Similar tests in the strategy executor tests
+
+2. **Exchange Initialization Tests**: Tests like `test_initialize_exchange` and `test_get_current_price` are skipped because the implementation doesn't match test expectations. These tests would need to be updated to match the current implementation.
+
+3. **Strategy Loading Tests**: `test_load_strategy` is skipped because it requires complex mocking of the importlib module, which is challenging to implement correctly.
+
+4. **Asynchronous Handler Tests**: `test_process_queue` in the AsyncRotatingFileHandler tests is skipped because testing asynchronous queue processing is difficult to make work consistently.
+
+5. **Data Manager Tests**: `test_update_trade_exit` is skipped because it's difficult to make it work consistently due to timing and file system interactions.
+
+These skipped tests represent areas where the implementation has evolved beyond the original test design or where testing is inherently difficult due to asynchronous behavior, external dependencies, or complex interactions. They serve as documentation for future improvements to the test suite.
