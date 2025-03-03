@@ -34,6 +34,11 @@ The Abidance Trading Bot is organized into the following core components:
   - **logging**: Advanced logging framework with structured logging
   - **tracing**: Distributed tracing system for tracking operations
   - **health**: Health checking system for monitoring system components
+  - **database**: Database access and management
+    - **repository**: Repository pattern implementation for data access
+      - **base_repository.py**: Base repository with common CRUD operations and transaction support
+      - **trade_repository.py**: Trade-specific repository with specialized queries
+      - **strategy_repository.py**: Strategy-specific repository with specialized queries
   - **testing**: Testing infrastructure and utilities
     - **data_management.py**: HistoricalDataManager for storing and retrieving OHLCV data
     - **data_loaders.py**: Data loaders for fetching data from exchanges and loading from CSV files
@@ -52,6 +57,81 @@ The Abidance Trading Bot is organized into the following core components:
 - **Explicit Imports**: Modules explicitly import and re-export components from submodules
 - **No Circular Imports**: The module structure is designed to avoid circular imports
 - **Categorized Exports**: Exports in `__all__` are often categorized with comments for better readability
+
+## Repository Pattern Implementation
+
+The Abidance Trading Bot implements the Repository Pattern to provide a clean abstraction layer between the domain model and the data access layer. This pattern offers several benefits:
+
+1. **Separation of Concerns**: Isolates data access logic from business logic
+2. **Testability**: Makes it easier to mock data access for unit testing
+3. **Maintainability**: Centralizes data access code, reducing duplication
+4. **Flexibility**: Allows changing the underlying data storage without affecting business logic
+
+The repository implementation consists of:
+
+### BaseRepository
+
+The `BaseRepository` class provides common CRUD operations for all entity types:
+
+- **add**: Adds a new entity to the database
+- **get_by_id**: Retrieves an entity by its ID
+- **list**: Lists all entities of a specific type
+- **delete**: Deletes an entity from the database
+- **transaction**: Context manager for transaction handling
+
+Example usage:
+```python
+with repository.transaction() as session:
+    repository.add(entity, session=session)
+    # If an exception occurs, the transaction will be rolled back
+```
+
+### TradeRepository
+
+The `TradeRepository` extends the `BaseRepository` with trade-specific queries:
+
+- **get_trades_by_symbol**: Retrieves trades for a specific symbol
+- **get_trades_by_date_range**: Retrieves trades within a date range
+- **get_trades_by_strategy**: Retrieves trades for a specific strategy
+- **get_latest_trade_by_symbol**: Retrieves the most recent trade for a symbol
+
+### StrategyRepository
+
+The `StrategyRepository` extends the `BaseRepository` with strategy-specific queries:
+
+- **get_by_name**: Retrieves a strategy by its name
+- **get_strategies_by_date_range**: Retrieves strategies within a date range
+- **get_strategies_with_trades**: Retrieves strategies with their associated trades
+- **get_strategies_by_parameter**: Retrieves strategies with a specific parameter value
+
+### Transaction Handling
+
+The repository implementation includes robust transaction handling:
+
+- Transactions are managed using a context manager
+- Automatic rollback on exceptions
+- Session management is handled internally
+- Support for explicit session passing for multi-repository operations
+
+Example of transaction rollback:
+```python
+try:
+    with repository.transaction() as session:
+        repository.add(entity1, session=session)
+        # If this raises an exception, the transaction will be rolled back
+        repository.add(entity2, session=session)
+except Exception:
+    # The database state remains unchanged
+    pass
+```
+
+### Date Range Filtering
+
+The repositories provide date range filtering capabilities:
+
+- Support for both naive and timezone-aware datetime objects
+- Consistent handling of date ranges across repositories
+- Efficient querying using database indexes
 
 ## Avoiding Cyclic Imports
 
