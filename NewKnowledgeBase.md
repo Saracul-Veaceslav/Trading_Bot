@@ -48,6 +48,11 @@ The Abidance Trading Bot is organized into the following core components:
     - **binance_data_fetcher.py**: Binance data fetching utilities for testing
     - **properties.py**: Property-based testing utilities for strategies
     - **generators.py**: Data generators for property-based testing
+  - **database**: Database models, repositories, and query optimization
+    - **models.py**: SQLAlchemy ORM models for trades, strategies, and OHLCV data
+    - **repository**: Repository pattern implementation for data access
+    - **queries.py**: Optimized query implementations for efficient data retrieval
+    - **indexes.py**: Database index management for improved query performance
 
 ## Module Structure
 
@@ -1600,3 +1605,45 @@ def get_strategies_by_parameter(self, parameter_name: str) -> List[Strategy]:
     # Convert the result to Strategy objects
     return [Strategy(**row._mapping) for row in result]
 ```
+
+## Database Query Optimization
+
+### Window Functions for Efficient Indicator Calculation
+
+The Abidance Trading Bot uses SQL window functions to efficiently calculate technical indicators directly in the database, reducing the need to transfer large amounts of data to the application layer. This approach significantly improves performance when working with large datasets.
+
+Example of calculating SMA using window functions:
+
+```sql
+SELECT 
+    timestamp,
+    close,
+    AVG(close) OVER (
+        ORDER BY timestamp 
+        ROWS BETWEEN 13 PRECEDING AND CURRENT ROW
+    ) as sma_14
+FROM ohlcv
+WHERE symbol = 'BTC/USDT'
+ORDER BY timestamp
+```
+
+### Function-Based Indexes for Time-Based Aggregations
+
+To optimize time-based queries and aggregations, the bot uses function-based indexes on timestamp columns. These indexes improve the performance of queries that group data by time intervals (hourly, daily, etc.).
+
+Example of creating a function-based index for daily aggregation:
+
+```sql
+CREATE INDEX idx_ohlcv_date 
+ON ohlcv(strftime('%Y-%m-%d', timestamp))
+```
+
+### Repository Pattern with Optimized Queries
+
+The bot implements the repository pattern to provide a clean abstraction over data access. The QueryOptimizer class extends this pattern with specialized methods for common query patterns, optimized for performance.
+
+Key benefits of this approach:
+- Centralized query optimization
+- Consistent query patterns across the application
+- Improved testability with mock repositories
+- Reduced duplication of query logic
