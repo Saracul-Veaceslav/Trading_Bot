@@ -43,6 +43,10 @@ All notable changes to this project will be documented in this file.
 - Fixed fee calculation in trading summary to correctly sum all fees
 - Enabled data recording functionality to store market data, trades, and strategy states
 - Implemented file-based storage for OHLCV data, trades, and strategy states
+- Advanced logging framework with structured JSON logging
+- Custom log formatters with color support
+- Asynchronous log handlers for improved performance
+- Context-aware logging with request ID tracking
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles

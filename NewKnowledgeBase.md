@@ -18,6 +18,7 @@ The Abidance Trading Bot is organized into the following core components:
   - **web**: Web interface components
   - **core**: Core domain models and fundamental types
   - **api**: API interfaces and implementations
+  - **logging**: Advanced logging framework with structured JSON output
   - **ml**: Machine learning models and utilities
 
 ## Module Structure
@@ -737,6 +738,55 @@ When creating a strategy instance, you must:
 3. Pass the configuration object to the strategy constructor
 
 This pattern allows for type-safe strategy configuration and initialization.
+
+## Advanced Logging Framework
+
+The Abidance Trading Bot includes a sophisticated logging framework that provides structured JSON logging for better log analysis and integration with log management systems.
+
+### Key Components
+
+- **StructuredLogger**: A logger that outputs logs in JSON format with consistent fields like timestamp, logger name, log level, and message.
+- **Context Variables**: Support for context variables like request_id that can be set once and automatically included in all logs within that context.
+- **Custom Formatters**:
+  - **JsonFormatter**: Formats log records as JSON with configurable fields.
+  - **ColoredConsoleFormatter**: Adds color to console output based on log level for better readability.
+- **Custom Handlers**:
+  - **AsyncRotatingFileHandler**: Writes logs to a file asynchronously to avoid blocking the main thread.
+  - **JsonFileHandler**: Ensures each log entry is written as a valid JSON object on a new line.
+  - **ContextAwareHandler**: Adds context information like hostname and process ID to log records.
+
+### Usage Examples
+
+```python
+from abidance.logging import StructuredLogger, request_id
+
+# Create a logger
+logger = StructuredLogger('my_component')
+
+# Set a request ID for the current context
+token = request_id.set('abc-123')
+
+# Log with structured data
+logger.info("Processing order", order_id=12345, user_id=42)
+
+# Log errors with context
+try:
+    # Some operation
+    pass
+except Exception as e:
+    logger.error("Failed to process order", order_id=12345, exception=str(e))
+
+# Reset the request ID when done
+request_id.reset(token)
+```
+
+### Benefits
+
+- **Structured Data**: All logs are in a consistent JSON format for easy parsing and analysis.
+- **Context Tracking**: Request IDs and other context variables help trace operations across components.
+- **Performance**: Asynchronous logging prevents I/O operations from blocking the main thread.
+- **Readability**: Colored console output makes logs easier to read during development.
+- **Integration**: JSON format makes it easy to integrate with log management systems like ELK Stack or Splunk.
 
 # New Knowledge Base
 
