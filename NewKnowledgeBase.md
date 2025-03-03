@@ -34,6 +34,11 @@ The Abidance Trading Bot is organized into the following core components:
   - **logging**: Advanced logging framework with structured logging
   - **tracing**: Distributed tracing system for tracking operations
   - **health**: Health checking system for monitoring system components
+  - **database**: Database access and management
+    - **repository**: Repository pattern implementation for data access
+      - **base_repository.py**: Base repository with common CRUD operations and transaction support
+      - **trade_repository.py**: Trade-specific repository with specialized queries
+      - **strategy_repository.py**: Strategy-specific repository with specialized queries
   - **testing**: Testing infrastructure and utilities
     - **data_management.py**: HistoricalDataManager for storing and retrieving OHLCV data
     - **data_loaders.py**: Data loaders for fetching data from exchanges and loading from CSV files
@@ -52,6 +57,81 @@ The Abidance Trading Bot is organized into the following core components:
 - **Explicit Imports**: Modules explicitly import and re-export components from submodules
 - **No Circular Imports**: The module structure is designed to avoid circular imports
 - **Categorized Exports**: Exports in `__all__` are often categorized with comments for better readability
+
+## Repository Pattern Implementation
+
+The Abidance Trading Bot implements the Repository Pattern to provide a clean abstraction layer between the domain model and the data access layer. This pattern offers several benefits:
+
+1. **Separation of Concerns**: Isolates data access logic from business logic
+2. **Testability**: Makes it easier to mock data access for unit testing
+3. **Maintainability**: Centralizes data access code, reducing duplication
+4. **Flexibility**: Allows changing the underlying data storage without affecting business logic
+
+The repository implementation consists of:
+
+### BaseRepository
+
+The `BaseRepository` class provides common CRUD operations for all entity types:
+
+- **add**: Adds a new entity to the database
+- **get_by_id**: Retrieves an entity by its ID
+- **list**: Lists all entities of a specific type
+- **delete**: Deletes an entity from the database
+- **transaction**: Context manager for transaction handling
+
+Example usage:
+```python
+with repository.transaction() as session:
+    repository.add(entity, session=session)
+    # If an exception occurs, the transaction will be rolled back
+```
+
+### TradeRepository
+
+The `TradeRepository` extends the `BaseRepository` with trade-specific queries:
+
+- **get_trades_by_symbol**: Retrieves trades for a specific symbol
+- **get_trades_by_date_range**: Retrieves trades within a date range
+- **get_trades_by_strategy**: Retrieves trades for a specific strategy
+- **get_latest_trade_by_symbol**: Retrieves the most recent trade for a symbol
+
+### StrategyRepository
+
+The `StrategyRepository` extends the `BaseRepository` with strategy-specific queries:
+
+- **get_by_name**: Retrieves a strategy by its name
+- **get_strategies_by_date_range**: Retrieves strategies within a date range
+- **get_strategies_with_trades**: Retrieves strategies with their associated trades
+- **get_strategies_by_parameter**: Retrieves strategies with a specific parameter value
+
+### Transaction Handling
+
+The repository implementation includes robust transaction handling:
+
+- Transactions are managed using a context manager
+- Automatic rollback on exceptions
+- Session management is handled internally
+- Support for explicit session passing for multi-repository operations
+
+Example of transaction rollback:
+```python
+try:
+    with repository.transaction() as session:
+        repository.add(entity1, session=session)
+        # If this raises an exception, the transaction will be rolled back
+        repository.add(entity2, session=session)
+except Exception:
+    # The database state remains unchanged
+    pass
+```
+
+### Date Range Filtering
+
+The repositories provide date range filtering capabilities:
+
+- Support for both naive and timezone-aware datetime objects
+- Consistent handling of date ranges across repositories
+- Efficient querying using database indexes
 
 ## Avoiding Cyclic Imports
 
@@ -1409,3 +1489,114 @@ Fixing these issues resulted in all tests passing successfully, improving the re
 - Alembic provides a robust migration system for evolving the database schema over time
 - Using in-memory SQLite databases for testing provides fast and isolated test environments
 - The relationship between Strategy and Trade models allows for efficient querying of trades by strategy
+
+## SQLite JSON Handling
+
+SQLite provides JSON support through its JSON1 extension, which is enabled by default in recent versions. When working with JSON data in SQLite through SQLAlchemy, there are several important considerations:
+
+### JSON1 Extension Functions
+
+SQLite's JSON1 extension provides several functions for working with JSON data:
+
+- **json_extract**: Extracts a value from a JSON string using a path expression
+- **json_array**: Creates a new JSON array
+- **json_object**: Creates a new JSON object
+- **json_type**: Returns the type of a JSON value
+- **json_valid**: Checks if a string is valid JSON
+- **json_each**: Expands a JSON array into a set of rows
+- **json_tree**: Expands a JSON object into a set of rows
+
+### SQLAlchemy Integration
+
+When using SQLAlchemy with SQLite's JSON support, there are some specific patterns to follow:
+
+1. **JSON Column Type**: Use the `JSON` column type from SQLAlchemy to store JSON data
+   ```python
+   parameters = Column(JSON, nullable=False)
+   ```
+
+2. **JSON Extraction**: Use the `func.json_extract` function to extract values from JSON columns
+   ```python
+   from sqlalchemy import func
+   
+   # Extract a specific parameter
+   query = select(Strategy).where(
+       func.json_extract(Strategy.parameters, "$.parameter_name") == value
+   )
+   ```
+
+3. **Null Handling**: When checking for the existence of a JSON key, use `is not None` instead of `!= None`
+   ```python
+   # Correct way to check if a key exists
+   query = select(Strategy).where(
+       func.json_extract(Strategy.parameters, "$.parameter_name") is not None
+   )
+   ```
+
+4. **Raw SQL for Complex Queries**: For complex JSON queries, sometimes using raw SQL with the `text` function provides more reliable results
+   ```python
+   from sqlalchemy import text
+   
+   sql = text("""
+       SELECT s.* FROM strategies s
+       WHERE json_extract(s.parameters, '$.parameter_name') IS NOT NULL
+   """)
+   result = session.execute(sql)
+   ```
+
+5. **Converting Results**: When using raw SQL, you need to convert the results back to model objects
+   ```python
+   # Convert raw SQL results to model objects
+   return [Strategy(**row._mapping) for row in result]
+   ```
+
+### Common Pitfalls
+
+1. **Operator Precedence**: In SQLite, the `IS NOT NULL` operator has different precedence than `!=`, which can lead to unexpected results when filtering JSON data.
+
+2. **Path Syntax**: SQLite's JSON path syntax uses `$` as the root, followed by dot notation for object properties and brackets for array indices.
+
+3. **Type Handling**: SQLite's JSON functions may return different types than expected, so explicit type casting may be necessary.
+
+4. **Performance**: Complex JSON queries can be slow, especially on large datasets. Consider denormalizing critical JSON fields into separate columns for better performance.
+
+5. **Compatibility**: While SQLite's JSON1 extension is powerful, it may not support all JSON operations available in other databases like PostgreSQL or MySQL.
+
+### Best Practices
+
+1. **Use Parameterized Queries**: Always use parameterized queries to avoid SQL injection, especially when working with JSON paths.
+
+2. **Test with Real Data**: JSON queries can behave differently with different data structures, so test with realistic data.
+
+3. **Consider Indexing**: For frequently queried JSON paths, consider creating indexes or denormalizing the data.
+
+4. **Handle Errors Gracefully**: JSON operations can fail if the data is malformed, so implement proper error handling.
+
+5. **Document JSON Schemas**: Document the expected structure of JSON data to ensure consistency across the application.
+
+### Example: Filtering Strategies by Parameter
+
+```python
+def get_strategies_by_parameter(self, parameter_name: str) -> List[Strategy]:
+    """
+    Get strategies that have a specific parameter.
+
+    Args:
+        parameter_name: Parameter name to search for
+
+    Returns:
+        List of strategies with the specified parameter
+    """
+    # Use a raw SQL query with json_extract to check if the parameter exists
+    # This is more reliable for SQLite JSON1 extension
+    sql = text(f"""
+        SELECT s.* FROM strategies s
+        WHERE json_extract(s.parameters, '$.{parameter_name}') IS NOT NULL
+    """)
+    
+    # Execute the raw SQL query
+    result = self._session.execute(sql)
+    
+    # Convert the result to Strategy objects
+    return [Strategy(**row._mapping) for row in result]
+```
