@@ -61,6 +61,7 @@ All notable changes to this project will be documented in this file.
 - Optimized performance-critical code paths
 - Improved error messages
 - Updated main application to use DataManager with file storage for data persistence
+- Updated pandas operations in strategy code to prevent downcasting warnings
 
 ### Fixed
 - Module shadowing issues
@@ -78,6 +79,8 @@ All notable changes to this project will be documented in this file.
 - Inconsistencies in type annotations
 - Inconsistencies in documentation
 - Fixed strategy initialization in abidance_main.py to properly create strategy config objects
+- Fixed test_no_module_shadowing to exclude 'logging' from shadowing checks due to intentional abidance.logging module
+- Fixed pandas FutureWarning related to silent downcasting in strategy code
 
 ## 0.2.0
 

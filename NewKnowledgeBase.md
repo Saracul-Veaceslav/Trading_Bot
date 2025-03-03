@@ -906,3 +906,41 @@ data/
 ```
 
 This structured approach allows for efficient storage and retrieval of different types of data while maintaining a clear organization.
+
+## Pandas Best Practices
+
+When working with pandas in the Abidance Trading Bot, it's important to follow these best practices to avoid warnings and ensure consistent behavior:
+
+### Handling Boolean Series and Downcasting
+
+- **Silent Downcasting Warning**: Pandas 2.0+ warns about silent downcasting when converting between types. To avoid these warnings:
+  - Use `infer_objects(copy=False)` before `astype(bool)` when converting Series to boolean types
+  - Set `pd.set_option('future.no_silent_downcasting', True)` at the module level to catch these issues early
+  - Always explicitly specify the desired type with `astype()` after using `fillna()`
+
+Example of proper boolean conversion:
+```python
+import pandas as pd
+pd.set_option('future.no_silent_downcasting', True)
+
+# Correct way to convert to boolean while avoiding downcasting warnings
+series = series.fillna(False).infer_objects(copy=False).astype(bool)
+```
+
+This pattern is used in several strategy implementations, including RSI and indicator calculations, to ensure consistent behavior and avoid warnings.
+
+## Module Naming Considerations
+
+When creating new modules in the Abidance Trading Bot, consider these naming guidelines:
+
+- **Avoid Shadowing Standard Libraries**: The package structure should avoid shadowing standard Python libraries or common third-party packages
+  - Exception: `abidance.logging` is an intentional exception as it provides enhanced logging functionality
+  - The test suite includes checks to prevent accidental shadowing (`test_no_module_shadowing`)
+  - When intentionally shadowing a module, document the reason and ensure it provides significant enhancements
+
+- **Consistent Naming**: Use consistent naming patterns across the codebase
+  - Use singular nouns for modules that define a single concept (e.g., `strategy`, `exchange`)
+  - Use plural nouns for modules that contain multiple implementations (e.g., `strategies`, `exchanges`)
+  - Use descriptive names that clearly indicate the module's purpose
+
+This approach helps maintain a clean, intuitive package structure while avoiding conflicts with standard libraries.

@@ -19,7 +19,7 @@ class TestImportConflicts:
             "os", "sys", "json", "csv", "time", "datetime", "math", "random",
             "collections", "itertools", "functools", "re", "hashlib", "uuid",
             "threading", "multiprocessing", "asyncio", "socket", "urllib",
-            "http", "email", "logging", "argparse", "pathlib", "typing",
+            "http", "email", "argparse", "pathlib", "typing",  # 'logging' removed as we have abidance.logging
             "numpy", "pandas", "matplotlib", "sklearn", "torch", "tensorflow",
             "pytest", "unittest", "flask", "django", "sqlalchemy", "requests"
         ]

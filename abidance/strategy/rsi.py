@@ -11,6 +11,8 @@ from ..trading.order import Order, OrderSide, OrderType
 from .base import Strategy, StrategyConfig
 from .indicators import calculate_rsi, detect_threshold_crossover
 
+# Set pandas option to prevent silent downcasting warnings
+pd.set_option('future.no_silent_downcasting', True)
 
 @dataclass
 class RSIConfig(StrategyConfig):
@@ -71,15 +73,13 @@ class RSIStrategy(Strategy):
         # Convert to boolean Series first to properly handle the logical operations
         is_above_oversold = df['rsi'] > self.config.oversold_threshold
         was_above_oversold = is_above_oversold.shift(1)
-        # Use recommended approach from warning message to avoid downcasting warning
-        was_above_oversold = was_above_oversold.fillna(False).infer_objects(copy=False)
-        was_above_oversold = was_above_oversold.astype(bool)
+        # Use infer_objects before astype to avoid downcasting warnings
+        was_above_oversold = was_above_oversold.fillna(False).infer_objects(copy=False).astype(bool)
         
         is_above_overbought = df['rsi'] > self.config.overbought_threshold
         was_above_overbought = is_above_overbought.shift(1)
-        # Use recommended approach from warning message to avoid downcasting warning
-        was_above_overbought = was_above_overbought.fillna(False).infer_objects(copy=False)
-        was_above_overbought = was_above_overbought.astype(bool)
+        # Use infer_objects before astype to avoid downcasting warnings
+        was_above_overbought = was_above_overbought.fillna(False).infer_objects(copy=False).astype(bool)
         
         # Detect oversold crossovers (crossing from below to above)
         df['oversold_crossover'] = 0
