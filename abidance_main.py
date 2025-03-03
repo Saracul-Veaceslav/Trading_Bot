@@ -100,7 +100,10 @@ def main():
         testnet=True  # Force testnet mode for paper trading
     )
     
-    data_manager = DataManager()
+    # Initialize data manager with file storage
+    data_dir = config.get('general', {}).get('data_dir', 'data')
+    logger.info(f"Initializing data manager with storage in '{data_dir}' directory")
+    data_manager = DataManager.create_with_file_storage(data_dir)
     
     # Initialize strategy registry and create strategy
     strategy_registry = StrategyRegistry()
@@ -109,13 +112,47 @@ def main():
     
     # Get strategy instance with correct parameters
     try:
-        strategy = strategy_registry.create_strategy(
-            strategy_id=strategy_name,
-            name=f"{strategy_name}_{symbol}_{timeframe}",
-            symbols=[symbol],
-            timeframe=timeframe,
-            parameters=config.get('strategies', {}).get(strategy_name, {})
-        )
+        # Create the appropriate config object based on strategy type
+        strategy_params = config.get('strategies', {}).get(strategy_name, {})
+        
+        if strategy_name == "sma_crossover":
+            from abidance.strategy import SMAConfig
+            strategy_config = SMAConfig(
+                name=f"{strategy_name}_{symbol}_{timeframe}",
+                symbols=[symbol],
+                timeframe=timeframe
+            )
+            # Add strategy-specific parameters
+            if 'fast_period' in strategy_params:
+                strategy_config.fast_period = strategy_params['fast_period']
+            if 'slow_period' in strategy_params:
+                strategy_config.slow_period = strategy_params['slow_period']
+            if 'volume_factor' in strategy_params:
+                strategy_config.volume_factor = strategy_params['volume_factor']
+                
+            strategy = SMAStrategy(strategy_config)
+            
+        elif strategy_name == "rsi_strategy":
+            from abidance.strategy import RSIConfig
+            strategy_config = RSIConfig(
+                name=f"{strategy_name}_{symbol}_{timeframe}",
+                symbols=[symbol],
+                timeframe=timeframe
+            )
+            # Add strategy-specific parameters
+            if 'rsi_period' in strategy_params:
+                strategy_config.rsi_period = strategy_params['rsi_period']
+            if 'oversold_threshold' in strategy_params:
+                strategy_config.oversold_threshold = strategy_params['oversold_threshold']
+            if 'overbought_threshold' in strategy_params:
+                strategy_config.overbought_threshold = strategy_params['overbought_threshold']
+                
+            strategy = RSIStrategy(strategy_config)
+            
+        else:
+            logger.error(f"Strategy '{strategy_name}' not supported")
+            return 1
+            
     except Exception as e:
         logger.error(f"Failed to create strategy: {e}")
         return 1
@@ -156,9 +193,101 @@ def main():
                 
                 # Fetch latest market data
                 logger.info(f"Fetching latest data for {symbol}")
+                try:
+                    # Get OHLCV data from exchange
+                    ohlcv_data = exchange.get_ohlcv(symbol, timeframe)
+                    
+                    # Convert to pandas DataFrame
+                    import pandas as pd
+                    import numpy as np
+                    from datetime import datetime
+                    
+                    # Create DataFrame from OHLCV data
+                    df = pd.DataFrame(ohlcv_data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+                    
+                    # Convert timestamp to datetime and set as index
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+                    df.set_index('timestamp', inplace=True)
+                    
+                    # Store the data
+                    success = data_manager.store_ohlcv_data(symbol, timeframe, df)
+                    if success:
+                        logger.info(f"Successfully stored {len(df)} OHLCV records for {symbol} ({timeframe})")
+                    else:
+                        logger.warning(f"Failed to store OHLCV data for {symbol} ({timeframe})")
+                        
+                    # Get current ticker data
+                    ticker = exchange.get_ticker(symbol)
+                    
+                    # Store ticker data as a trade record if price is available
+                    if ticker and 'last' in ticker:
+                        from abidance.trading.trade import Trade
+                        from abidance.trading.order import OrderSide
+                        
+                        # Create a "ticker" trade record
+                        trade = Trade(
+                            trade_id=f"ticker_{int(time.time())}",
+                            symbol=symbol,
+                            side=OrderSide.BUY,  # Placeholder side
+                            price=ticker['last'],
+                            quantity=0.0,  # Zero quantity for ticker records
+                            timestamp=datetime.fromtimestamp(ticker['timestamp']),
+                            fee=0.0,
+                            fee_currency=symbol.split('/')[1]  # Quote currency
+                        )
+                        
+                        # Store the trade
+                        success = data_manager.store_trade(trade)
+                        if success:
+                            logger.info(f"Stored ticker data for {symbol}: price={ticker['last']}")
+                        else:
+                            logger.warning(f"Failed to store ticker data for {symbol}")
+                except Exception as e:
+                    logger.error(f"Error fetching or storing market data: {e}")
                 
                 # Execute trading strategy
                 logger.info(f"Executing {strategy_name} strategy")
+                try:
+                    # Execute the strategy
+                    # In a real implementation, this would call strategy.execute() or similar
+                    # and get signals to execute trades
+                    
+                    # For now, we'll just store some basic strategy state
+                    strategy_state = {
+                        "iteration": iteration,
+                        "timestamp": datetime.now().isoformat(),
+                        "symbol": symbol,
+                        "timeframe": timeframe,
+                        "last_execution": time.time()
+                    }
+                    
+                    # Add strategy-specific state
+                    if strategy_name == "sma_crossover":
+                        # Add SMA values if we have them
+                        strategy_state.update({
+                            "strategy_type": "sma_crossover",
+                            "fast_period": getattr(strategy, "fast_period", None),
+                            "slow_period": getattr(strategy, "slow_period", None)
+                        })
+                    elif strategy_name == "rsi_strategy":
+                        # Add RSI values if we have them
+                        strategy_state.update({
+                            "strategy_type": "rsi_strategy",
+                            "rsi_period": getattr(strategy, "rsi_period", None),
+                            "oversold_threshold": getattr(strategy, "oversold_threshold", None),
+                            "overbought_threshold": getattr(strategy, "overbought_threshold", None)
+                        })
+                    
+                    # Store strategy state
+                    strategy_id = f"{strategy_name}_{symbol}_{timeframe}"
+                    success = data_manager.store_strategy_state(strategy_id, strategy_state)
+                    if success:
+                        logger.info(f"Stored state for strategy {strategy_id}")
+                    else:
+                        logger.warning(f"Failed to store state for strategy {strategy_id}")
+                        
+                except Exception as e:
+                    logger.error(f"Error executing strategy or storing state: {e}")
                 
                 # Check timeout
                 if timeout > 0 and (time.time() - start_time) > timeout:

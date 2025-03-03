@@ -719,6 +719,25 @@ print(f"Memory usage: {memory_metrics}")
     - **Implementation**:
       - Moved `ConfigurationError` definition to the `
 
+## Strategy Implementation Pattern
+
+The Abidance Trading Bot uses a specific pattern for strategy implementation:
+
+1. Each strategy has a corresponding configuration class (e.g., `SMAConfig` for `SMAStrategy`)
+2. The strategy constructor expects a configuration object of the appropriate type
+3. The configuration object contains all parameters needed by the strategy, including:
+   - `name`: A unique name for the strategy instance
+   - `symbols`: List of trading symbols the strategy will operate on
+   - `timeframe`: The timeframe for analysis (e.g., '15m', '1h')
+   - Strategy-specific parameters (e.g., `fast_period` and `slow_period` for SMA strategy)
+
+When creating a strategy instance, you must:
+1. Create the appropriate configuration object for the strategy type
+2. Set all required parameters on the configuration object
+3. Pass the configuration object to the strategy constructor
+
+This pattern allows for type-safe strategy configuration and initialization.
+
 # New Knowledge Base
 
 This document contains insights and lessons learned during the development of the Abidance Trading Bot.
@@ -730,3 +749,110 @@ This document contains insights and lessons learned during the development of th
 - When implementing metric aggregation, it's important to match the metric naming patterns used in the recording methods
 - For trading metrics, we need to handle both specific symbol queries and all-symbols aggregation differently
 - The `psutil` library is used for collecting system metrics like CPU and memory usage
+
+## Data Recording and Storage
+
+The Abidance Trading Bot implements a comprehensive data recording and storage system that allows for persistent storage of market data, trades, and strategy states. This system is built around the following components:
+
+### DataManager
+
+The `DataManager` class serves as the central coordinator for data storage and retrieval operations. It provides a unified interface for working with different types of data repositories and handles caching for improved performance.
+
+Key features of the DataManager:
+- Manages multiple repository types (OHLCV, Trade, Strategy)
+- Provides caching for frequently accessed data
+- Handles error logging and recovery
+- Offers factory methods for creating pre-configured instances
+
+### Repository Interfaces
+
+The system defines abstract repository interfaces for different types of data:
+- `OHLCVRepository`: For storing and retrieving market data (Open, High, Low, Close, Volume)
+- `TradeRepository`: For storing and retrieving trade records
+- `StrategyRepository`: For storing and retrieving strategy states
+
+### File-Based Implementations
+
+The default implementation uses file-based storage:
+- `FileOHLCVRepository`: Stores OHLCV data in CSV files organized by symbol and timeframe
+- `FileTradeRepository`: Stores trade records in CSV files organized by symbol
+- `FileStrategyRepository`: Stores strategy states in JSON files
+
+### Usage Example
+
+```python
+# Create a DataManager with file-based storage
+data_dir = "data"
+data_manager = DataManager.create_with_file_storage(data_dir)
+
+# Store OHLCV data
+import pandas as pd
+ohlcv_data = pd.DataFrame({
+    "open": [100.0, 101.0, 102.0],
+    "high": [105.0, 106.0, 107.0],
+    "low": [98.0, 99.0, 100.0],
+    "close": [103.0, 104.0, 105.0],
+    "volume": [1000, 1100, 1200]
+}, index=pd.date_range(start="2023-01-01", periods=3, freq="1h"))
+
+data_manager.store_ohlcv_data("BTC/USDT", "1h", ohlcv_data)
+
+# Retrieve OHLCV data
+retrieved_data = data_manager.get_ohlcv_data("BTC/USDT", "1h")
+
+# Store a trade
+from abidance.trading.trade import Trade
+from abidance.trading.order import OrderSide
+from datetime import datetime
+
+trade = Trade(
+    trade_id="123456",
+    symbol="BTC/USDT",
+    side=OrderSide.BUY,
+    price=50000.0,
+    quantity=1.0,
+    timestamp=datetime.now(),
+    fee=50.0,
+    fee_currency="USDT"
+)
+
+data_manager.store_trade(trade)
+
+# Store strategy state
+strategy_state = {
+    "iteration": 1,
+    "timestamp": datetime.now().isoformat(),
+    "symbol": "BTC/USDT",
+    "timeframe": "1h",
+    "last_execution": datetime.now().timestamp(),
+    "strategy_type": "sma_crossover",
+    "fast_period": 10,
+    "slow_period": 50
+}
+
+data_manager.store_strategy_state("sma_crossover_BTC/USDT_1h", strategy_state)
+```
+
+### Data Storage Structure
+
+The file-based storage implementation organizes data as follows:
+
+```
+data/
+├── ohlcv/
+│   ├── BTC_USDT/
+│   │   ├── 1h.csv
+│   │   ├── 4h.csv
+│   │   └── metadata.json
+│   └── ETH_USDT/
+│       ├── 1h.csv
+│       └── metadata.json
+├── trades/
+│   ├── BTC_USDT.csv
+│   └── ETH_USDT.csv
+└── strategy/
+    ├── sma_crossover_BTC_USDT_1h.json
+    └── rsi_strategy_ETH_USDT_4h.json
+```
+
+This structured approach allows for efficient storage and retrieval of different types of data while maintaining a clear organization.

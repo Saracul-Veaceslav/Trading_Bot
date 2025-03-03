@@ -41,6 +41,8 @@ All notable changes to this project will be documented in this file.
 - Fixed infinite loop issue in SystemMetricsCollector by adding single_run parameter
 - Fixed TradingMetricsCollector.get_trading_summary method to correctly handle both specific symbol and all symbols cases
 - Fixed fee calculation in trading summary to correctly sum all fees
+- Enabled data recording functionality to store market data, trades, and strategy states
+- Implemented file-based storage for OHLCV data, trades, and strategy states
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
@@ -54,6 +56,7 @@ All notable changes to this project will be documented in this file.
 - Improved documentation
 - Optimized performance-critical code paths
 - Improved error messages
+- Updated main application to use DataManager with file storage for data persistence
 
 ### Fixed
 - Module shadowing issues
@@ -70,6 +73,7 @@ All notable changes to this project will be documented in this file.
 - Inconsistencies in logging
 - Inconsistencies in type annotations
 - Inconsistencies in documentation
+- Fixed strategy initialization in abidance_main.py to properly create strategy config objects
 
 ## 0.2.0
 
