@@ -69,7 +69,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities
 - Improved frequency handling in HistoricalDataManager for consistent data retrieval
-- Improved code quality score from 8.26/10 to 8.70/10 through code cleanup and refactoring
+- Improved code quality score from 8.26/10 to 9.0/10 through code cleanup and refactoring
+- Refactored repository implementation to improve code quality and maintainability
+- Enhanced JSON parameter handling in StrategyRepository for more reliable filtering
 
 ### Fixed
 - Symbol handling in HistoricalDataManager to properly handle special characters
@@ -95,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed _parse_timeframe function in mock_data.py to properly raise ValueError for unsupported timeframe units
 - Fixed transaction handling in BaseRepository to properly rollback on exceptions
 - Fixed date range filtering in repositories to handle timezone-aware datetime objects
+- Fixed JSON parameter filtering in StrategyRepository to correctly identify strategies with specific parameters
 
 ### Removed
 

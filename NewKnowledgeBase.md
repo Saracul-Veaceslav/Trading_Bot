@@ -1489,3 +1489,114 @@ Fixing these issues resulted in all tests passing successfully, improving the re
 - Alembic provides a robust migration system for evolving the database schema over time
 - Using in-memory SQLite databases for testing provides fast and isolated test environments
 - The relationship between Strategy and Trade models allows for efficient querying of trades by strategy
+
+## SQLite JSON Handling
+
+SQLite provides JSON support through its JSON1 extension, which is enabled by default in recent versions. When working with JSON data in SQLite through SQLAlchemy, there are several important considerations:
+
+### JSON1 Extension Functions
+
+SQLite's JSON1 extension provides several functions for working with JSON data:
+
+- **json_extract**: Extracts a value from a JSON string using a path expression
+- **json_array**: Creates a new JSON array
+- **json_object**: Creates a new JSON object
+- **json_type**: Returns the type of a JSON value
+- **json_valid**: Checks if a string is valid JSON
+- **json_each**: Expands a JSON array into a set of rows
+- **json_tree**: Expands a JSON object into a set of rows
+
+### SQLAlchemy Integration
+
+When using SQLAlchemy with SQLite's JSON support, there are some specific patterns to follow:
+
+1. **JSON Column Type**: Use the `JSON` column type from SQLAlchemy to store JSON data
+   ```python
+   parameters = Column(JSON, nullable=False)
+   ```
+
+2. **JSON Extraction**: Use the `func.json_extract` function to extract values from JSON columns
+   ```python
+   from sqlalchemy import func
+   
+   # Extract a specific parameter
+   query = select(Strategy).where(
+       func.json_extract(Strategy.parameters, "$.parameter_name") == value
+   )
+   ```
+
+3. **Null Handling**: When checking for the existence of a JSON key, use `is not None` instead of `!= None`
+   ```python
+   # Correct way to check if a key exists
+   query = select(Strategy).where(
+       func.json_extract(Strategy.parameters, "$.parameter_name") is not None
+   )
+   ```
+
+4. **Raw SQL for Complex Queries**: For complex JSON queries, sometimes using raw SQL with the `text` function provides more reliable results
+   ```python
+   from sqlalchemy import text
+   
+   sql = text("""
+       SELECT s.* FROM strategies s
+       WHERE json_extract(s.parameters, '$.parameter_name') IS NOT NULL
+   """)
+   result = session.execute(sql)
+   ```
+
+5. **Converting Results**: When using raw SQL, you need to convert the results back to model objects
+   ```python
+   # Convert raw SQL results to model objects
+   return [Strategy(**row._mapping) for row in result]
+   ```
+
+### Common Pitfalls
+
+1. **Operator Precedence**: In SQLite, the `IS NOT NULL` operator has different precedence than `!=`, which can lead to unexpected results when filtering JSON data.
+
+2. **Path Syntax**: SQLite's JSON path syntax uses `$` as the root, followed by dot notation for object properties and brackets for array indices.
+
+3. **Type Handling**: SQLite's JSON functions may return different types than expected, so explicit type casting may be necessary.
+
+4. **Performance**: Complex JSON queries can be slow, especially on large datasets. Consider denormalizing critical JSON fields into separate columns for better performance.
+
+5. **Compatibility**: While SQLite's JSON1 extension is powerful, it may not support all JSON operations available in other databases like PostgreSQL or MySQL.
+
+### Best Practices
+
+1. **Use Parameterized Queries**: Always use parameterized queries to avoid SQL injection, especially when working with JSON paths.
+
+2. **Test with Real Data**: JSON queries can behave differently with different data structures, so test with realistic data.
+
+3. **Consider Indexing**: For frequently queried JSON paths, consider creating indexes or denormalizing the data.
+
+4. **Handle Errors Gracefully**: JSON operations can fail if the data is malformed, so implement proper error handling.
+
+5. **Document JSON Schemas**: Document the expected structure of JSON data to ensure consistency across the application.
+
+### Example: Filtering Strategies by Parameter
+
+```python
+def get_strategies_by_parameter(self, parameter_name: str) -> List[Strategy]:
+    """
+    Get strategies that have a specific parameter.
+
+    Args:
+        parameter_name: Parameter name to search for
+
+    Returns:
+        List of strategies with the specified parameter
+    """
+    # Use a raw SQL query with json_extract to check if the parameter exists
+    # This is more reliable for SQLite JSON1 extension
+    sql = text(f"""
+        SELECT s.* FROM strategies s
+        WHERE json_extract(s.parameters, '$.{parameter_name}') IS NOT NULL
+    """)
+    
+    # Execute the raw SQL query
+    result = self._session.execute(sql)
+    
+    # Convert the result to Strategy objects
+    return [Strategy(**row._mapping) for row in result]
+```
