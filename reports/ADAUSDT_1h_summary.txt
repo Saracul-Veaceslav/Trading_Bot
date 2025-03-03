@@ -1,0 +1,21 @@
+Summary Statistics for ADAUSDT (1h)
+Generated on 2025-03-03 16:33:00.605101
+
+symbol: ADAUSDT
+timeframe: 1h
+start_date: 2025-02-01 17:00:00
+end_date: 2025-03-03 14:00:00
+days: 29
+data_points: 718
+first_price: 0.9304
+last_price: 1.0027
+min_price: 0.5886
+max_price: 1.135
+price_change: 0.07229999999999992
+price_change_pct: 7.7708512467755675
+avg_daily_return: 0.03129755407963177
+std_daily_return: 2.111973227730634
+sharpe_ratio: 0.2831186130908806
+positive_days: 341
+negative_days: 376
+avg_volume: 11751903.41155989

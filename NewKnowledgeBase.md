@@ -974,3 +974,86 @@ Important implementation details:
 - The parallel fetching functionality uses a ThreadPoolExecutor to fetch data for multiple symbols concurrently.
 - The fetcher properly handles the results from concurrent futures to ensure all symbols are processed correctly.
 - Rate limiting is implemented with exponential backoff to avoid hitting Binance API limits.
+
+## New Knowledge Base
+
+This document contains key learnings and insights about the codebase that help improve productivity.
+
+## Data Fetching and Storage
+
+### Pylon Storage System
+- Columnar storage using Apache Arrow and Parquet for efficient data access
+- Support for data partitioning by year, month, or custom columns
+- Data compression using Snappy for reduced storage size
+- Efficient appending with duplicate handling
+- Preservation of DatetimeIndex frequency when loading data
+- Methods provided: `store_dataframe`, `load_dataframe`, and `append_dataframe`
+- Partitioning improves query performance by allowing the system to skip irrelevant data
+
+### Binance Data Fetcher
+- Support for multiple symbols and timeframes
+- Pagination for large date ranges with automatic handling
+- Rate limiting with exponential backoff to avoid API restrictions
+- Parallel fetching using asyncio and concurrent.futures
+- Integration with the Pylon Storage system
+- Methods for fetching single symbol/timeframe or multiple combinations
+- Efficient handling of date ranges and data updates
+
+### Command-line Data Fetching
+- The `fetch_historical_data.py` script provides a convenient command-line interface for fetching data
+- Supports fetching multiple symbols and timeframes in a single command
+- Options for parallel fetching to improve performance
+- Flexible date range specification (start/end dates or number of days)
+- Automatic storage using the Pylon system
+- Command examples:
+  - Basic usage: `python fetch_historical_data.py`
+  - Custom symbols: `python fetch_historical_data.py --symbols BTCUSDT ETHUSDT`
+  - Custom timeframes: `python fetch_historical_data.py --timeframes 15m 1h 4h`
+  - Date range: `python fetch_historical_data.py --start-date 2023-01-01 --end-date 2023-02-01`
+  - Last N days: `python fetch_historical_data.py --days 60`
+  - Parallel fetching: `python fetch_historical_data.py --parallel --max-workers 8`
+
+### Data Analysis and Visualization
+- The `analyze_data.py` script provides tools for analyzing and visualizing historical data
+- Calculates common technical indicators (SMA, RSI, MACD, Bollinger Bands)
+- Generates summary statistics (price change, returns, Sharpe ratio, etc.)
+- Creates visualizations with price charts and indicators
+- Saves analysis results to CSV and text files
+- Command examples:
+  - Basic usage: `python analyze_data.py`
+  - Custom symbol: `python analyze_data.py --symbol ADAUSDT`
+  - Custom timeframe: `python analyze_data.py --timeframe 4h`
+  - Date range: `python analyze_data.py --start-date 2023-01-01 --end-date 2023-02-01`
+  - Last N days: `python analyze_data.py --days 60`
+  - Custom output directory: `python analyze_data.py --output-dir my_reports`
+
+## Important Implementation Details
+
+### Working with DatetimeIndex Frequency
+- When loading data from storage, it's important to preserve the frequency of the DatetimeIndex
+- The PylonStorage system maps timeframe strings (e.g., '1h', '15m') to pandas frequency strings
+- This mapping ensures that loaded data has the correct frequency for resampling and other time-based operations
+
+### Handling Duplicate Timestamps
+- When appending data, duplicate timestamps can occur at the boundaries of data chunks
+- The PylonStorage system handles this by using `drop_duplicates` with the 'timestamp' column
+- This ensures that the resulting dataset has unique timestamps and consistent data
+
+### Parallel Data Fetching
+- The ThreadPoolExecutor is used for parallel fetching to improve performance
+- Each symbol/timeframe combination is fetched in a separate thread
+- The max_workers parameter controls the level of parallelism
+- Results are collected as they complete using concurrent.futures.as_completed
+
+### Data Partitioning
+- Partitioning data by year and month improves query performance
+- When querying a specific date range, only relevant partitions are read
+- Custom partitioning is supported by providing a list of partition columns
+- Partitioning is especially beneficial for large datasets spanning multiple years
+
+### Technical Indicator Calculation
+- Technical indicators are calculated using pandas rolling windows and other operations
+- The RSI calculation uses the standard formula with gain/loss averaging
+- MACD is calculated using exponential moving averages (EMAs)
+- Bollinger Bands use a 20-period moving average with 2 standard deviation bands
+- These indicators can be used for strategy development and backtesting

@@ -1,0 +1,21 @@
+Summary Statistics for XRPUSDT (1h)
+Generated on 2025-03-03 16:21:54.153488
+
+symbol: XRPUSDT
+timeframe: 1h
+start_date: 2025-02-01 17:00:00
+end_date: 2025-03-03 14:00:00
+days: 29
+data_points: 718
+first_price: 2.9937
+last_price: 2.6991
+min_price: 2.0003
+max_price: 2.9937
+price_change: -0.2946
+price_change_pct: -9.840665397334403
+avg_daily_return: -0.0023545886159760704
+std_daily_return: 1.5643372994199798
+sharpe_ratio: -0.028756171934266245
+positive_days: 364
+negative_days: 351
+avg_volume: 15451739.837047353

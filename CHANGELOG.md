@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Data analysis script (analyze_data.py) for visualizing and analyzing historical data with technical indicators
+- Command-line script (fetch_historical_data.py) for fetching historical data from Binance
 - Strategy Composition Framework with CompositeStrategy and VotingStrategy classes
 - Strategy Optimization Framework with grid search capabilities
 - Performance metrics calculation (Sharpe ratio, Sortino ratio, max drawdown, win rate, profit factor)
