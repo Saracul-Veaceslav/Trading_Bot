@@ -71,6 +71,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - StrategyRepository for strategy-specific queries
   - Transaction support with context manager
   - Date range filtering for trades and strategies
+- Database Migration System using Alembic for versioned database schema changes
+  - Migration manager utility for creating, upgrading, and downgrading migrations
+  - Initial migration for the core database models (Trade, Strategy, OHLCV)
+  - Comprehensive test suite for the migration system
 
 ### Changed
 - Enhanced Strategy base class with backtesting capabilities

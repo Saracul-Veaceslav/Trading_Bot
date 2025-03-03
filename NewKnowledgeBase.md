@@ -1647,3 +1647,49 @@ Key benefits of this approach:
 - Consistent query patterns across the application
 - Improved testability with mock repositories
 - Reduced duplication of query logic
+
+## Database Migration System
+
+The Abidance Trading Bot uses Alembic for database migrations, which provides the following benefits:
+
+1. **Versioned Schema Changes**: All database schema changes are versioned, allowing for tracking changes over time.
+2. **Consistent Environments**: Migrations ensure that all development, testing, and production environments have the same database schema.
+3. **Rollback Capability**: If a migration causes issues, it can be rolled back to a previous version.
+4. **Collaborative Development**: Multiple developers can make schema changes without conflicts.
+
+### Migration Files Structure
+
+- **env.py**: Alembic environment configuration that connects to the database and loads the SQLAlchemy models.
+- **script.py.mako**: Template for generating new migration scripts.
+- **versions/**: Directory containing individual migration versions, each with upgrade and downgrade functions.
+- **migration_manager.py**: Utility script for managing migrations with a command-line interface.
+
+### Using the Migration System
+
+To create a new migration after changing the database models:
+
+```bash
+python -m abidance.database.migrations.migration_manager create "Description of changes"
+```
+
+To apply all pending migrations:
+
+```bash
+python -m abidance.database.migrations.migration_manager upgrade
+```
+
+To revert the most recent migration:
+
+```bash
+python -m abidance.database.migrations.migration_manager downgrade
+```
+
+### Testing Migrations
+
+The migration system includes comprehensive tests that ensure:
+
+1. Migrations can be applied to a new database successfully.
+2. Migrations can be reverted successfully.
+3. Migrations are idempotent (can be applied multiple times without issues).
+
+These tests use temporary SQLite databases to isolate the testing environment.
