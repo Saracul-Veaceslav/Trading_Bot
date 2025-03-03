@@ -11,6 +11,9 @@ The Abidance Trading Bot is organized into the following core components:
     - **indicators**: Object-oriented technical indicators with a consistent interface
       - **base.py**: Base Indicator abstract class defining the common interface
       - **momentum.py**: Momentum indicators like RSI and MACD
+  - **optimization**: Strategy parameter optimization and performance metrics
+    - **optimizer.py**: StrategyOptimizer class for parameter grid search
+    - **metrics.py**: Performance metric calculations (Sharpe, Sortino, etc.)
   - **config**: Configuration loading and management
   - **type_defs**: Type definitions and custom types
   - **typing**: Alternative type definitions (to be consolidated with type_defs)
@@ -1217,3 +1220,45 @@ The `momentum.py` module implements momentum-based indicators:
 ### Backward Compatibility
 
 The indicators package maintains backward compatibility with the previous functional approach through re-exported functions in the `__init__.py` file. This allows existing code to continue working while new code can take advantage of the object-oriented approach.
+
+## Strategy Optimization
+
+The Abidance Trading Bot includes a comprehensive strategy optimization framework that helps find optimal parameters for trading strategies:
+
+- **Grid Search**: The `StrategyOptimizer` class performs grid search over parameter combinations to find the best performing set.
+- **Parallel Execution**: Parameter evaluation is parallelized for improved performance, utilizing multiple CPU cores.
+- **Performance Metrics**: Various metrics are available to evaluate strategy performance:
+  - **Sharpe Ratio**: Measures risk-adjusted return
+  - **Sortino Ratio**: Similar to Sharpe but only considers downside risk
+  - **Maximum Drawdown**: Measures the largest peak-to-trough decline
+  - **Win Rate**: Percentage of profitable trades
+  - **Profit Factor**: Ratio of gross profits to gross losses
+- **Backtest Integration**: The Strategy base class includes a backtest method that provides a consistent interface for strategy evaluation.
+- **Result Ranking**: Optimization results are sorted by performance to easily identify the best parameter combinations.
+
+### Usage Example
+
+```python
+from abidance.optimization import StrategyOptimizer, calculate_sharpe_ratio
+from abidance.strategy import SMAStrategy
+
+# Define parameter ranges to search
+parameter_ranges = {
+    'short_window': [5, 10, 15, 20],
+    'long_window': [50, 100, 150, 200]
+}
+
+# Create optimizer
+optimizer = StrategyOptimizer(
+    strategy_class=SMAStrategy,
+    parameter_ranges=parameter_ranges,
+    metric_function=calculate_sharpe_ratio
+)
+
+# Run optimization
+results = optimizer.optimize(historical_data, max_iterations=100, n_jobs=4)
+
+# Get best parameters
+best_params = results[0].parameters
+best_performance = results[0].performance_metrics['metric']
+```

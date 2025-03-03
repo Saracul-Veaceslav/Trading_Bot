@@ -169,4 +169,130 @@ class Strategy(ABC):
     
     def __str__(self) -> str:
         """String representation of the strategy."""
-        return f"{self.name} ({self.__class__.__name__})" 
+        return f"{self.name} ({self.__class__.__name__})"
+        
+    def backtest(self, data: pd.DataFrame, initial_capital: float = 10000.0) -> pd.DataFrame:
+        """
+        Run a backtest of the strategy on historical data.
+        
+        Args:
+            data: Historical price data as a pandas DataFrame
+            initial_capital: Initial capital for the backtest
+            
+        Returns:
+            DataFrame with trade results
+        """
+        self.logger.info(f"Starting backtest for {self.name} strategy")
+        
+        # Initialize backtest variables
+        equity = initial_capital
+        position = 0
+        trades = []
+        
+        # Make a copy of the data to avoid modifying the original
+        df = data.copy()
+        
+        # Analyze the entire dataset
+        symbol = self.symbols[0] if self.symbols else "UNKNOWN"
+        analysis = self.analyze(symbol, df)
+        
+        # Generate signals for the entire dataset
+        signals = self.generate_signals(symbol, analysis)
+        
+        # Process signals and simulate trades
+        for i, signal in enumerate(signals):
+            timestamp = signal.get('timestamp', df.index[i] if i < len(df) else None)
+            signal_type = signal.get('type')
+            price = signal.get('price', df['close'].iloc[i] if i < len(df) else None)
+            
+            if not timestamp or not price:
+                continue
+                
+            if signal_type == 'buy' and position <= 0:
+                # Calculate position size based on risk
+                size = (equity * self.config.risk_per_trade) / price
+                cost = size * price
+                
+                # Enter long position
+                position = size
+                entry_price = price
+                entry_time = timestamp
+                
+            elif signal_type == 'sell' and position >= 0:
+                # Calculate position size based on risk
+                size = (equity * self.config.risk_per_trade) / price
+                cost = size * price
+                
+                # Enter short position
+                position = -size
+                entry_price = price
+                entry_time = timestamp
+                
+            elif signal_type == 'exit' and position != 0:
+                # Exit position
+                exit_price = price
+                exit_time = timestamp
+                
+                # Calculate profit/loss
+                if position > 0:  # Long position
+                    profit = position * (exit_price - entry_price)
+                else:  # Short position
+                    profit = -position * (entry_price - exit_price)
+                
+                # Update equity
+                equity += profit
+                
+                # Record trade
+                trades.append({
+                    'entry_time': entry_time,
+                    'exit_time': exit_time,
+                    'entry_price': entry_price,
+                    'exit_price': exit_price,
+                    'position': position,
+                    'profit': profit,
+                    'equity': equity,
+                    'returns': profit / (abs(position) * entry_price)
+                })
+                
+                # Reset position
+                position = 0
+        
+        # Close any open position at the end of the backtest
+        if position != 0:
+            exit_price = df['close'].iloc[-1]
+            exit_time = df.index[-1]
+            
+            # Calculate profit/loss
+            if position > 0:  # Long position
+                profit = position * (exit_price - entry_price)
+            else:  # Short position
+                profit = -position * (entry_price - exit_price)
+            
+            # Update equity
+            equity += profit
+            
+            # Record trade
+            trades.append({
+                'entry_time': entry_time,
+                'exit_time': exit_time,
+                'entry_price': entry_price,
+                'exit_price': exit_price,
+                'position': position,
+                'profit': profit,
+                'equity': equity,
+                'returns': profit / (abs(position) * entry_price)
+            })
+        
+        # Create DataFrame from trades
+        if trades:
+            trades_df = pd.DataFrame(trades)
+            trades_df.set_index('exit_time', inplace=True)
+            
+            # Calculate cumulative returns
+            trades_df['cumulative_returns'] = (1 + trades_df['returns']).cumprod()
+            
+            self.logger.info(f"Backtest completed with {len(trades_df)} trades")
+            return trades_df
+        else:
+            self.logger.warning("No trades were generated during backtest")
+            return pd.DataFrame() 
