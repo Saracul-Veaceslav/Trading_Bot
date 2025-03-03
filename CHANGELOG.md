@@ -43,6 +43,11 @@ All notable changes to this project will be documented in this file.
 - Fixed fee calculation in trading summary to correctly sum all fees
 - Enabled data recording functionality to store market data, trades, and strategy states
 - Implemented file-based storage for OHLCV data, trades, and strategy states
+- Advanced logging framework with structured JSON logging
+- Custom log formatters with color support
+- Asynchronous log handlers for improved performance
+- Context-aware logging with request ID tracking
+- Documentation about expected PytestCollectionWarnings related to @runtime_checkable Protocol classes
 
 ### Changed
 - Refactored codebase to follow Clean Architecture principles
@@ -57,6 +62,7 @@ All notable changes to this project will be documented in this file.
 - Optimized performance-critical code paths
 - Improved error messages
 - Updated main application to use DataManager with file storage for data persistence
+- Updated pandas operations in strategy code to prevent downcasting warnings
 
 ### Fixed
 - Module shadowing issues
@@ -74,6 +80,8 @@ All notable changes to this project will be documented in this file.
 - Inconsistencies in type annotations
 - Inconsistencies in documentation
 - Fixed strategy initialization in abidance_main.py to properly create strategy config objects
+- Fixed test_no_module_shadowing to exclude 'logging' from shadowing checks due to intentional abidance.logging module
+- Fixed pandas FutureWarning related to silent downcasting in strategy code
 
 ## 0.2.0
 

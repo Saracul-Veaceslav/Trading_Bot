@@ -9,6 +9,9 @@ from typing import Optional, Tuple, Dict, Any
 import pandas as pd
 import numpy as np
 
+# Set pandas option to prevent silent downcasting warnings
+pd.set_option('future.no_silent_downcasting', True)
+
 
 def calculate_sma(data: pd.DataFrame, period: int, column: str = 'close') -> pd.Series:
     """
@@ -152,9 +155,8 @@ def detect_crossover(series1: pd.Series, series2: pd.Series) -> pd.Series:
     
     # Ensure boolean type to avoid issues with unary ~ operator
     above = above.astype(bool)
-    # Use recommended approach from warning message to avoid downcasting warning
-    prev_above = prev_above.fillna(False).infer_objects(copy=False)
-    prev_above = prev_above.astype(bool)
+    # Use infer_objects before astype to avoid downcasting warnings
+    prev_above = prev_above.fillna(False).infer_objects(copy=False).astype(bool)
     
     # Detect crossovers
     crossover = pd.Series(0, index=series1.index)
